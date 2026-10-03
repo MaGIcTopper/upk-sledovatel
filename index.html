@@ -240,6 +240,34 @@ footer{
 .file .fi.docx{background:var(--accent)}
 .file .ft{font-weight:600;font-size:14px;color:var(--navy);line-height:1.3}
 .file .fd{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ---------- ТЁМНАЯ ТЕМА / ПОИСК / ПРОЧЕЕ ---------- */
+html[data-theme=dark]{--bg:#0d131b;--card:#151e2a;--text:#e3e9f1;--muted:#92a2b8;--border:#263446}
+html[data-theme=dark] .card>h2,html[data-theme=dark] h3,html[data-theme=dark] h4,html[data-theme=dark] .quick .qt,
+html[data-theme=dark] .algo-head .t,html[data-theme=dark] .file .ft{color:#a9c8ff}
+html[data-theme=dark] .algo-head:hover,html[data-theme=dark] .step:hover,html[data-theme=dark] tr:hover td{background:#1c2837}
+html[data-theme=dark] nav a:hover{background:#1c2837}
+html[data-theme=dark] .algo-head .law,html[data-theme=dark] .algo-head .num,html[data-theme=dark] .card>h2 .badge{background:#1f2d40;color:#a9c8ff}
+html[data-theme=dark] input,html[data-theme=dark] select{background:#0f1722;color:var(--text);border-color:var(--border)}
+html[data-theme=dark] th{background:#1c2837;color:var(--text)}
+.hbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:8px 11px;cursor:pointer;font-size:15px}
+.hbtn:hover{border-color:var(--gold)}
+#searchRes{display:none;position:fixed;top:66px;right:22px;width:min(520px,92vw);max-height:70vh;overflow-y:auto;z-index:80;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 36px rgba(0,0,0,.28)}
+#searchRes.on{display:block}
+#searchRes .sr{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;font-size:13.5px}
+#searchRes .sr:hover{background:rgba(47,111,208,.1)}
+#searchRes .sr b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);margin-bottom:2px}
+#searchRes mark,.flash{background:#fff2a8;color:#000;border-radius:3px}
+.flash{animation:fl 2s ease}@keyframes fl{from{background:#ffd54a}to{background:transparent}}
+.timer-row{display:flex;justify-content:space-between;gap:12px;padding:9px 12px;border-bottom:1px solid var(--border);font-size:14px}
+.timer-row b{white-space:nowrap}
+.hot{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:6px}
+.hot div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;padding:10px 12px;font-size:12.5px;color:var(--muted)}
+.hot div b{display:block;font-size:20px;color:var(--navy-2)}
+html[data-theme=dark] .hot div b{color:#a9c8ff}
+#toTop{display:none;position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:20px;cursor:pointer;box-shadow:var(--shadow);z-index:60}
+@media print{header,aside,#toTop,#searchRes{display:none!important}section{display:block!important}.layout{display:block}}
 @media(max-width:960px){
   .layout{flex-direction:column;padding:14px}
   aside{width:100%;flex:none;position:static;max-height:none}
@@ -262,8 +290,11 @@ footer{
     <p>Рабочий справочник по УПК РФ · алгоритмы · сроки · материалы</p>
   </div>
   <div class="spacer"></div>
+  <button class="hbtn" id="themeBtn" title="Тёмная / светлая тема">🌓</button>
   <input type="search" id="globalSearch" placeholder="Поиск по справочнику… (Ctrl+K)">
 </header>
+<div id="searchRes"></div>
+<button id="toTop" title="Наверх">↑</button>
 
 <div class="layout">
   <aside>
@@ -321,6 +352,27 @@ footer{
         </div>
       </div>
 
+
+
+      <div class="card">
+        <h2>Критичные сроки</h2>
+        <p class="sub">То, что чаще всего горит. Полная таблица — в разделе «Сроки и калькулятор»</p>
+        <div class="hot">
+          <div><b>3 часа</b>протокол задержания (ч. 1 ст. 92)</div>
+          <div><b>12 часов</b>уведомление прокурора (ч. 3 ст. 92)</div>
+          <div><b>24 часа</b>допрос подозреваемого (ч. 2 ст. 46)</div>
+          <div><b>48 часов</b>предельный срок задержания (ч. 2 ст. 94)</div>
+          <div><b>8 часов</b>ходатайство об аресте — до конца срока задержания (ч. 3 ст. 108)</div>
+          <div><b>3 суток</b>уведомить судью и прокурора о неотложном действии (ч. 5 ст. 165)</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Таймер задержания</h2>
+        <p class="sub">Укажите момент фактического задержания — получите контрольное время. Срок на протокол (3 часа) отсчитывается от доставления в орган.</p>
+        <input type="datetime-local" id="tmStart" style="padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;margin-bottom:10px">
+        <div id="tmOut"></div>
+      </div>
 
       <div class="card">
         <h2>По ведомствам</h2>
@@ -1376,6 +1428,74 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(l => {
     }, 50);
   });
 });
+
+/* ============================================================
+   НОВОЕ: тема, ссылки на разделы, поиск, таймер, «наверх»
+   ============================================================ */
+(function(){
+  const root = document.documentElement;
+  try{ if(localStorage.getItem('theme')==='dark') root.dataset.theme='dark'; }catch(e){}
+  document.getElementById('themeBtn').onclick = () => {
+    const d = root.dataset.theme==='dark'; root.dataset.theme = d?'light':'dark';
+    try{ localStorage.setItem('theme', d?'light':'dark'); }catch(e){}
+  };
+  /* ссылка на раздел: #cat-mvd */
+  const ids = [...document.querySelectorAll('section')].map(x=>x.id);
+  const _go = goTo;
+  goTo = function(id){ _go(id); try{ history.replaceState(null,'','#'+id); }catch(e){} };
+  links.forEach(l => l.onclick = e => { e.preventDefault(); goTo(l.dataset.target); });
+  document.querySelectorAll('[data-goto]').forEach(c => c.onclick = () => goTo(c.dataset.goto));
+  const h = location.hash.slice(1); if(ids.includes(h)) goTo(h);
+  /* кнопка наверх */
+  const top = document.getElementById('toTop');
+  addEventListener('scroll', () => top.style.display = scrollY>500?'block':'none');
+  top.onclick = () => scrollTo({top:0,behavior:'smooth'});
+  /* поиск по всему сайту */
+  const gs = document.getElementById('globalSearch'), box = document.getElementById('searchRes');
+  const label = {}; links.forEach(l => label[l.dataset.target] = l.textContent.trim());
+  function search(q){
+    const out = [], seen = new Set();
+    document.querySelectorAll('section').forEach(sec => {
+      sec.querySelectorAll('p,li,tr,h3,h4,.note,.acc-h,.algo-head,.file,.quick').forEach(el => {
+        if(out.length>=15) return;
+        const t = el.textContent.replace(/\s+/g,' ').trim();
+        if(t.length<8 || seen.has(t) || !t.toLowerCase().includes(q)) return;
+        if(el.querySelector('li,tr,p') && !el.matches('.note')) return;
+        seen.add(t); out.push({sec:sec.id, el, t});
+      });
+    });
+    return out;
+  }
+  gs.addEventListener('input', () => {
+    const q = gs.value.trim().toLowerCase();
+    if(q.length<2){ box.classList.remove('on'); return; }
+    const r = search(q);
+    box.innerHTML = r.length ? r.map((x,i) => {
+      const k = x.t.toLowerCase().indexOf(q), a = Math.max(0,k-40);
+      const sn = esc(x.t.slice(a,a+160)).replace(new RegExp(esc(q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'), m=>'<mark>'+m+'</mark>');
+      return '<div class="sr" data-i="'+i+'"><b>'+esc(label[x.sec]||x.sec)+'</b>'+(a?'…':'')+sn+'</div>';
+    }).join('') : '<div class="sr">Ничего не найдено</div>';
+    box.classList.add('on');
+    box.querySelectorAll('.sr[data-i]').forEach(d => d.onclick = () => {
+      const x = r[+d.dataset.i]; box.classList.remove('on');
+      goTo(x.sec);
+      const acc = x.el.closest('.acc,.algo'); if(acc) acc.classList.add('open');
+      setTimeout(() => { x.el.scrollIntoView({behavior:'smooth',block:'center'}); x.el.classList.add('flash'); setTimeout(()=>x.el.classList.remove('flash'),2000); }, 150);
+    });
+  });
+  document.addEventListener('click', e => { if(!box.contains(e.target) && e.target!==gs) box.classList.remove('on'); });
+  addEventListener('keydown', e => { if(e.key==='Escape') box.classList.remove('on'); });
+  /* таймер задержания */
+  const tm = document.getElementById('tmStart'), out = document.getElementById('tmOut');
+  const rows = [[3,'Протокол задержания','ч. 1 ст. 92'],[12,'Уведомить прокурора','ч. 3 ст. 92'],[24,'Допросить подозреваемого','ч. 2 ст. 46'],
+    [40,'Последний срок: ходатайство об аресте в суд (за 8 ч)','ч. 3 ст. 108'],[48,'Освободить или арест / продление','ч. 2 ст. 94']];
+  const f = d => d.toLocaleString('ru-RU',{day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit'});
+  tm.addEventListener('input', () => {
+    if(!tm.value){ out.innerHTML=''; return; }
+    const t0 = new Date(tm.value);
+    out.innerHTML = rows.map(r => '<div class="timer-row"><span>+'+r[0]+' ч · '+r[1]+' <small style="color:var(--muted)">('+r[2]+')</small></span><b>'+f(new Date(t0.getTime()+r[0]*3600000))+'</b></div>').join('');
+  });
+})();
 </script>
 </body>
 </html>
