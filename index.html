@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кабинет следователя — рабочий справочник</title>
+<style>
+:root{
+  --navy:#0f2440;
+  --navy-2:#16325c;
+  --accent:#2f6fd0;
+  --gold:#c8a24a;
+  --bg:#f4f6f9;
+  --card:#ffffff;
+  --text:#1a2332;
+  --muted:#5b6b80;
+  --border:#dfe6ef;
+  --green:#1e8e5a;
+  --red:#c0392b;
+  --amber:#b7791f;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(16,36,64,.06),0 4px 14px rgba(16,36,64,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.55;font-size:15px;
+}
+/* ---------- HEADER ---------- */
+header{
+  position:sticky;top:0;z-index:50;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);
+  color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;
+  box-shadow:0 2px 12px rgba(15,36,64,.25);
+}
+header .logo{
+  width:40px;height:40px;flex:0 0 40px;border-radius:9px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  display:grid;place-items:center;font-size:20px;
+}
+header h1{font-size:17px;font-weight:600;letter-spacing:.2px}
+header p{font-size:12px;color:#9fb4d0;margin-top:1px}
+header .spacer{flex:1}
+#globalSearch{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
+  color:#fff;padding:9px 14px;border-radius:8px;width:280px;font-size:14px;outline:none;
+}
+#globalSearch::placeholder{color:#8ea6c4}
+#globalSearch:focus{background:rgba(255,255,255,.14);border-color:var(--gold)}
+/* ---------- LAYOUT ---------- */
+.layout{display:flex;max-width:1500px;margin:0 auto;gap:22px;padding:22px}
+aside{
+  width:250px;flex:0 0 250px;position:sticky;top:88px;align-self:flex-start;
+  max-height:calc(100vh - 110px);overflow-y:auto;
+}
+aside::-webkit-scrollbar{width:6px}
+aside::-webkit-scrollbar-thumb{background:#c9d4e2;border-radius:3px}
+nav ul{list-style:none}
+nav a{
+  display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;
+  color:var(--text);text-decoration:none;font-size:14px;transition:.15s;margin-bottom:2px;
+}
+nav a:hover{background:#e6edf6;color:var(--accent)}
+nav a.active{background:var(--accent);color:#fff;font-weight:500}
+nav .navgroup{font-size:11px;text-transform:uppercase;letter-spacing:.7px;
+  color:var(--muted);font-weight:600;padding:14px 12px 6px}
+main{flex:1;min-width:0}
+section{display:none;animation:fade .25s ease}
+section.visible{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* ---------- CARDS ---------- */
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px 22px;margin-bottom:18px;box-shadow:var(--shadow);
+}
+.card > h2{
+  font-size:19px;font-weight:600;margin-bottom:4px;color:var(--navy);
+  display:flex;align-items:center;gap:9px;
+}
+.card > h2 .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;
+  background:#e8f0fb;color:var(--accent);letter-spacing:.3px}
+.sub{color:var(--muted);font-size:13.5px;margin-bottom:16px}
+h3{font-size:15.5px;font-weight:600;margin:20px 0 10px;color:var(--navy-2)}
+h4{font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--navy-2)}
+p{margin-bottom:10px}
+ul.plain,ol.plain{margin:0 0 12px 20px}
+ul.plain li,ol.plain li{margin-bottom:5px}
+/* ---------- DASHBOARD ---------- */
+.hero{
+  background:linear-gradient(135deg,var(--navy) 0%,#1d4272 100%);
+  color:#fff;border-radius:var(--radius);padding:28px 30px;margin-bottom:20px;
+  box-shadow:0 6px 24px rgba(15,36,64,.2);position:relative;overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;
+  border-radius:50%;background:radial-gradient(circle,rgba(200,162,74,.25),transparent 70%);
+}
+.hero h2{font-size:24px;font-weight:600;margin-bottom:8px}
+.hero p{color:#b9cbe4;font-size:14.5px;max-width:720px;margin-bottom:0}
+.quickgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:6px}
+.quick{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px;cursor:pointer;transition:.18s;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:6px;
+}
+.quick:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 8px 22px rgba(47,111,208,.15)}
+.quick .qi{font-size:22px}
+.quick .qt{font-weight:600;font-size:14.5px;color:var(--navy)}
+.quick .qd{font-size:12.5px;color:var(--muted)}
+/* ---------- ALGORITHMS ---------- */
+.algo{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);
+}
+.algo-head{
+  padding:15px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;
+  transition:.15s;user-select:none;
+}
+.algo-head:hover{background:#f7fafd}
+.algo-head .num{
+  flex:0 0 30px;height:30px;border-radius:8px;background:#e8f0fb;color:var(--accent);
+  display:grid;place-items:center;font-weight:700;font-size:13px;
+}
+.algo-head .t{flex:1;font-weight:600;font-size:15px;color:var(--navy)}
+.algo-head .law{font-size:11.5px;color:var(--muted);background:#f1f4f8;
+  padding:3px 9px;border-radius:20px;white-space:nowrap}
+.algo-head .arrow{color:var(--muted);transition:.25s;font-size:12px}
+.algo.open .algo-head .arrow{transform:rotate(90deg)}
+.algo-body{display:none;padding:0 20px 20px 20px;border-top:1px solid var(--border)}
+.algo.open .algo-body{display:block}
+.progress{height:5px;background:#e8eef6;border-radius:3px;margin:14px 0 16px;overflow:hidden}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#4b8ee0);
+  width:0%;transition:width .3s ease;border-radius:3px}
+.step{
+  display:flex;gap:11px;padding:9px 12px;border-radius:8px;transition:.15s;
+  align-items:flex-start;cursor:pointer;
+}
+.step:hover{background:#f5f8fc}
+.step input{display:none}
+.step .box{
+  flex:0 0 19px;height:19px;border:2px solid #c3cfdd;border-radius:5px;margin-top:1px;
+  display:grid;place-items:center;transition:.15s;background:#fff;
+}
+.step .box::after{content:"✓";font-size:12px;color:#fff;opacity:0;font-weight:700}
+.step.done .box{background:var(--green);border-color:var(--green)}
+.step.done .box::after{opacity:1}
+.step.done .txt{color:var(--muted);text-decoration:line-through;text-decoration-color:#b8c6d6}
+.step .txt{font-size:14px;flex:1}
+.step .ref{font-size:11.5px;color:var(--accent);background:#eef4fd;padding:2px 8px;
+  border-radius:20px;white-space:nowrap;margin-left:8px;font-weight:500}
+.step.warn .txt::before{content:"⚠ ";color:var(--amber)}
+.algo-foot{display:flex;gap:10px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)}
+.btn{
+  font-size:12.5px;padding:7px 14px;border-radius:7px;border:1px solid var(--border);
+  background:#fff;color:var(--muted);cursor:pointer;transition:.15s;font-family:inherit;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:#255cb5}
+/* ---------- TABLES ---------- */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0 16px}
+th{
+  text-align:left;padding:10px 12px;background:#f0f5fb;color:var(--navy);
+  font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;
+  border-bottom:2px solid #dbe6f3;
+}
+th:first-child{border-radius:8px 0 0 0}
+th:last-child{border-radius:0 8px 0 0}
+td{padding:10px 12px;border-bottom:1px solid #eef3f9;vertical-align:top}
+tr:hover td{background:#fafcfe}
+td.term{font-weight:600;color:var(--navy);white-space:nowrap}
+td.law{color:var(--accent);font-size:12.5px;white-space:nowrap}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
+.tag.red{background:#fdecea;color:var(--red)}
+.tag.green{background:#e7f6ef;color:var(--green)}
+.tag.amber{background:#fdf4e3;color:var(--amber)}
+.tag.blue{background:#eaf1fd;color:var(--accent)}
+/* ---------- CALCULATOR ---------- */
+.calc-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.field input,.field select{
+  padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;
+  font-family:inherit;background:#fff;color:var(--text);outline:none;min-width:170px;
+}
+.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,208,.1)}
+.calc-result{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.cr{
+  border:1px solid var(--border);border-radius:9px;padding:13px 15px;background:#fbfdff;
+  border-left:4px solid var(--accent);
+}
+.cr.urgent{border-left-color:var(--red);background:#fffafa}
+.cr .lbl{font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:600}
+.cr .val{font-size:16px;font-weight:700;color:var(--navy)}
+.cr .ref{font-size:11.5px;color:var(--accent);margin-top:3px}
+/* ---------- ACCORDION (articles) ---------- */
+.acc{border:1px solid var(--border);border-radius:9px;margin-bottom:9px;overflow:hidden;background:#fff}
+.acc-h{
+  padding:13px 17px;cursor:pointer;font-weight:600;font-size:14px;color:var(--navy);
+  display:flex;align-items:center;gap:10px;transition:.15s;user-select:none;
+}
+.acc-h:hover{background:#f7fafd}
+.acc-h .ar{margin-left:auto;color:var(--muted);font-size:11px;transition:.25s}
+.acc.open .acc-h .ar{transform:rotate(90deg)}
+.acc-b{display:none;padding:4px 17px 17px;font-size:14px;color:#2c3a4e;border-top:1px solid var(--border)}
+.acc.open .acc-b{display:block}
+.acc-b ul{margin:10px 0 10px 20px}
+.acc-b li{margin-bottom:6px}
+.acc-b .cite{color:var(--accent);font-size:12.5px;font-weight:600}
+/* ---------- MISC ---------- */
+.note{
+  border-left:4px solid var(--gold);background:#fdfaf1;padding:13px 17px;
+  border-radius:0 8px 8px 0;font-size:13.5px;margin:14px 0;
+}
+.note.red{border-left-color:var(--red);background:#fdf4f3}
+.note.blue{border-left-color:var(--accent);background:#f2f7fd}
+.note b{color:var(--navy)}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pill{
+  font-size:12.5px;padding:6px 13px;border-radius:20px;border:1px solid var(--border);
+  background:#fff;cursor:pointer;transition:.15s;font-family:inherit;color:var(--muted);
+}
+.pill:hover{border-color:var(--accent);color:var(--accent)}
+.pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.empty{padding:30px;text-align:center;color:var(--muted);font-size:14px}
+footer{
+  text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
+  border-top:1px solid var(--border);margin-top:20px;
+}
+/* ---------- MOBILE ---------- */
+
+/* ---------- МАТЕРИАЛЫ (файлы) ---------- */
+.filegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:8px}
+.file{display:flex;align-items:center;gap:12px;padding:13px 15px;background:var(--card);
+  border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;color:var(--text);transition:.15s}
+.file:hover{border-color:var(--accent);box-shadow:0 6px 18px rgba(47,111,208,.14);transform:translateY(-1px)}
+.file .fi{flex:0 0 40px;height:40px;border-radius:9px;display:grid;place-items:center;font-size:11px;
+  font-weight:700;color:#fff;background:var(--red)}
+.file .fi.docx{background:var(--accent)}
+.file .ft{font-weight:600;font-size:14px;color:var(--navy);line-height:1.3}
+.file .fd{font-size:12px;color:var(--muted);margin-top:2px}
+@media(max-width:960px){
+  .layout{flex-direction:column;padding:14px}
+  aside{width:100%;flex:none;position:static;max-height:none}
+  nav ul{display:flex;flex-wrap:wrap;gap:5px}
+  nav .navgroup{width:100%;padding:8px 12px 4px}
+  nav a{font-size:13px;padding:7px 11px}
+  header{flex-wrap:wrap;padding:12px 15px}
+  #globalSearch{width:100%;order:3}
+  .hero{padding:20px}
+  .hero h2{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⚖️</div>
+  <div>
+    <h1>Кабинет следователя</h1>
+    <p>Рабочий справочник по УПК РФ · алгоритмы · сроки · материалы</p>
+  </div>
+  <div class="spacer"></div>
+  <input type="search" id="globalSearch" placeholder="Поиск по справочнику… (Ctrl+K)">
+</header>
+
+<div class="layout">
+  <aside>
+    <nav>
+      <ul>
+        <li><a href="#" data-target="dashboard" class="active">🏠 Главная</a></li>
+        <div class="navgroup">Общее</div>
+        <li><a href="#" data-target="algos">📋 Алгоритмы действий</a></li>
+        <li><a href="#" data-target="deadlines">⏱ Сроки и калькулятор</a></li>
+        <li><a href="#" data-target="articles">📖 Ключевые статьи</a></li>
+        <li><a href="#" data-target="memo">💡 Памятки</a></li>
+        <li><a href="#" data-target="materials">📁 Общие материалы</a></li>
+        <div class="navgroup">По ведомствам</div>
+        <li><a href="#" data-target="cat-mvd">🚔 Следователи МВД</a></li>
+        <li><a href="#" data-target="cat-sk">🏛 Следователи СК</a></li>
+        <li><a href="#" data-target="cat-fsb">🛡 Следователи ФСБ</a></li>
+        <li><a href="#" data-target="cat-dozn">📝 Дознаватели</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main>
+
+    <!-- ================= ГЛАВНАЯ ================= -->
+    <section id="dashboard" class="visible">
+      <div class="hero">
+        <h2>Рабочий справочник следователя</h2>
+        <p>Пошаговые алгоритмы процессуальных действий, сроки по УПК РФ и ключевые статьи. Отмечайте выполненные шаги — прогресс сохраняется в браузере.</p>
+      </div>
+
+      <div class="card">
+        <h2>Общее для всех</h2>
+        <p class="sub">Алгоритмы, сроки и нормы, которые одинаковы для всех категорий</p>
+        <div class="quickgrid">
+          <div class="quick" data-goto="algos">
+            <div class="qi">📋</div><div class="qt">Алгоритмы действий</div>
+            <div class="qd">10 пошаговых чек-листов: от проверки сообщения до направления дела прокурору</div>
+          </div>
+          <div class="quick" data-goto="deadlines">
+            <div class="qi">⏱</div><div class="qt">Сроки и калькулятор</div>
+            <div class="qd">Полная таблица сроков + расчёт контрольных дат от исходной даты</div>
+          </div>
+          <div class="quick" data-goto="articles">
+            <div class="qi">📖</div><div class="qt">Ключевые статьи</div>
+            <div class="qd">Что требует судебного решения, основания задержания, меры пресечения, прекращение</div>
+          </div>
+          <div class="quick" data-goto="memo">
+            <div class="qi">💡</div><div class="qt">Памятки</div>
+            <div class="qd">Типичные ошибки, запреты, правила составления протокола</div>
+          </div>
+          <div class="quick" data-goto="materials">
+            <div class="qi">📁</div><div class="qt">Общие материалы</div>
+            <div class="qd">Образцы протоколов, справочные документы для всех категорий</div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="card">
+        <h2>По ведомствам</h2>
+        <p class="sub">Материалы и особенности работы для вашей категории</p>
+        <div class="quickgrid">
+          <div class="quick" data-goto="cat-mvd"><div class="qi">🚔</div><div class="qt">Следователи МВД</div><div class="qd">Макеты дел, инструкция по делопроизводству</div></div>
+          <div class="quick" data-goto="cat-sk"><div class="qi">🏛</div><div class="qt">Следователи СК</div><div class="qd">Подследственность и материалы Следственного комитета</div></div>
+          <div class="quick" data-goto="cat-fsb"><div class="qi">🛡</div><div class="qt">Следователи ФСБ</div><div class="qd">Подследственность и материалы органов безопасности</div></div>
+          <div class="quick" data-goto="cat-dozn"><div class="qi">📝</div><div class="qt">Дознаватели</div><div class="qd">Сроки дознания, сокращённая форма, материалы</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Три правила, которые нельзя нарушать</h2>
+        <div class="note red">
+          <b>1. Судебное решение.</b> Перечень действий, допускаемых только по решению суда, установлен ч. 2 ст. 29 УПК РФ. В неотложных случаях — ч. 5 ст. 165 УПК РФ (уведомить судью и прокурора в течение 3 суток).
+        </div>
+        <div class="note red">
+          <b>2. Согласие руководителя / прокурора.</b> Ряд действий следователь совершает с согласия руководителя следственного органа, дознаватель — с согласия прокурора. См. ст. 29, 108, 115, 164.1, 165 УПК РФ.
+        </div>
+        <div class="note red">
+          <b>3. Недопустимые доказательства.</b> Доказательства, полученные с нарушением УПК РФ, не имеют юридической силы и не могут быть положены в основу обвинения (ст. 75 УПК РФ).
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= АЛГОРИТМЫ ================= -->
+    <section id="algos">
+      <div class="card">
+        <h2>Алгоритмы действий <span class="badge">10 чек-листов</span></h2>
+        <p class="sub">Пошаговые последовательности по ключевым процессуальным ситуациям. Отметки сохраняются автоматически.</p>
+        <div class="pill-row">
+          <button class="pill" data-expand="all">Развернуть все</button>
+          <button class="pill" data-expand="none">Свернуть все</button>
+          <button class="pill" data-reset="1">Сбросить отметки</button>
+        </div>
+        <div id="algoContainer"></div>
+      </div>
+    </section>
+
+    <!-- ================= СРОКИ ================= -->
+    <section id="deadlines">
+      <div class="card">
+        <h2>Калькулятор контрольных дат</h2>
+        <p class="sub">Укажите исходную дату и тип события — получите расчётные сроки</p>
+        <div class="calc-row">
+          <div class="field">
+            <label>Исходная дата</label>
+            <input type="date" id="calcDate">
+          </div>
+          <div class="field">
+            <label>Событие</label>
+            <select id="calcType">
+              <option value="check">Проверка сообщения о преступлении (ст. 144)</option>
+              <option value="detention">Задержание подозреваемого (ст. 92, 94, 108)</option>
+              <option value="investigation">Предварительное следствие (ст. 162)</option>
+              <option value="custody">Содержание под стражей (ст. 109)</option>
+              <option value="inquiry">Дознание (ст. 223)</option>
+              <option value="inquiryShort">Дознание в сокращённой форме (ст. 226.6)</option>
+            </select>
+          </div>
+          <button class="btn primary" id="calcBtn">Рассчитать</button>
+        </div>
+        <div class="calc-result" id="calcResult">
+          <div class="empty">Выберите дату и событие, затем нажмите «Рассчитать»</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Сроки на досудебном производстве</h2>
+        <p class="sub">Полная таблица с основаниями по УПК РФ</p>
+        <table>
+          <thead><tr><th>Действие / срок</th><th>Продолжительность</th><th>Основание</th></tr></thead>
+          <tbody>
+            <tr><td class="term">Проверка сообщения о преступлении</td><td>3 суток со дня поступления</td><td class="law">ч. 1 ст. 144</td></tr>
+            <tr><td class="term">Продление проверки</td><td>до 10 суток — руководитель СО / начальник ОД</td><td class="law">ч. 3 ст. 144</td></tr>
+            <tr><td class="term">Продление проверки (ревизии, экспертизы, ОРМ)</td><td>до 30 суток — по ходатайству</td><td class="law">ч. 3 ст. 144</td></tr>
+            <tr><td class="term">Составление протокола задержания</td><td>не более 3 часов с момента доставления</td><td class="law">ч. 1 ст. 92</td></tr>
+            <tr><td class="term">Уведомление прокурора о задержании</td><td>12 часов</td><td class="law">ч. 3 ст. 92</td></tr>
+            <tr><td class="term">Телефонный разговор подозреваемого</td><td>не позднее 3 часов с момента доставления</td><td class="law">ч. 1 ст. 96</td></tr>
+            <tr><td class="term">Допрос подозреваемого</td><td>не позднее 24 часов с момента фактического задержания</td><td class="law">ч. 2 ст. 46</td></tr>
+            <tr><td class="term">Задержание без судебного решения</td><td>не более 48 часов</td><td class="law">ч. 1 ст. 10, ч. 2 ст. 94</td></tr>
+            <tr><td class="term">Ходатайство о заключении под стражу</td><td>не позднее чем за 8 часов до истечения срока задержания</td><td class="law">ч. 3 ст. 108</td></tr>
+            <tr><td class="term">Продление срока задержания судом</td><td>не более 72 часов</td><td class="law">п. 3 ч. 7 ст. 108</td></tr>
+            <tr><td class="term">Свидание с защитником</td><td>не менее 2 часов</td><td class="law">ч. 4 ст. 92</td></tr>
+            <tr><td class="term">Предварительное следствие</td><td>2 месяца</td><td class="law">ч. 1 ст. 162</td></tr>
+            <tr><td class="term">— продление руководителем СО</td><td>до 3 месяцев</td><td class="law">ч. 4 ст. 162</td></tr>
+            <tr><td class="term">— продление руководителем СО по субъекту РФ</td><td>до 12 месяцев</td><td class="law">ч. 5 ст. 162</td></tr>
+            <tr><td class="term">— дальнейшее продление</td><td>Председатель СК РФ / руководитель СО федерального органа — в исключительных случаях</td><td class="law">ч. 5 ст. 162</td></tr>
+            <tr><td class="term">Дознание</td><td>30 суток со дня возбуждения</td><td class="law">ч. 3 ст. 223</td></tr>
+            <tr><td class="term">— продление прокурором</td><td>до 30 суток</td><td class="law">ч. 3 ст. 223</td></tr>
+            <tr><td class="term">— продление прокурорами района, города</td><td>до 6 месяцев</td><td class="law">ч. 4 ст. 223</td></tr>
+            <tr><td class="term">— продление прокурором субъекта РФ</td><td>до 12 месяцев</td><td class="law">ч. 5 ст. 223</td></tr>
+            <tr><td class="term">Дознание в сокращённой форме</td><td>15 суток</td><td class="law">ч. 1 ст. 226.6</td></tr>
+            <tr><td class="term">— продление</td><td>до 20 суток</td><td class="law">ч. 2 ст. 226.6</td></tr>
+            <tr><td class="term">Содержание под стражей</td><td>2 месяца</td><td class="law">ч. 1 ст. 109</td></tr>
+            <tr><td class="term">— продление судьёй районного суда</td><td>до 6 месяцев</td><td class="law">ч. 2 ст. 109</td></tr>
+            <tr><td class="term">— до 12 месяцев</td><td>тяжкие / особо тяжкие, особая сложность</td><td class="law">ч. 2 ст. 109</td></tr>
+            <tr><td class="term">— до 18 месяцев</td><td>исключительные случаи, особо тяжкие</td><td class="law">ч. 3 ст. 109</td></tr>
+            <tr><td class="term">Ходатайство о продлении стражи</td><td>не позднее чем за 7 суток до истечения</td><td class="law">ч. 8 ст. 109</td></tr>
+            <tr><td class="term">Рассмотрение ходатайства судьёй</td><td>не позднее 5 суток со дня получения</td><td class="law">ч. 8 ст. 109</td></tr>
+            <tr><td class="term">Предъявление обвинения</td><td>не позднее 3 суток со дня вынесения постановления</td><td class="law">ч. 1 ст. 172</td></tr>
+            <tr><td class="term">Допрос обвиняемого</td><td>немедленно после предъявления обвинения</td><td class="law">ч. 1 ст. 173</td></tr>
+            <tr><td class="term">Обвинительный акт при заключении под стражу</td><td>не позднее 10 суток со дня заключения</td><td class="law">ч. 2 ст. 224</td></tr>
+            <tr><td class="term">Уведомление о подозрении — допрос</td><td>в течение 3 суток с момента вручения уведомления</td><td class="law">ч. 1 ст. 223.1</td></tr>
+            <tr><td class="term">Предъявление материалов дела обвиняемому</td><td>не позднее чем за 30 суток до окончания предельного срока стражи</td><td class="law">ч. 5 ст. 109</td></tr>
+            <tr><td class="term">Прокурор рассматривает дело с обвинительным заключением</td><td>10 суток (может быть продлён до 30)</td><td class="law">ч. 1, 1.1 ст. 221</td></tr>
+            <tr><td class="term">Прокурор — с обвинительным актом</td><td>2 суток</td><td class="law">ч. 1 ст. 226</td></tr>
+            <tr><td class="term">Прокурор — с обвинительным постановлением</td><td>3 суток</td><td class="law">ч. 1 ст. 226.8</td></tr>
+            <tr><td class="term">Решение судьи по поступившему делу</td><td>30 суток (14 — если обвиняемый под стражей)</td><td class="law">ч. 3 ст. 227</td></tr>
+            <tr><td class="term">Начало судебного разбирательства</td><td>не позднее 14 суток (30 — с присяжными)</td><td class="law">ч. 1 ст. 233</td></tr>
+            <tr><td class="term">— не ранее</td><td>7 суток со дня вручения копии обвинительного заключения</td><td class="law">ч. 2 ст. 233</td></tr>
+            <tr><td class="term">Апелляционная жалоба / представление</td><td>10 суток</td><td class="law">ч. 1 ст. 389.4</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Сроки следственных действий</h2>
+        <table>
+          <thead><tr><th>Действие</th><th>Ограничение</th><th>Основание</th></tr></thead>
+          <tbody>
+            <tr><td class="term">Допрос (непрерывно)</td><td>не более 4 часов</td><td class="law">ч. 2 ст. 187</td></tr>
+            <tr><td class="term">Допрос (в течение дня)</td><td>не более 8 часов, перерыв не менее 1 часа</td><td class="law">ч. 3 ст. 187</td></tr>
+            <tr><td class="term">Допрос несовершеннолетнего подозреваемого / обвиняемого</td><td>без перерыва не более 2 часов, в день — не более 4 часов</td><td class="law">ч. 1 ст. 425</td></tr>
+            <tr><td class="term">Допрос малолетнего потерпевшего / свидетеля (до 7 лет)</td><td>без перерыва не более 30 мин, всего — не более 1 часа</td><td class="law">ч. 1 ст. 191</td></tr>
+            <tr><td class="term">Поручение о производстве следственных действий</td><td>исполняется не позднее 10 суток</td><td class="law">ч. 1 ст. 152</td></tr>
+            <tr><td class="term">Неотложные следственные действия</td><td>дело направляется не позднее 10 суток со дня возбуждения</td><td class="law">ч. 3 ст. 157</td></tr>
+            <tr><td class="term">Контроль и запись переговоров</td><td>до 6 месяцев</td><td class="law">ч. 5 ст. 186</td></tr>
+            <tr><td class="term">Получение информации о соединениях</td><td>до 6 месяцев</td><td class="law">ч. 4 ст. 186.1</td></tr>
+            <tr><td class="term">Уведомление судьи и прокурора о неотложном действии</td><td>не позднее 3 суток с момента начала</td><td class="law">ч. 5 ст. 165</td></tr>
+            <tr><td class="term">Обжалование постановления прокурора о возвращении дела</td><td>72 часа</td><td class="law">ч. 4 ст. 221</td></tr>
+            <tr><td class="term">Привод</td><td>не производится в ночное время (22:00–06:00), кроме неотложных случаев</td><td class="law">ч. 5 ст. 113</td></tr>
+            <tr><td class="term">Уведомление заёмщика / поклажедателя при выемке в ломбарде</td><td>3 дня</td><td class="law">ч. 6 ст. 183</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= СТАТЬИ ================= -->
+    <section id="articles">
+      <div class="card">
+        <h2>Ключевые статьи УПК РФ</h2>
+        <p class="sub">Быстрый доступ к нормам, которые применяются ежедневно</p>
+
+        <div class="acc">
+          <div class="acc-h">Только по судебному решению <span class="ar">▶</span></div>
+          <div class="acc-b">
+            <p>В соответствии с <span class="cite">ч. 2 ст. 29 УПК РФ</span> только суд, в том числе в ходе досудебного производства, правомочен принимать решения:</p>
+            <ul>
+              <li>об избрании меры пресечения в виде заключения под стражу, домашнего ареста, залога, запрета определённых действий;</li>
+              <li>о продлении срока содержания под стражей, домашнего ареста, залога, запрета определённых действий;</li>
+              <li>о временном помещении подозреваемого, обвиняемого, содержащегося под стражей, в медицинскую организацию, оказывающую психиатрическую помощь в стационарных условиях, и о продлении срока такого пребывания;</li>
+              <li>о помещении подозреваемого, обвиняемого, не находящегося под стражей, в медицинскую организацию для производства судебно-медицинской или судебно-психиатрической экспертизы;</li>
+              <li>о возмещении имущественного вреда;</li>
+              <li>о производстве осмотра жилища при отсутствии согласия проживающих в нём лиц;</li>
+              <li>о производстве обыска и (или) выемки в жилище;</li>
+              <li>о производстве выемки заложенной или сданной на хранение в ломбард вещи;</li>
+              <li>о производстве обыска, осмотра и выемки в отношении адвоката (ст. 450.1);</li>
+              <li>о производстве личного обыска, за исключением случаев, предусмотренных ст. 93;</li>
+              <li>о производстве выемки предметов и документов, содержащих государственную или иную охраняемую федеральным законом тайну, а также информацию о вкладах и счетах граждан в банках;</li>
+              <li>о наложении ареста на корреспонденцию, разрешении на её осмотр и выемку в учреждениях связи;</li>
+              <li>о наложении ареста на имущество, об установлении и продлении срока ареста;</li>
+              <li>о временном отстранении подозреваемого или обвиняемого от должности (ст. 114);</li>
+              <li>о реализации, утилизации или уничтожении вещественных доказательств, о безвозмездной передаче вещественных доказательств;</li>
+              <li>о контроле и записи телефонных и иных переговоров;</li>
+              <li>о получении информации о соединениях между абонентами и (или) абонентскими устройствами;</li>
+              <li>о разрешении отмены постановления о прекращении уголовного дела или уголовного преследования (ч. 1.1 ст. 214).</li>
+            </ul>
+            <div class="note blue">
+              <b>В неотложных случаях</b> (ч. 5 ст. 165 УПК РФ) осмотр жилища, обыск и выемка в жилище, личный обыск, выемка в ломбарде, наложение ареста на имущество (ч. 1 ст. 104.1 УК РФ) могут быть произведены на основании постановления следователя или дознавателя без судебного решения. Уведомить судью и прокурора — <b>не позднее 3 суток</b> с момента начала.
+            </div>
+          </div>
+        </div>
+
+        <div class="acc">
+          <div class="acc-h">Поводы и основания к возбуждению уголовного дела <span class="ar">▶</span></div>
+          <div class="acc-b">
+            <p><span class="cite">ст. 140 УПК РФ</span> — поводы:</p>
+            <ul>
+              <li>заявление о преступлении;</li>
+              <li>явка с повинной;</li>
+              <li>сообщение о готовящемся или совершённом преступлении, полученное из иных источников (рапорт — ст. 143);</li>
+              <li>постановление прокурора о направлении соответствующих материалов в орган предварительного расследования для решения вопроса об уголовном преследовании.</li>
+            </ul>
+            <p><b>Основание:</b> наличие достаточных данных, указывающих на признаки преступления.</p>
+            <p><span class="cite">ст. 145</span> — решения по результатам рассмотрения сообщения:</p>
+            <ul>
+              <li>о возбуждении уголовного дела;</li>
+              <li>об отказе в возбуждении уголовного дела;</li>
+              <li>о передаче сообщения по подследственности, а по делам частного обвинения — в суд.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="acc">
+          <div class="acc-h">Основания задержания подозреваемого <span class="ar">▶</span></div>
+          <div class="acc-b">
+            <p><span class="cite">ч. 1 ст. 91 УПК РФ</span> — орган дознания, дознаватель, следователь вправе задержать лицо по подозрению в совершении преступления, за которое может быть назначено наказание в виде лишения свободы, при наличии одного из оснований:</p>
+            <ul>
+              <li>лицо застигнуто при совершении преступления или непосредственно после его совершения;</li>
+              <li>потерпевшие или очевидцы укажут на данное лицо как на совершившее преступление;</li>
+              <li>на этом лице или его одежде, при нём или в его жилище обнаружены явные следы преступления.</li>
+            </ul>
+            <p><span class="cite">ч. 2 ст. 91</span> — при наличии иных данных лицо может быть задержано, если оно:</p>
+            <ul>
+              <li>пыталось скрыться;</li>
+              <li>не имеет постоянного места жительства;</li>
+              <li>не установлена его личность;</li>
+              <li>в суд направлено ходатайство об избрании меры пресечения в виде заключения под стражу.</li>
+            </ul>
+            <div class="note"><b>Освобождение:</b> по истечении 48 часов, если не избрана мера пресечения в виде заключения под стражу либо суд не продлил срок задержания (ч. 2 ст. 94).</div>
+          </div>
+        </div>
+
+        <div class="acc">
+          <div class="acc-h">Меры пресечения и основания их избрания <span class="ar">▶</span></div>
+          <div class="acc-b">
+            <p><span class="cite">ст. 98 УПК РФ</span> — меры пресечения:</p>
+            <ul>
+              <li>подписка о невыезде и надлежащем поведении;</li>
+              <li>личное поручительство;</li>
+              <li>наблюдение командования воинской части;</li>
+              <li>присмотр за несовершеннолетним подозреваемым или обвиняемым;</li>
+              <li>запрет определённых действий;</li>
+              <li>залог;</li>
+              <li>домашний арест;</li>
+              <li>заключение под стражу.</li>
+            </ul>
+            <p><span class="cite">ст. 97</span> — основания: достаточные основания полагать, что обвиняемый, подозреваемый:</p>
+            <ul>
+              <li>скроется от дознания, предварительного следствия или суда;</li>
+              <li>может продолжать заниматься преступной деятельностью;</li>
+              <li>может угрожать свидетелю, иным участникам уголовного судопроизводства, уничтожить доказательства либо иным путём воспрепятствовать производству по делу.</li>
+            </ul>
+            <p><span class="cite">ст. 99</span> — учитываются: тяжесть преступления, сведения о личности, возраст, состояние здоровья, семейное положение, род занятий и другие обстоятельства.</p>
+            <p><span class="cite">ст. 100</span> — избрание меры пресечения в отношении подозреваемого: обвинение должно быть предъявлено не позднее 10 суток с момента применения меры пресечения, а если подозреваемый был задержан, а затем заключён под стражу — в тот же срок с момента задержания. По делам о преступлениях, предусмотренных ст. 205, 205.1, 205.3–205.5, 206, 208, 209, 210, 210.1, 277, 278, 279, 281, 360 и 361 УК РФ — не позднее 45 суток.</p>
+          </div>
+        </div>
+
+        <div class="acc">
+          <div class="acc-h">Основания отказа в возбуждении дела и прекращения дела <span class="ar">▶</span></div>
+          <div class="acc-b">
+            <p><span class="cite">ч. 1 ст. 24 УПК РФ</span> — уголовное дело не может быть возбуждено, а возбуждённое подлежит прекращению:</p>
+            <ul>
+              <li>отсутствие события преступления;</li>
+              <li>отсутствие в деянии состава преступления;</li>
+              <li>истечение сроков давности уголовного преследования;</li>
+              <li>смерть подозреваемого или обвиняемого, за исключением случаев, когда производство необходимо для реабилитации умершего;</li>
+              <li>отсутствие заявления потерпевшего по делам частного и частно-публичного обвинения (кроме ч. 4 ст. 20), либо неявка частного обвинителя без уважительных причин;</li>
+              <li>отсутствие заключения суда о наличии признаков преступления либо согласия Совета Федерации, Государственной Думы, Конституционного Суда РФ, квалификационной коллегии судей (ст. 448).</li>
+            </ul>
+            <p><span class="cite">ч. 1 ст. 27</span> — основания прекращения уголовного преследования:</p>
+            <ul>
+              <li>непричастность подозреваемого или обвиняемого к совершению преступления;</li>
+              <li>прекращение уголовного дела по основаниям п. 1–6 ч. 1 ст. 24;</li>
+              <li>вследствие акта об амнистии;</li>
+              <li>наличие вступившего в законную силу приговора по тому же обвинению либо определения/постановления о прекращении дела по тому же обвинению;</li>
+              <li>наличие неотменённого постановления органа дознания, следователя или прокурора о прекращении дела по тому же обвинению либо об отказе в возбуждении;</li>
+              <li>отказ Государственной Думы в даче согласия на лишение неприкосновенности Президента РФ, прекратившего исполнение полномочий, и (или) отказ Совета Федерации.</li>
+            </ul>
+            <div class="note"><b>Важно:</b> прекращение по ряду оснований (п. 3, 6 ч. 1 ст. 24, ст. 25, 25.1, 28, 28.1, п. 3, 6 ч. 1 ст. 27) не допускается, если подозреваемый или обвиняемый возражает. В таком случае производство продолжается в обычном порядке (ч. 2 ст. 27).</div>
+          </div>
+        </div>
+
+        <div class="acc">
+          <div class="acc-h">Общие правила производства следственных действий <span class="ar">▶</span></div>
+          <div class="acc-b">
+            <p><span class="cite">ст. 164 УПК РФ</span>:</p>
+            <ul>
+              <li>следственные действия, предусмотренные ч. 3 ст. 178, ст. 179, 182 и 183, производятся на основании постановления следователя;</li>
+              <li>в случаях п. 4–9, 11 и 12 ч. 2 ст. 29 — на основании судебного решения;</li>
+              <li>производство в ночное время (с 22 до 6 часов по местному времени) не допускается, за исключением случаев, не терпящих отлагательства;</li>
+              <li>недопустимо применение насилия, угроз и иных незаконных мер, создание опасности для жизни и здоровья участников;</li>
+              <li>следователь удостоверяется в личности участников, разъясняет права, ответственность и порядок производства;</li>
+              <li>участники предупреждаются об ответственности по ст. 307 и 308 УК РФ;</li>
+              <li>могут применяться технические средства; перед началом следователь предупреждает об этом участников;</li>
+              <li>ведётся протокол в соответствии со ст. 166.</li>
+            </ul>
+            <div class="note"><b>ч. 4.1 ст. 164</b> — по делам о преступлениях в сфере предпринимательской деятельности не допускается необоснованное применение мер, которые могут привести к приостановлению законной деятельности юридических лиц или индивидуальных предпринимателей, в том числе необоснованное изъятие электронных носителей информации.</div>
+          </div>
+        </div>
+
+        <div class="acc">
+          <div class="acc-h">Протокол следственного действия <span class="ar">▶</span></div>
+          <div class="acc-b">
+            <p><span class="cite">ст. 166 УПК РФ</span> — протокол составляется в ходе следственного действия или непосредственно после его окончания. Должен содержать:</p>
+            <ul>
+              <li>место и дату производства следственного действия, время его начала и окончания с точностью до минуты;</li>
+              <li>должность, фамилию и инициалы лица, составившего протокол;</li>
+              <li>фамилию, имя и отчество каждого лица, участвовавшего в следственном действии, а в необходимых случаях — его адрес и другие данные о личности;</li>
+              <li>содержание следственного действия;</li>
+              <li>последовательность его производства;</li>
+              <li>сведения о применённых технических средствах, условиях и результатах их применения;</li>
+              <li>заявления и замечания участников;</li>
+              <li>подписи всех участников.</li>
+            </ul>
+            <p>Участники должны быть ознакомлены с протоколом; им разъясняется право делать замечания, подлежащие внесению в протокол.</p>
+            <div class="note"><b>ст. 167</b> — при отказе от подписания протокола следователь вносит соответствующую запись, удостоверяемую его подписью, а также подписями защитника, законного представителя, представителя или понятых. Лицу предоставляется возможность дать объяснение причин отказа.</div>
+          </div>
+        </div>
+
+        <div class="acc">
+          <div class="acc-h">Обстоятельства, подлежащие доказыванию <span class="ar">▶</span></div>
+          <div class="acc-b">
+            <p><span class="cite">ст. 73 УПК РФ</span> — при производстве по уголовному делу подлежат доказыванию:</p>
+            <ul>
+              <li>событие преступления (время, место, способ и другие обстоятельства);</li>
+              <li>виновность лица в совершении преступления, форма его вины и мотивы;</li>
+              <li>обстоятельства, характеризующие личность обвиняемого;</li>
+              <li>характер и размер вреда, причинённого преступлением;</li>
+              <li>обстоятельства, исключающие преступность и наказуемость деяния;</li>
+              <li>обстоятельства, смягчающие и отягчающие наказание;</li>
+              <li>обстоятельства, которые могут повлечь освобождение от уголовной ответственности и наказания;</li>
+              <li>обстоятельства, подтверждающие, что имущество, подлежащее конфискации, получено в результате совершения преступления или является доходами от него либо использовалось или предназначалось для использования в качестве орудия, оборудования или иного средства совершения преступления либо для финансирования терроризма, экстремистской деятельности, организованной группы, незаконного вооружённого формирования, преступного сообщества.</li>
+            </ul>
+            <p>Подлежат выявлению также обстоятельства, способствовавшие совершению преступления.</p>
+          </div>
+        </div>
+
+        <div class="acc">
+          <div class="acc-h">Недопустимые доказательства <span class="ar">▶</span></div>
+          <div class="acc-b">
+            <p><span class="cite">ст. 75 УПК РФ</span> — доказательства, полученные с нарушением требований УПК РФ, являются недопустимыми, не имеют юридической силы и не могут быть положены в основу обвинения.</p>
+            <p>К недопустимым относятся:</p>
+            <ul>
+              <li>показания подозреваемого, обвиняемого, данные в ходе досудебного производства в отсутствие защитника, включая случаи отказа от защитника, и не подтверждённые подозреваемым, обвиняемым в суде;</li>
+              <li>показания потерпевшего, свидетеля, основанные на догадке, предположении, слухе, а также показания свидетеля, который не может указать источник своей осведомлённости;</li>
+              <li>предметы, документы или сведения, входящие в производство адвоката по делам его доверителей (за исключениями ч. 1 ст. 81);</li>
+              <li>сведения о факте представления специальной декларации и её содержание (за исключениями);</li>
+              <li>иные доказательства, полученные с нарушением требований УПК РФ.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="acc">
+          <div class="acc-h">Подследственность: кто расследует <span class="ar">▶</span></div>
+          <div class="acc-b">
+            <p><span class="cite">ст. 151 УПК РФ</span> — предварительное следствие производится следователями:</p>
+            <ul>
+              <li><b>Следственного комитета РФ</b> — по тяжким и особо тяжким преступлениям против личности, преступлениям против государственной власти, интересов государственной службы, преступлениям, совершённым лицами, указанными в ст. 447, должностными лицами правоохранительных органов, военнослужащими, несовершеннолетними (по тяжким и особо тяжким);</li>
+              <li><b>органов ФСБ</b> — по преступлениям, посягающим на государственную безопасность, террористической направленности, контрабанде и др.;</li>
+              <li><b>органов внутренних дел</b> — по большинству общеуголовных преступлений.</li>
+            </ul>
+            <p>Дознание производится дознавателями органов внутренних дел, пограничных органов ФСБ, органов принудительного исполнения, органов государственного пожарного надзора, таможенных органов.</p>
+            <p><span class="cite">ч. 3 ст. 150</span> — дознание в общем порядке по делам о преступлениях, перечисленных в п. 1 ч. 3 ст. 150 УПК РФ, а также по иным преступлениям небольшой и средней тяжести — по письменному указанию прокурора.</p>
+            <div class="note"><b>Споры о подследственности</b> разрешает прокурор (ч. 8 ст. 151).</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ================= МАТЕРИАЛЫ ================= -->
+    <section id="materials">
+      <div class="card">
+        <h2>Общие материалы</h2>
+        <p class="sub">Файлы для всех категорий. Нажмите на файл — он откроется или скачается.</p>
+        <div class="matbox" data-cat="general"></div>
+      </div>
+    </section>
+
+
+    <!-- ================= Следователи МВД ================= -->
+    <section id="cat-mvd">
+      <div class="card">
+        <h2>Следователи МВД <span class="badge">ст. 151 УПК РФ</span></h2>
+        <p class="sub">Следователи органов внутренних дел.</p>
+        <div class="note blue"><b>Подследственность.</b> Предварительное следствие в органах внутренних дел производится по большинству общеуголовных преступлений (ст. 151 УПК РФ). Споры о подследственности разрешает прокурор (ч. 8 ст. 151).</div>
+        <p class="sub">Общие алгоритмы, сроки и статьи — в блоке «Общее» в меню слева.</p>
+        <h3>Материалы</h3>
+        <div class="matbox" data-cat="mvd"></div>
+      </div>
+    </section>
+
+    <!-- ================= Следователи СК ================= -->
+    <section id="cat-sk">
+      <div class="card">
+        <h2>Следователи СК <span class="badge">ст. 151 УПК РФ</span></h2>
+        <p class="sub">Следователи Следственного комитета РФ.</p>
+        <div class="note blue"><b>Подследственность.</b> Следователи СК РФ ведут дела о тяжких и особо тяжких преступлениях против личности, преступлениях против государственной власти и интересов государственной службы, а также о преступлениях, совершённых лицами по ст. 447 УПК РФ, должностными лицами правоохранительных органов, военнослужащими и несовершеннолетними (по тяжким и особо тяжким) — см. ст. 151 УПК РФ.</div>
+        <p class="sub">Общие алгоритмы, сроки и статьи — в блоке «Общее» в меню слева.</p>
+        <h3>Материалы</h3>
+        <div class="matbox" data-cat="sk"></div>
+      </div>
+    </section>
+
+    <!-- ================= Следователи ФСБ ================= -->
+    <section id="cat-fsb">
+      <div class="card">
+        <h2>Следователи ФСБ <span class="badge">ст. 151 УПК РФ</span></h2>
+        <p class="sub">Следователи органов федеральной службы безопасности.</p>
+        <div class="note blue"><b>Подследственность.</b> Следователи органов ФСБ расследуют преступления, посягающие на государственную безопасность, террористической направленности, контрабанду и др. (ст. 151 УПК РФ).</div>
+        <p class="sub">Общие алгоритмы, сроки и статьи — в блоке «Общее» в меню слева.</p>
+        <h3>Материалы</h3>
+        <div class="matbox" data-cat="fsb"></div>
+      </div>
+    </section>
+
+    <!-- ================= Дознаватели ================= -->
+    <section id="cat-dozn">
+      <div class="card">
+        <h2>Дознаватели <span class="badge">ст. 150, 223 УПК РФ</span></h2>
+        <p class="sub">Дознаватели органов дознания.</p>
+        <div class="note blue"><b>Кто производит дознание.</b> Дознаватели органов внутренних дел, пограничных органов ФСБ, органов принудительного исполнения, органов государственного пожарного надзора, таможенных органов (ст. 151 УПК РФ).<br><br><b>Сроки.</b> Дознание — 30 суток со дня возбуждения дела, продление прокурором до 30 суток, далее до 6 и до 12 месяцев (ст. 223). Дознание в сокращённой форме — 15 суток, продление до 20 суток (ст. 226.6). Подробнее — в разделе «Сроки и калькулятор».</div>
+        <p class="sub">Общие алгоритмы, сроки и статьи — в блоке «Общее» в меню слева.</p>
+        <h3>Материалы</h3>
+        <div class="matbox" data-cat="dozn"></div>
+      </div>
+    </section>
+
+    <!-- ================= ПАМЯТКИ ================= -->
+    <section id="memo">
+      <div class="card">
+        <h2>Памятки и типичные ошибки</h2>
+        <p class="sub">То, что чаще всего становится основанием для возвращения дела или признания доказательств недопустимыми</p>
+
+        <h3>Топ-10 процессуальных нарушений</h3>
+        <ol class="plain">
+          <li><b>Неознакомление с постановлением о назначении экспертизы.</b> Следователь обязан ознакомить подозреваемого, обвиняемого, его защитника, потерпевшего, его представителя с постановлением и разъяснить права по ст. 198 УПК РФ (ч. 3 ст. 195).</li>
+          <li><b>Отсутствие судебного решения там, где оно обязательно.</b> См. ч. 2 ст. 29 УПК РФ. Особенно часто — обыск в жилище, выемка документов, содержащих информацию о вкладах и счетах.</li>
+          <li><b>Ненадлежащее уведомление при неотложном действии.</b> При производстве неотложного следственного действия по ч. 5 ст. 165 УПК РФ необходимо уведомить судью и прокурора не позднее 3 суток с момента начала.</li>
+          <li><b>Нарушение права на защиту.</b> Участие защитника обязательно в случаях, предусмотренных ст. 51 УПК РФ. Отказ от защитника не обязателен для следователя (ч. 2 ст. 52).</li>
+          <li><b>Проведение допроса без разъяснения прав.</b> При первом допросе обвиняемого разъясняются права по ст. 47; при последующих без защитника — повторно п. 3, 4, 7 и 8 ч. 4 ст. 47.</li>
+          <li><b>Превышение продолжительности допроса.</b> Непрерывно — не более 4 часов, в течение дня — не более 8 часов (ст. 187).</li>
+          <li><b>Ненадлежащее составление протокола.</b> Отсутствие подписей, сведений о технических средствах, замечаний участников — основание для признания доказательства недопустимым.</li>
+          <li><b>Нарушение сроков.</b> См. таблицу сроков; продление — только в установленном порядке.</li>
+          <li><b>Неразъяснение оснований прекращения дела и права возражать.</b> Обязательно в соответствии с ч. 3 ст. 27, ч. 3 ст. 28, ч. 4 ст. 28.1 УПК РФ.</li>
+          <li><b>Нереагирование на ходатайства.</b> Каждое ходатайство должно быть рассмотрено в порядке гл. 15 УПК РФ; при полном или частичном отказе выносится постановление (ст. 159).</li>
+        </ol>
+
+        <h3>Правила составления протокола следственного действия</h3>
+        <ul class="plain">
+          <li>Протокол составляется в ходе действия или непосредственно после его окончания (ст. 166).</li>
+          <li>Время начала и окончания указывается с точностью до минуты.</li>
+          <li>Указываются все участники с данными о личности.</li>
+          <li>Фиксируются применённые технические средства и их результаты.</li>
+          <li>Все заявления и замечания участников заносятся в протокол.</li>
+          <li>Участники знакомятся с протоколом; им разъясняется право на замечания.</li>
+          <li>При отказе от подписи — запись по ст. 167 УПК РФ.</li>
+          <li>Копия протокола вручается лицу, в помещении которого произведено действие (ч. 15 ст. 182).</li>
+        </ul>
+
+        <h3>Что нужно помнить о сроках</h3>
+        <div class="note blue">
+          <b>Правило «7 суток».</b> Ходатайство о продлении срока содержания под стражей представляется в суд не позднее чем за 7 суток до его истечения (ч. 8 ст. 109 УПК РФ). Ходатайство о продлении срока ареста имущества — не позднее чем за 7 суток (ч. 2 ст. 115.1).
+        </div>
+        <div class="note blue">
+          <b>Правило «30 суток».</b> Материалы оконченного расследованием дела должны быть предъявлены обвиняемому, содержащемуся под стражей, и его защитнику не позднее чем за 30 суток до окончания предельного срока содержания под стражей (ч. 5 ст. 109 УПК РФ).
+        </div>
+        <div class="note blue">
+          <b>Правило «8 часов».</b> Постановление о возбуждении ходатайства об избрании заключения под стражу и материалы должны быть представлены судье не позднее чем за 8 часов до истечения срока задержания (ч. 3 ст. 108 УПК РФ).
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Права участников — краткая шпаргалка</h2>
+        <h4>Подозреваемый (ст. 46 УПК РФ)</h4>
+        <ul class="plain">
+          <li>знать, в чём подозревается, получить копию постановления о возбуждении дела либо копию протокола задержания либо копию постановления о применении меры пресечения;</li>
+          <li>давать объяснения и показания либо отказаться;</li>
+          <li>пользоваться помощью защитника с момента, предусмотренного п. 2–3.1 ч. 3 ст. 49, иметь свидание с ним наедине до первого допроса;</li>
+          <li>с момента избрания меры пресечения в виде заключения под стражу или домашнего ареста — свидания с нотариусом без ограничения числа и продолжительности;</li>
+          <li>представлять доказательства, заявлять ходатайства и отводы;</li>
+          <li>давать показания на родном языке, пользоваться помощью переводчика бесплатно;</li>
+          <li>знакомиться с протоколами следственных действий, участвовать в них с разрешения следователя;</li>
+          <li>приносить жалобы;</li>
+          <li>защищаться иными средствами и способами, не запрещёнными УПК РФ.</li>
+        </ul>
+
+        <h4>Потерпевший (ст. 42 УПК РФ)</h4>
+        <ul class="plain">
+          <li>знать о предъявленном обвинении;</li>
+          <li>давать показания; отказаться свидетельствовать против себя, супруга и близких родственников;</li>
+          <li>представлять доказательства, заявлять ходатайства и отводы;</li>
+          <li>пользоваться помощью переводчика бесплатно, иметь представителя;</li>
+          <li>участвовать в следственных действиях, знакомиться с протоколами;</li>
+          <li>знакомиться с постановлением о назначении экспертизы и заключением эксперта;</li>
+          <li>знакомиться по окончании расследования со всеми материалами дела, выписывать сведения, снимать копии;</li>
+          <li>получать копии процессуальных документов;</li>
+          <li>участвовать в судебном разбирательстве, поддерживать обвинение, выступать в прениях;</li>
+          <li>приносить жалобы, обжаловать приговор;</li>
+          <li>ходатайствовать о применении мер безопасности;</li>
+          <li>получать информацию о прибытии осуждённого к месту отбывания наказания и об освобождении (по постановлению суда).</li>
+        </ul>
+
+        <h4>Свидетель (ст. 56 УПК РФ)</h4>
+        <ul class="plain">
+          <li>отказаться свидетельствовать против себя, супруга и близких родственников;</li>
+          <li>давать показания на родном языке, пользоваться помощью переводчика бесплатно;</li>
+          <li>заявлять отвод переводчику;</li>
+          <li>заявлять ходатайства и приносить жалобы;</li>
+          <li>являться на допрос с адвокатом;</li>
+          <li>ходатайствовать о применении мер безопасности.</li>
+        </ul>
+        <div class="note red">
+          <b>Не подлежат допросу в качестве свидетелей:</b> судья, присяжный заседатель (об обстоятельствах дела); адвокат, защитник (об обстоятельствах, ставших известными в связи с оказанием юридической помощи); священнослужитель (об обстоятельствах из исповеди); член Совета Федерации, депутат Государственной Думы без их согласия; должностное лицо налогового органа (о специальной декларации); арбитр (третейский судья); Уполномоченный по правам человека без его согласия (ч. 3 ст. 56 УПК РФ).
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Справочник составлен на основе УПК РФ (ФЗ № 174-ФЗ от 18.12.2001), УК РФ (ФЗ № 63-ФЗ от 13.06.1996).<br>
+  Материал носит информационно-справочный характер. Перед принятием процессуального решения сверяйтесь с действующей редакцией нормативных актов.
+</footer>
+
+<script>
+/* ============================================================
+   1. АЛГОРИТМЫ
+   ============================================================ */
+const ALGOS = [
+{
+  id:'a1', title:'Проверка сообщения о преступлении', law:'ст. 140–145 УПК РФ',
+  steps:[
+    {t:'Принять и зарегистрировать сообщение о преступлении в КУСП', r:'ст. 144 ч. 1'},
+    {t:'Выдать заявителю документ о принятии сообщения с указанием данных о принявшем лице, даты и времени', r:'ст. 144 ч. 4'},
+    {t:'Разъяснить участникам их права и обязанности, обеспечить возможность их осуществления', r:'ст. 144 ч. 1.1'},
+    {t:'Предупредить заявителя об уголовной ответственности за заведомо ложный донос', r:'ст. 306 УК РФ'},
+    {t:'Проверить сообщение: получить объяснения, образцы для сравнительного исследования, истребовать документы и предметы', r:'ст. 144 ч. 1'},
+    {t:'Провести осмотр места происшествия, документов, предметов, трупов; освидетельствование', r:'ст. 144 ч. 1', w:1},
+    {t:'Назначить судебную экспертизу, при необходимости — принять участие в её производстве', r:'ст. 144 ч. 1'},
+    {t:'Дать органу дознания обязательное для исполнения письменное поручение о проведении ОРМ', r:'ст. 144 ч. 1'},
+    {t:'При необходимости — продлить срок проверки до 10 суток (руководитель СО / начальник ОД)', r:'ст. 144 ч. 3'},
+    {t:'При необходимости ревизий, экспертиз, исследований, ОРМ — продлить до 30 суток', r:'ст. 144 ч. 3', w:1},
+    {t:'Принять одно из решений: возбудить дело / отказать / передать по подследственности', r:'ст. 145 ч. 1'},
+    {t:'Сообщить заявителю о принятом решении, разъяснить право и порядок обжалования', r:'ст. 145 ч. 2'},
+    {t:'Направить копию постановления о передаче сообщения по подследственности прокурору в течение 24 часов', r:'ст. 145 ч. 2'},
+    {t:'Принять меры по сохранению следов преступления при передаче сообщения по подследственности', r:'ст. 145 ч. 3'}
+  ]
+},
+{
+  id:'a2', title:'Задержание подозреваемого', law:'ст. 91, 92, 94, 96, 108 УПК РФ',
+  steps:[
+    {t:'Проверить наличие основания задержания (застигнут при совершении / указание потерпевших или очевидцев / явные следы преступления)', r:'ст. 91 ч. 1'},
+    {t:'Либо проверить наличие иных данных: пытался скрыться, нет постоянного места жительства, не установлена личность, направлено ходатайство о заключении под стражу', r:'ст. 91 ч. 2'},
+    {t:'Составить протокол задержания не позднее 3 часов с момента доставления', r:'ст. 92 ч. 1', w:1},
+    {t:'Сделать в протоколе отметку о разъяснении прав, предусмотренных ст. 46 УПК РФ', r:'ст. 92 ч. 1'},
+    {t:'Обеспечить участие защитника при составлении протокола, если он участвует с момента фактического задержания', r:'ст. 92 ч. 1.1'},
+    {t:'Указать в протоколе дату, время, место, основания и мотивы задержания, результаты личного обыска', r:'ст. 92 ч. 2'},
+    {t:'Сообщить прокурору в письменном виде в течение 12 часов с момента задержания', r:'ст. 92 ч. 3'},
+    {t:'Предоставить подозреваемому право на один телефонный разговор не позднее 3 часов с момента доставления', r:'ст. 96 ч. 1'},
+    {t:'Уведомить близких родственников, родственников или близких лиц', r:'ст. 96 ч. 1'},
+    {t:'Уведомить командование воинской части (если военнослужащий) / начальника органа (если сотрудник ОВД)', r:'ст. 96 ч. 2'},
+    {t:'Уведомить секретаря Общественной палаты РФ и общественную наблюдательную комиссию (если член ОНК)', r:'ст. 96 ч. 2.1'},
+    {t:'Уведомить адвокатскую палату субъекта РФ (если адвокат)', r:'ст. 96 ч. 2.2'},
+    {t:'Уведомить посольство или консульство иностранного государства (если иностранный гражданин)', r:'ст. 96 ч. 3'},
+    {t:'Обеспечить свидание с защитником наедине и конфиденциально до первого допроса (не менее 2 часов)', r:'ст. 92 ч. 4'},
+    {t:'Допросить подозреваемого не позднее 24 часов с момента фактического задержания', r:'ст. 46 ч. 2', w:1},
+    {t:'Решить вопрос о мере пресечения до истечения 48 часов', r:'ст. 94 ч. 2'},
+    {t:'При необходимости заключения под стражу — направить ходатайство в суд не позднее чем за 8 часов до истечения срока задержания', r:'ст. 108 ч. 3'},
+    {t:'При освобождении — вынести постановление и выдать справку с указанием оснований задержания и освобождения', r:'ст. 94 ч. 5'}
+  ]
+},
+{
+  id:'a3', title:'Избрание меры пресечения', law:'ст. 97–101, 108–110 УПК РФ',
+  steps:[
+    {t:'Установить наличие оснований, предусмотренных ст. 97 УПК РФ', r:'ст. 97'},
+    {t:'Учесть обстоятельства: тяжесть преступления, личность, возраст, состояние здоровья, семейное положение, род занятий', r:'ст. 99'},
+    {t:'Определить вид меры пресечения, достаточный для обеспечения производства по делу', r:'ст. 98'},
+    {t:'Вынести постановление о возбуждении перед судом ходатайства (для мер, требующих судебного решения)', r:'ст. 101, 108'},
+    {t:'Изложить в постановлении мотивы и основания, в силу которых возникла необходимость в избрании меры', r:'ст. 108 ч. 3'},
+    {t:'Получить согласие руководителя следственного органа (для следователя) или прокурора (для дознавателя)', r:'ст. 108 ч. 3'},
+    {t:'Приложить материалы, подтверждающие обоснованность ходатайства', r:'ст. 108 ч. 3'},
+    {t:'Учесть, что для заключения под стражу необходимо наказание в виде лишения свободы свыше 3 лет, а также невозможность применения иной меры', r:'ст. 108 ч. 1'},
+    {t:'Проверить исключения: для несовершеннолетних — только тяжкое или особо тяжкое, в исключительных случаях — средней тяжести', r:'ст. 108 ч. 2'},
+    {t:'Проверить запрет на заключение под стражу по экономическим составам при отсутствии обстоятельств п. 1–4 ч. 1 ст. 108', r:'ст. 108 ч. 1.1'},
+    {t:'Учесть, что обвинение подозреваемому должно быть предъявлено не позднее 10 суток с момента применения меры (45 суток — по отдельным составам)', r:'ст. 100', w:1},
+    {t:'Вручить копию постановления или определения лицу, в отношении которого оно вынесено, а также защитнику или законному представителю по их просьбе', r:'ст. 101 ч. 2'},
+    {t:'Разъяснить порядок обжалования решения об избрании меры пресечения', r:'ст. 101 ч. 3'},
+    {t:'Отменить или изменить меру пресечения, когда в ней отпадает необходимость или изменяются основания', r:'ст. 110'}
+  ]
+},
+{
+  id:'a4', title:'Привлечение в качестве обвиняемого и предъявление обвинения', law:'ст. 171–175 УПК РФ',
+  steps:[
+    {t:'Убедиться в наличии достаточных доказательств, дающих основания для обвинения лица в совершении преступления', r:'ст. 171 ч. 1'},
+    {t:'Вынести постановление о привлечении в качестве обвиняемого с указанием даты, места, кем составлено, данных лица, описания преступления, статьи УК РФ, решения', r:'ст. 171 ч. 2', w:1},
+    {t:'При обвинении в нескольких преступлениях — указать, какие деяния вменяются по каждой норме', r:'ст. 171 ч. 3'},
+    {t:'При привлечении нескольких лиц — вынести постановление в отношении каждого', r:'ст. 171 ч. 4'},
+    {t:'Известить обвиняемого о дне предъявления обвинения, разъяснить право пригласить защитника', r:'ст. 172 ч. 2'},
+    {t:'Известить обвиняемого, содержащегося под стражей, через администрацию места содержания', r:'ст. 172 ч. 3'},
+    {t:'Предъявить обвинение не позднее 3 суток со дня вынесения постановления в присутствии защитника', r:'ст. 172 ч. 1', w:1},
+    {t:'Удостовериться в личности обвиняемого, объявить постановление, разъяснить существо обвинения и права по ст. 47', r:'ст. 172 ч. 5'},
+    {t:'Вручить обвиняемому и его защитнику копию постановления', r:'ст. 172 ч. 8'},
+    {t:'Направить копию постановления прокурору', r:'ст. 172 ч. 9'},
+    {t:'Допросить обвиняемого немедленно после предъявления обвинения', r:'ст. 173 ч. 1'},
+    {t:'Выяснить, признаёт ли он себя виновным, желает ли дать показания и на каком языке', r:'ст. 173 ч. 2'},
+    {t:'Составить протокол допроса с указанием данных о личности', r:'ст. 174'},
+    {t:'При изменении обвинения — вынести новое постановление и предъявить в порядке ст. 172', r:'ст. 175 ч. 1'},
+    {t:'При неподтверждении части обвинения — прекратить уголовное преследование в соответствующей части, уведомить обвиняемого, защитника, прокурора', r:'ст. 175 ч. 2'}
+  ]
+},
+{
+  id:'a5', title:'Производство следственного действия (общие правила)', law:'ст. 164, 166, 167 УПК РФ',
+  steps:[
+    {t:'Определить цель и основание следственного действия', r:'ст. 164'},
+    {t:'Проверить, требуется ли судебное решение (ч. 2 ст. 29 УПК РФ)', r:'ст. 29 ч. 2', w:1},
+    {t:'При необходимости — вынести постановление о возбуждении ходатайства и получить согласие руководителя СО / прокурора', r:'ст. 165 ч. 1'},
+    {t:'При необходимости — вынести постановление следователя (для действий по ч. 1 ст. 164)', r:'ст. 164 ч. 1'},
+    {t:'Убедиться, что действие не производится в ночное время (22:00–06:00), кроме неотложных случаев', r:'ст. 164 ч. 3'},
+    {t:'Удостовериться в личности участников, разъяснить права, обязанности, ответственность и порядок производства', r:'ст. 164 ч. 5'},
+    {t:'Предупредить потерпевшего, свидетеля, специалиста, эксперта, переводчика об ответственности по ст. 307 и 308 УК РФ', r:'ст. 164 ч. 5'},
+    {t:'Предупредить лицо, в отношении которого выделено дело в связи с досудебным соглашением, о последствиях по гл. 40.1', r:'ст. 164 ч. 5'},
+    {t:'При применении технических средств — предупредить участников перед началом', r:'ст. 164 ч. 6'},
+    {t:'При необходимости — привлечь должностное лицо органа, осуществляющего ОРД, с отметкой в протоколе', r:'ст. 164 ч. 7'},
+    {t:'Составить протокол в соответствии со ст. 166 и 167', r:'ст. 166'},
+    {t:'Ознакомить участников с протоколом, обеспечить внесение замечаний', r:'ст. 166 ч. 6–8'},
+    {t:'При отказе от подписи — внести запись, удостоверяемую подписями следователя и иных лиц', r:'ст. 167', w:1}
+  ]
+},
+{
+  id:'a6', title:'Обыск и выемка', law:'ст. 182, 183, 165 УПК РФ',
+  steps:[
+    {t:'Установить наличие достаточных данных полагать, что в каком-либо месте или у какого-либо лица могут находиться орудия, предметы, документы, ценности, имеющие значение для дела', r:'ст. 182 ч. 1'},
+    {t:'Для выемки — убедиться, что точно известно, где и у кого находятся подлежащие изъятию предметы и документы', r:'ст. 183 ч. 1'},
+    {t:'Вынести постановление о производстве обыска (выемки)', r:'ст. 182 ч. 2'},
+    {t:'Обыск в жилище — только на основании судебного решения в порядке ст. 165', r:'ст. 182 ч. 3', w:1},
+    {t:'Выемка предметов и документов с государственной тайной, информации о вкладах и счетах, вещей в ломбарде — на основании судебного решения', r:'ст. 183 ч. 3'},
+    {t:'В неотложных случаях — произвести на основании постановления следователя, уведомить судью и прокурора не позднее 3 суток', r:'ст. 165 ч. 5', w:1},
+    {t:'До начала — предъявить постановление (или судебное решение)', r:'ст. 182 ч. 4'},
+    {t:'Предложить добровольно выдать подлежащие изъятию предметы, документы, ценности', r:'ст. 182 ч. 5'},
+    {t:'Обеспечить участие лица, в помещении которого производится обыск, либо совершеннолетних членов его семьи', r:'ст. 182 ч. 11'},
+    {t:'Обеспечить право присутствия защитника, а также адвоката того лица, в помещении которого производится обыск', r:'ст. 182 ч. 11'},
+    {t:'При участии понятых — разъяснить им цель, права и ответственность по ст. 60', r:'ст. 170 ч. 4'},
+    {t:'Изъять предметы и документы, изъятые из оборота', r:'ст. 182 ч. 9'},
+    {t:'Предъявить изъятое понятым и другим присутствующим лицам, упаковать и опечатать', r:'ст. 182 ч. 10'},
+    {t:'Принять меры к недопущению оглашения обстоятельств частной жизни', r:'ст. 182 ч. 7'},
+    {t:'Составить протокол с точным указанием количества, меры, веса, индивидуальных признаков и по возможности стоимости', r:'ст. 182 ч. 13'},
+    {t:'Вручить копию протокола лицу, в помещении которого произведён обыск, либо совершеннолетнему члену семьи', r:'ст. 182 ч. 15'},
+    {t:'При выемке в ломбарде — уведомить заёмщика или поклажедателя в трёхдневный срок', r:'ст. 183 ч. 6'}
+  ]
+},
+{
+  id:'a7', title:'Наложение ареста на имущество', law:'ст. 115, 115.1, 165 УПК РФ',
+  steps:[
+    {t:'Установить цель: обеспечение исполнения приговора в части гражданского иска, взыскания штрафа, других имущественных взысканий или возможной конфискации', r:'ст. 115 ч. 1'},
+    {t:'Вынести постановление о возбуждении перед судом ходатайства', r:'ст. 115 ч. 1'},
+    {t:'Получить согласие руководителя следственного органа (для следователя) или прокурора (для дознавателя)', r:'ст. 115 ч. 1'},
+    {t:'Указать конкретные фактические обстоятельства, на основании которых принимается решение', r:'ст. 115 ч. 1', w:1},
+    {t:'Установить ограничения, связанные с владением, пользованием, распоряжением имуществом', r:'ст. 115 ч. 1'},
+    {t:'Указать срок, на который налагается арест, с учётом срока предварительного расследования и времени для передачи дела в суд', r:'ст. 115 ч. 3'},
+    {t:'Проверить, что имущество не относится к тому, на которое не может быть обращено взыскание по ГПК РФ', r:'ст. 115 ч. 4'},
+    {t:'При необходимости — привлечь специалиста', r:'ст. 115 ч. 5'},
+    {t:'Составить протокол по ст. 166 и 167; при отсутствии имущества — указать об этом', r:'ст. 115 ч. 8'},
+    {t:'Вручить копию протокола лицу, на имущество которого наложен арест, разъяснить право обжалования', r:'ст. 115 ч. 8'},
+    {t:'При наложении ареста на денежные средства на счетах — операции прекращаются полностью или частично в пределах арестованных средств', r:'ст. 115 ч. 7'},
+    {t:'Для продления срока ареста имущества лиц, не являющихся подозреваемыми (обвиняемыми), — возбудить ходатайство не позднее чем за 7 суток до истечения срока', r:'ст. 115.1 ч. 2', w:1},
+    {t:'Отменить арест при отпадении необходимости либо по истечении установленного срока', r:'ст. 115 ч. 9'}
+  ]
+},
+{
+  id:'a8', title:'Назначение и производство судебной экспертизы', law:'ст. 195–207 УПК РФ',
+  steps:[
+    {t:'Признать необходимым назначение судебной экспертизы', r:'ст. 195 ч. 1'},
+    {t:'Вынести постановление с указанием оснований, данных эксперта или экспертного учреждения, вопросов, предоставляемых материалов', r:'ст. 195 ч. 1'},
+    {t:'Проверить, требуется ли помещение лица в медицинскую организацию (тогда — ходатайство перед судом)', r:'ст. 195 ч. 1, ст. 203'},
+    {t:'Ознакомить с постановлением подозреваемого, обвиняемого, защитника, потерпевшего, представителя; разъяснить права по ст. 198', r:'ст. 195 ч. 3', w:1},
+    {t:'Составить протокол, подписываемый следователем и ознакомленными лицами', r:'ст. 195 ч. 3'},
+    {t:'Учесть, что экспертиза в отношении потерпевшего (кроме п. 2, 4, 5 ст. 196) и свидетеля — с их согласия или согласия законных представителей', r:'ст. 195 ч. 4'},
+    {t:'Проверить обязательные случаи назначения экспертизы: причины смерти, характер и степень вреда здоровью, психическое или физическое состояние, возраст', r:'ст. 196', w:1},
+    {t:'Направить материалы руководителю экспертного учреждения или вручить постановление эксперту', r:'ст. 199'},
+    {t:'Разъяснить эксперту права и ответственность по ст. 57', r:'ст. 199 ч. 2, 4'},
+    {t:'Получить заключение эксперта, проверить его полноту и ясность', r:'ст. 204'},
+    {t:'При необходимости — допросить эксперта для разъяснения заключения', r:'ст. 205'},
+    {t:'Предъявить заключение потерпевшему, представителю, подозреваемому, обвиняемому, защитнику; разъяснить право ходатайствовать о дополнительной или повторной экспертизе', r:'ст. 206', w:1},
+    {t:'При недостаточной ясности или полноте — назначить дополнительную экспертизу; при сомнениях в обоснованности — повторную', r:'ст. 207'}
+  ]
+},
+{
+  id:'a9', title:'Окончание предварительного следствия с обвинительным заключением', law:'ст. 215–220 УПК РФ',
+  steps:[
+    {t:'Убедиться, что все следственные действия произведены, а доказательства достаточны для составления обвинительного заключения', r:'ст. 215 ч. 1'},
+    {t:'Уведомить обвиняемого об окончании следственных действий, разъяснить право на ознакомление с материалами дела лично и с помощью защитника', r:'ст. 215 ч. 1', w:1},
+    {t:'Составить протокол уведомления в соответствии со ст. 166 и 167', r:'ст. 215 ч. 1'},
+    {t:'Уведомить защитника, законного представителя обвиняемого, а также потерпевшего, гражданского истца, гражданского ответчика и их представителей', r:'ст. 215 ч. 2'},
+    {t:'При невозможности явки защитника — отложить ознакомление на срок не более 5 суток', r:'ст. 215 ч. 3'},
+    {t:'Ознакомить потерпевшего, гражданского истца, гражданского ответчика и их представителей с материалами дела (полностью или частично)', r:'ст. 216'},
+    {t:'Предъявить обвиняемому и его защитнику подшитые и пронумерованные материалы дела, а также вещественные доказательства', r:'ст. 217 ч. 1'},
+    {t:'Обеспечить возможность выписывать любые сведения, снимать копии с документов, в том числе с помощью технических средств', r:'ст. 217 ч. 2'},
+    {t:'При явном затягивании ознакомления — обратиться в суд в порядке ст. 125 для установления определённого срока', r:'ст. 217 ч. 3'},
+    {t:'Выяснить, какие имеются ходатайства и иные заявления; выяснить, каких свидетелей, экспертов, специалистов вызвать в суд', r:'ст. 217 ч. 4'},
+    {t:'Разъяснить право ходатайствовать о рассмотрении дела судом с участием присяжных, коллегией из трёх судей, в особом порядке, о проведении предварительных слушаний', r:'ст. 217 ч. 5'},
+    {t:'Составить протокол ознакомления с материалами дела, указать даты начала и окончания, заявленные ходатайства и заявления', r:'ст. 218'},
+    {t:'Разрешить заявленные ходатайства; при удовлетворении — дополнить материалы дела и ознакомить с ними участников', r:'ст. 219', w:1},
+    {t:'Составить обвинительное заключение с указанием всех предусмотренных ст. 220 сведений', r:'ст. 220 ч. 1'},
+    {t:'Приложить список лиц, подлежащих вызову в судебное заседание, и справку о сроках, мерах пресечения, вещественных доказательствах, гражданском иске, процессуальных издержках', r:'ст. 220 ч. 4–5'},
+    {t:'Направить уголовное дело с согласия руководителя следственного органа прокурору', r:'ст. 220 ч. 6'}
+  ]
+},
+{
+  id:'a10', title:'Прекращение уголовного дела', law:'ст. 24–28.1, 212–214 УПК РФ',
+  steps:[
+    {t:'Установить наличие основания прекращения (ст. 24, 25, 25.1, 27, 28, 28.1)', r:'ст. 24–28.1'},
+    {t:'Проверить, требуется ли согласие обвиняемого или потерпевшего на прекращение', r:'ст. 27 ч. 2', w:1},
+    {t:'Разъяснить лицу основания прекращения и право возражать против прекращения уголовного преследования', r:'ст. 27 ч. 3, ст. 28 ч. 3, ст. 28.1 ч. 4', w:1},
+    {t:'Вынести постановление о прекращении уголовного дела с указанием всех реквизитов, предусмотренных ст. 213', r:'ст. 213 ч. 2'},
+    {t:'Отразить в постановлении согласие обвиняемого или потерпевшего, если оно требуется', r:'ст. 213 ч. 3'},
+    {t:'Направить копию постановления прокурору', r:'ст. 213 ч. 1'},
+    {t:'Вручить или направить копию постановления лицу, в отношении которого прекращено преследование, потерпевшему, гражданскому истцу и гражданскому ответчику', r:'ст. 213 ч. 4'},
+    {t:'Разъяснить потерпевшему и гражданскому истцу право предъявить иск в порядке гражданского судопроизводства', r:'ст. 213 ч. 4'},
+    {t:'Отменить меры пресечения, арест имущества, корреспонденции, временное отстранение от должности, контроль и запись переговоров', r:'ст. 213 ч. 2'},
+    {t:'Решить вопрос о вещественных доказательствах', r:'ст. 213 ч. 2'},
+    {t:'При прекращении по основаниям, дающим право на реабилитацию, — принять меры по реабилитации (гл. 18)', r:'ст. 212 ч. 2', w:1},
+    {t:'По делам о налоговых преступлениях — направить копию постановления в налоговый орган или территориальный орган страховщика', r:'ст. 213 ч. 4'},
+    {t:'Решить вопрос о дальнейшем применении мер безопасности либо об их отмене', r:'ст. 213 ч. 6'},
+    {t:'Учесть, что отмена постановления о прекращении по истечении одного года допускается только на основании судебного решения', r:'ст. 214 ч. 1.1', w:1}
+  ]
+}
+];
+
+/* ============================================================
+   3. РЕНДЕР АЛГОРИТМОВ
+   ============================================================ */
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+const algoBox = document.getElementById('algoContainer');
+
+ALGOS.forEach((a, idx) => {
+  const el = document.createElement('div');
+  el.className = 'algo';
+  el.dataset.id = a.id;
+  el.innerHTML = `
+    <div class="algo-head">
+      <div class="num">${idx+1}</div>
+      <div class="t">${esc(a.title)}</div>
+      <div class="law">${esc(a.law)}</div>
+      <div class="arrow">▶</div>
+    </div>
+    <div class="algo-body">
+      <div class="progress"><i></i></div>
+      ${a.steps.map((s,i)=>`
+        <label class="step ${s.w?'warn':''}" data-key="${a.id}_${i}">
+          <span class="box"></span>
+          <span class="txt">${esc(s.t)}</span>
+          ${s.r?`<span class="ref">${esc(s.r)}</span>`:''}
+        </label>`).join('')}
+      <div class="algo-foot">
+        <button class="btn" data-clear="${a.id}">Сбросить шаги</button>
+        <button class="btn" data-all="${a.id}">Отметить все</button>
+      </div>
+    </div>`;
+  algoBox.appendChild(el);
+});
+
+/* --- открытие/закрытие --- */
+algoBox.addEventListener('click', e => {
+  const head = e.target.closest('.algo-head');
+  if(head){ head.parentElement.classList.toggle('open'); saveOpen(); }
+});
+
+/* --- состояние чекбоксов --- */
+const STORE_KEY = 'upk_checklist_v1';
+
+function loadState(){
+  try{ return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }catch(e){ return {}; }
+}
+function saveState(s){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(s)); }catch(e){} }
+
+let state = loadState();
+
+function applyState(){
+  document.querySelectorAll('.step').forEach(st => {
+    if(state[st.dataset.key]) st.classList.add('done');
+    else st.classList.remove('done');
+  });
+  document.querySelectorAll('.algo').forEach(a => updateProgress(a.dataset.id));
+}
+function updateProgress(id){
+  const algo = document.querySelector(`.algo[data-id="${id}"]`);
+  if(!algo) return;
+  const steps = algo.querySelectorAll('.step');
+  const done = algo.querySelectorAll('.step.done').length;
+  const pct = steps.length ? Math.round(done/steps.length*100) : 0;
+  algo.querySelector('.progress i').style.width = pct + '%';
+}
+document.querySelectorAll('.step').forEach(st => {
+  st.addEventListener('click', e => {
+    e.preventDefault();
+    const k = st.dataset.key;
+    if(state[k]){ delete state[k]; st.classList.remove('done'); }
+    else { state[k] = 1; st.classList.add('done'); }
+    saveState(state);
+    updateProgress(st.closest('.algo').dataset.id);
+  });
+});
+document.querySelectorAll('[data-clear]').forEach(b => {
+  b.addEventListener('click', () => {
+    const id = b.dataset.clear;
+    document.querySelectorAll(`.algo[data-id="${id}"] .step`).forEach(st => {
+      delete state[st.dataset.key]; st.classList.remove('done');
+    });
+    saveState(state); updateProgress(id);
+  });
+});
+document.querySelectorAll('[data-all]').forEach(b => {
+  b.addEventListener('click', () => {
+    const id = b.dataset.all;
+    document.querySelectorAll(`.algo[data-id="${id}"] .step`).forEach(st => {
+      state[st.dataset.key] = 1; st.classList.add('done');
+    });
+    saveState(state); updateProgress(id);
+  });
+});
+document.querySelectorAll('[data-expand]').forEach(b => {
+  b.addEventListener('click', () => {
+    const open = b.dataset.expand === 'all';
+    document.querySelectorAll('.algo').forEach(a => a.classList.toggle('open', open));
+    saveOpen();
+  });
+});
+document.querySelector('[data-reset]')?.addEventListener('click', () => {
+  if(!confirm('Сбросить все отметки во всех алгоритмах?')) return;
+  state = {}; saveState(state); applyState();
+});
+
+/* сохранение открытых алгоритмов */
+function saveOpen(){
+  const open = [...document.querySelectorAll('.algo.open')].map(a => a.dataset.id);
+  try{ localStorage.setItem('upk_open_v1', JSON.stringify(open)); }catch(e){}
+}
+(function restoreOpen(){
+  try{
+    const open = JSON.parse(localStorage.getItem('upk_open_v1') || '[]');
+    open.forEach(id => document.querySelector(`.algo[data-id="${id}"]`)?.classList.add('open'));
+  }catch(e){}
+})();
+
+applyState();
+
+/* ============================================================
+   МАТЕРИАЛЫ — чтобы добавить файл:
+   1) положите файл в папку files/ в репозитории
+   2) впишите строку ниже. cat = general | mvd | sk | fsb | dozn
+   ============================================================ */
+const MATERIALS = [
+  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ч. 1 ст. 119 УК РФ', file:'files/maket_119_uk.pdf'},
+  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ст. 264 УК РФ', file:'files/maket_264_uk.pdf'},
+  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ч. 3 ст. 264 УК РФ', file:'files/maket_264_ch3.pdf'},
+  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ч. 1 ст. 171.3 УК РФ', file:'files/maket_171_3_ch1.pdf'},
+  {cat:'mvd', group:'Инструкции', title:'Инструкция по делопроизводству в ОВД', file:'files/instruktsiya_po_deloproizvodstvu.pdf'},
+  {cat:'general', group:'Образцы', title:'Образцы протоколов ОМП', file:'files/obraztsy_protokolov_omp.pdf'},
+  {cat:'general', group:'Справочные', title:'Виды экспертиз', file:'files/vidy_ekspertiz.docx'},
+];
+document.querySelectorAll('.matbox').forEach(box => {
+  const items = MATERIALS.filter(m => m.cat === box.dataset.cat);
+  if(!items.length){
+    box.innerHTML = '<p class="sub">Пока нет материалов в этой категории.</p>'; return;
+  }
+  const groups = {};
+  items.forEach(m => (groups[m.group||'Файлы'] = groups[m.group||'Файлы'] || []).push(m));
+  box.innerHTML = Object.keys(groups).map(g =>
+    '<h4>'+esc(g)+'</h4><div class="filegrid">' + groups[g].map(it => {
+      const ext = (it.file.split('.').pop()||'').toLowerCase();
+      return '<a class="file" href="'+esc(it.file)+'" target="_blank" rel="noopener">'
+        + '<div class="fi '+esc(ext)+'">'+esc(ext.toUpperCase())+'</div>'
+        + '<div><div class="ft">'+esc(it.title)+'</div>'
+        + (it.desc ? '<div class="fd">'+esc(it.desc)+'</div>' : '') + '</div></a>';
+    }).join('') + '</div>').join('');
+});
+
+/* ============================================================
+   5. НАВИГАЦИЯ
+   ============================================================ */
+const links = document.querySelectorAll('nav a[data-target]');
+function goTo(id){
+  document.querySelectorAll('section').forEach(s => s.classList.remove('visible'));
+  document.getElementById(id)?.classList.add('visible');
+  links.forEach(l => l.classList.toggle('active', l.dataset.target === id));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+links.forEach(l => {
+  l.addEventListener('click', e => { e.preventDefault(); goTo(l.dataset.target); });
+});
+document.querySelectorAll('[data-goto]').forEach(c => {
+  c.addEventListener('click', () => goTo(c.dataset.goto));
+});
+
+/* ============================================================
+   6. АККОРДЕОНЫ
+   ============================================================ */
+document.querySelectorAll('.acc-h').forEach(h => {
+  h.addEventListener('click', () => h.parentElement.classList.toggle('open'));
+});
+
+/* ============================================================
+   7. КАЛЬКУЛЯТОР СРОКОВ
+   ============================================================ */
+function fmt(d){
+  return d.toLocaleDateString('ru-RU', {day:'2-digit', month:'long', year:'numeric'});
+}
+function fmtShort(d){
+  return d.toLocaleDateString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+function addMonths(date, m){
+  const d = new Date(date);
+  const day = d.getDate();
+  d.setMonth(d.getMonth() + m);
+  if(d.getDate() < day) d.setDate(0);
+  return d;
+}
+function addDays(date, n){
+  const d = new Date(date); d.setDate(d.getDate()+n); return d;
+}
+function addHours(date, n){
+  const d = new Date(date); d.setHours(d.getHours()+n); return d;
+}
+
+const CALC = {
+  check: {
+    title: 'Проверка сообщения о преступлении (ст. 144 УПК РФ)',
+    items: [
+      {l:'Основной срок — 3 суток', d:d=>addDays(d,3), r:'ч. 1 ст. 144', u:false},
+      {l:'Продление до 10 суток (руководитель СО / начальник ОД)', d:d=>addDays(d,10), r:'ч. 3 ст. 144'},
+      {l:'Продление до 30 суток (ревизии, экспертизы, ОРМ)', d:d=>addDays(d,30), r:'ч. 3 ст. 144'},
+      {l:'Уведомление о принятом решении', d:d=>addDays(d,3), r:'ст. 145'}
+    ]
+  },
+  detention: {
+    title: 'Задержание подозреваемого (ст. 92, 94, 96, 108 УПК РФ)',
+    items: [
+      {l:'Составление протокола задержания — 3 часа', d:d=>addHours(d,3), r:'ч. 1 ст. 92', u:true},
+      {l:'Телефонный разговор — 3 часа', d:d=>addHours(d,3), r:'ч. 1 ст. 96', u:true},
+      {l:'Уведомление прокурора — 12 часов', d:d=>addHours(d,12), r:'ч. 3 ст. 92', u:true},
+      {l:'Допрос подозреваемого — 24 часа', d:d=>addHours(d,24), r:'ч. 2 ст. 46', u:true},
+      {l:'Освобождение — 48 часов', d:d=>addHours(d,48), r:'ч. 2 ст. 94', u:true},
+      {l:'Ходатайство о страже — не позднее чем за 8 ч до истечения срока', d:d=>addHours(d,40), r:'ч. 3 ст. 108', u:true},
+      {l:'Продление срока задержания судом — 72 часа', d:d=>addHours(d,72), r:'п. 3 ч. 7 ст. 108', u:true}
+    ]
+  },
+  investigation: {
+    title: 'Предварительное следствие (ст. 162 УПК РФ)',
+    items: [
+      {l:'Основной срок — 2 месяца', d:d=>addMonths(d,2), r:'ч. 1 ст. 162'},
+      {l:'Продление руководителем СО — до 3 месяцев', d:d=>addMonths(d,3), r:'ч. 4 ст. 162'},
+      {l:'Продление руководителем СО по субъекту РФ — до 12 месяцев', d:d=>addMonths(d,12), r:'ч. 5 ст. 162'},
+      {l:'Предельный срок — 30 суток до окончания — предъявление материалов', d:d=>addMonths(d,11), r:'ч. 5 ст. 109'}
+    ]
+  },
+  custody: {
+    title: 'Содержание под стражей (ст. 109 УПК РФ)',
+    items: [
+      {l:'Основной срок — 2 месяца', d:d=>addMonths(d,2), r:'ч. 1 ст. 109'},
+      {l:'Продление судьёй районного суда — до 6 месяцев', d:d=>addMonths(d,6), r:'ч. 2 ст. 109'},
+      {l:'Продление — до 12 месяцев (тяжкие, особо тяжкие)', d:d=>addMonths(d,12), r:'ч. 2 ст. 109'},
+      {l:'Продление — до 18 месяцев (исключительные случаи)', d:d=>addMonths(d,18), r:'ч. 3 ст. 109'},
+      {l:'Предъявление материалов не позднее чем за 30 суток до предельного срока', d:d=>addDays(addMonths(d,12),-30), r:'ч. 5 ст. 109'},
+      {l:'Ходатайство о продлении — не позднее чем за 7 суток', d:d=>addDays(addMonths(d,2),-7), r:'ч. 8 ст. 109', u:true}
+    ]
+  },
+  inquiry: {
+    title: 'Дознание (ст. 223 УПК РФ)',
+    items: [
+      {l:'Основной срок — 30 суток', d:d=>addDays(d,30), r:'ч. 3 ст. 223'},
+      {l:'Продление прокурором — до 30 суток (итого до 60)', d:d=>addDays(d,60), r:'ч. 3 ст. 223'},
+      {l:'Продление прокурорами района, города — до 6 месяцев', d:d=>addMonths(d,6), r:'ч. 4 ст. 223'},
+      {l:'Продление прокурором субъекта РФ — до 12 месяцев', d:d=>addMonths(d,12), r:'ч. 5 ст. 223'},
+      {l:'Обвинительный акт при заключении под стражу — 10 суток', d:d=>addDays(d,10), r:'ч. 2 ст. 224', u:true}
+    ]
+  },
+  inquiryShort: {
+    title: 'Дознание в сокращённой форме (ст. 226.6 УПК РФ)',
+    items: [
+      {l:'Основной срок — 15 суток', d:d=>addDays(d,15), r:'ч. 1 ст. 226.6'},
+      {l:'Продление прокурором — до 20 суток', d:d=>addDays(d,20), r:'ч. 2 ст. 226.6'},
+      {l:'Составление обвинительного постановления — не позднее 10 суток', d:d=>addDays(d,10), r:'ч. 3 ст. 226.7'},
+      {l:'Ознакомление с обвинительным постановлением — не позднее 3 суток', d:d=>addDays(d,13), r:'ч. 4 ст. 226.7'}
+    ]
+  }
+};
+
+const calcDate = document.getElementById('calcDate');
+const calcType = document.getElementById('calcType');
+const calcResult = document.getElementById('calcResult');
+
+/* по умолчанию — сегодня */
+(function initDate(){
+  const t = new Date();
+  const iso = t.toISOString().slice(0,10);
+  calcDate.value = iso;
+  calcType.value = 'check';
+  runCalc();
+})();
+
+function runCalc(){
+  const val = calcDate.value;
+  if(!val){
+    calcResult.innerHTML = '<div class="empty">Выберите исходную дату</div>';
+    return;
+  }
+  const base = new Date(val + 'T09:00:00');
+  const cfg = CALC[calcType.value];
+  if(!cfg) return;
+
+  const now = new Date();
+  calcResult.innerHTML = cfg.items.map(it => {
+    const target = it.d(base);
+    const urgent = it.u || (target - now) < 1000*60*60*48 && target > now;
+    return `<div class="cr ${urgent?'urgent':''}">
+      <div class="lbl">${esc(it.l)}</div>
+      <div class="val">${fmtShort(target)}</div>
+      <div class="ref">${esc(it.r)}${it.u?' · критично':''}</div>
+    </div>`;
+  }).join('');
+}
+document.getElementById('calcBtn').addEventListener('click', runCalc);
+calcDate.addEventListener('change', runCalc);
+calcType.addEventListener('change', runCalc);
+
+/* ============================================================
+   8. ГЛОБАЛЬНЫЙ ПОИСК (Ctrl+K)
+   ============================================================ */
+const gs = document.getElementById('globalSearch');
+gs.addEventListener('keydown', e => {
+  if(e.key === 'Enter'){
+    const q = gs.value.trim().toLowerCase();
+    if(!q) return;
+    /* ищем по алгоритмам */
+    let found = false;
+    ALGOS.forEach(a => {
+      if(found) return;
+      if(a.title.toLowerCase().includes(q) || a.steps.some(s => s.t.toLowerCase().includes(q))){
+        goTo('algos');
+        const el = document.querySelector(`.algo[data-id="${a.id}"]`);
+        if(el){
+          el.classList.add('open'); saveOpen();
+          setTimeout(()=> el.scrollIntoView({behavior:'smooth', block:'start'}), 120);
+        }
+        found = true;
+      }
+    });
+    if(found) return;
+    /* ищем по статьям */
+    goTo('articles');
+  }
+});
+document.addEventListener('keydown', e => {
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault(); gs.focus();
+  }
+});
+
+/* ============================================================
+   9. КАТЕГОРИЯ «СТАТЬИ» — открыть первый при клике по разделу
+   ============================================================ */
+document.querySelectorAll('nav a[data-target="articles"]').forEach(l => {
+  l.addEventListener('click', () => {
+    setTimeout(() => {
+      document.querySelector('#articles .acc')?.classList.add('open');
+    }, 50);
+  });
+});
+</script>
+</body>
+</html>
