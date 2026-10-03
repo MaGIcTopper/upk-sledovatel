@@ -259,7 +259,7 @@ footer{
   <div class="logo">⚖️</div>
   <div>
     <h1>Кабинет следователя</h1>
-    <p>Рабочий справочник по УПК РФ · алгоритмы · сроки</p>
+    <p>Рабочий справочник по УПК РФ · алгоритмы · сроки · материалы</p>
   </div>
   <div class="spacer"></div>
   <input type="search" id="globalSearch" placeholder="Поиск по справочнику… (Ctrl+K)">
@@ -270,13 +270,17 @@ footer{
     <nav>
       <ul>
         <li><a href="#" data-target="dashboard" class="active">🏠 Главная</a></li>
-        <div class="navgroup">Работа</div>
+        <div class="navgroup">Общее</div>
         <li><a href="#" data-target="algos">📋 Алгоритмы действий</a></li>
         <li><a href="#" data-target="deadlines">⏱ Сроки и калькулятор</a></li>
         <li><a href="#" data-target="articles">📖 Ключевые статьи</a></li>
-        <div class="navgroup">Документы</div>
         <li><a href="#" data-target="memo">💡 Памятки</a></li>
-        <li><a href="#" data-target="materials">📁 Материалы</a></li>
+        <li><a href="#" data-target="materials">📁 Общие материалы</a></li>
+        <div class="navgroup">По ведомствам</div>
+        <li><a href="#" data-target="cat-mvd">🚔 Следователи МВД</a></li>
+        <li><a href="#" data-target="cat-sk">🏛 Следователи СК</a></li>
+        <li><a href="#" data-target="cat-fsb">🛡 Следователи ФСБ</a></li>
+        <li><a href="#" data-target="cat-dozn">📝 Дознаватели</a></li>
       </ul>
     </nav>
   </aside>
@@ -291,8 +295,8 @@ footer{
       </div>
 
       <div class="card">
-        <h2>Быстрый доступ</h2>
-        <p class="sub">Нажмите на карточку, чтобы перейти к нужному разделу</p>
+        <h2>Общее для всех</h2>
+        <p class="sub">Алгоритмы, сроки и нормы, которые одинаковы для всех категорий</p>
         <div class="quickgrid">
           <div class="quick" data-goto="algos">
             <div class="qi">📋</div><div class="qt">Алгоритмы действий</div>
@@ -311,9 +315,21 @@ footer{
             <div class="qd">Типичные ошибки, запреты, правила составления протокола</div>
           </div>
           <div class="quick" data-goto="materials">
-            <div class="qi">📁</div><div class="qt">Материалы</div>
-            <div class="qd">Макеты уголовных дел, инструкция по делопроизводству, образцы протоколов</div>
+            <div class="qi">📁</div><div class="qt">Общие материалы</div>
+            <div class="qd">Образцы протоколов, справочные документы для всех категорий</div>
           </div>
+        </div>
+      </div>
+
+
+      <div class="card">
+        <h2>По ведомствам</h2>
+        <p class="sub">Материалы и особенности работы для вашей категории</p>
+        <div class="quickgrid">
+          <div class="quick" data-goto="cat-mvd"><div class="qi">🚔</div><div class="qt">Следователи МВД</div><div class="qd">Макеты дел, инструкция по делопроизводству</div></div>
+          <div class="quick" data-goto="cat-sk"><div class="qi">🏛</div><div class="qt">Следователи СК</div><div class="qd">Подследственность и материалы Следственного комитета</div></div>
+          <div class="quick" data-goto="cat-fsb"><div class="qi">🛡</div><div class="qt">Следователи ФСБ</div><div class="qd">Подследственность и материалы органов безопасности</div></div>
+          <div class="quick" data-goto="cat-dozn"><div class="qi">📝</div><div class="qt">Дознаватели</div><div class="qd">Сроки дознания, сокращённая форма, материалы</div></div>
         </div>
       </div>
 
@@ -662,9 +678,58 @@ footer{
     <!-- ================= МАТЕРИАЛЫ ================= -->
     <section id="materials">
       <div class="card">
-        <h2>Материалы <span class="badge" id="matCount"></span></h2>
-        <p class="sub">Макеты дел, инструкции и образцы. Нажмите на файл — он откроется или скачается.</p>
-        <div id="matContainer"></div>
+        <h2>Общие материалы</h2>
+        <p class="sub">Файлы для всех категорий. Нажмите на файл — он откроется или скачается.</p>
+        <div class="matbox" data-cat="general"></div>
+      </div>
+    </section>
+
+
+    <!-- ================= Следователи МВД ================= -->
+    <section id="cat-mvd">
+      <div class="card">
+        <h2>Следователи МВД <span class="badge">ст. 151 УПК РФ</span></h2>
+        <p class="sub">Следователи органов внутренних дел.</p>
+        <div class="note blue"><b>Подследственность.</b> Предварительное следствие в органах внутренних дел производится по большинству общеуголовных преступлений (ст. 151 УПК РФ). Споры о подследственности разрешает прокурор (ч. 8 ст. 151).</div>
+        <p class="sub">Общие алгоритмы, сроки и статьи — в блоке «Общее» в меню слева.</p>
+        <h3>Материалы</h3>
+        <div class="matbox" data-cat="mvd"></div>
+      </div>
+    </section>
+
+    <!-- ================= Следователи СК ================= -->
+    <section id="cat-sk">
+      <div class="card">
+        <h2>Следователи СК <span class="badge">ст. 151 УПК РФ</span></h2>
+        <p class="sub">Следователи Следственного комитета РФ.</p>
+        <div class="note blue"><b>Подследственность.</b> Следователи СК РФ ведут дела о тяжких и особо тяжких преступлениях против личности, преступлениях против государственной власти и интересов государственной службы, а также о преступлениях, совершённых лицами по ст. 447 УПК РФ, должностными лицами правоохранительных органов, военнослужащими и несовершеннолетними (по тяжким и особо тяжким) — см. ст. 151 УПК РФ.</div>
+        <p class="sub">Общие алгоритмы, сроки и статьи — в блоке «Общее» в меню слева.</p>
+        <h3>Материалы</h3>
+        <div class="matbox" data-cat="sk"></div>
+      </div>
+    </section>
+
+    <!-- ================= Следователи ФСБ ================= -->
+    <section id="cat-fsb">
+      <div class="card">
+        <h2>Следователи ФСБ <span class="badge">ст. 151 УПК РФ</span></h2>
+        <p class="sub">Следователи органов федеральной службы безопасности.</p>
+        <div class="note blue"><b>Подследственность.</b> Следователи органов ФСБ расследуют преступления, посягающие на государственную безопасность, террористической направленности, контрабанду и др. (ст. 151 УПК РФ).</div>
+        <p class="sub">Общие алгоритмы, сроки и статьи — в блоке «Общее» в меню слева.</p>
+        <h3>Материалы</h3>
+        <div class="matbox" data-cat="fsb"></div>
+      </div>
+    </section>
+
+    <!-- ================= Дознаватели ================= -->
+    <section id="cat-dozn">
+      <div class="card">
+        <h2>Дознаватели <span class="badge">ст. 150, 223 УПК РФ</span></h2>
+        <p class="sub">Дознаватели органов дознания.</p>
+        <div class="note blue"><b>Кто производит дознание.</b> Дознаватели органов внутренних дел, пограничных органов ФСБ, органов принудительного исполнения, органов государственного пожарного надзора, таможенных органов (ст. 151 УПК РФ).<br><br><b>Сроки.</b> Дознание — 30 суток со дня возбуждения дела, продление прокурором до 30 суток, далее до 6 и до 12 месяцев (ст. 223). Дознание в сокращённой форме — 15 суток, продление до 20 суток (ст. 226.6). Подробнее — в разделе «Сроки и калькулятор».</div>
+        <p class="sub">Общие алгоритмы, сроки и статьи — в блоке «Общее» в меню слева.</p>
+        <h3>Материалы</h3>
+        <div class="matbox" data-cat="dozn"></div>
       </div>
     </section>
 
@@ -1090,39 +1155,35 @@ function saveOpen(){
 applyState();
 
 /* ============================================================
-   МАТЕРИАЛЫ — чтобы добавить файл, впишите строку в массив MATERIALS
-   (положите сам файл в папку files/ в репозитории)
+   МАТЕРИАЛЫ — чтобы добавить файл:
+   1) положите файл в папку files/ в репозитории
+   2) впишите строку ниже. cat = general | mvd | sk | fsb | dozn
    ============================================================ */
 const MATERIALS = [
-  {group:'Макеты уголовных дел', items:[
-    {title:'Макет по ст. 119 УК РФ', file:'files/maket_119_uk.pdf'},
-    {title:'Макет по ст. 264 УК РФ', file:'files/maket_264_uk.pdf'},
-    {title:'Макет по ч. 3 ст. 264 УК РФ', file:'files/maket_264_ch3.pdf'},
-    {title:'Макет по ч. 1 ст. 171.3 УК РФ', file:'files/maket_171_3_ch1.pdf'},
-  ]},
-  {group:'Инструкции и образцы', items:[
-    {title:'Инструкция по делопроизводству', file:'files/instruktsiya_po_deloproizvodstvu.pdf'},
-    {title:'Образцы протоколов ОМП', file:'files/obraztsy_protokolov_omp.pdf'},
-  ]},
-  {group:'Справочные', items:[
-    {title:'Виды экспертиз', file:'files/vidy_ekspertiz.docx'},
-  ]},
+  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ч. 1 ст. 119 УК РФ', file:'files/maket_119_uk.pdf'},
+  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ст. 264 УК РФ', file:'files/maket_264_uk.pdf'},
+  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ч. 3 ст. 264 УК РФ', file:'files/maket_264_ch3.pdf'},
+  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ч. 1 ст. 171.3 УК РФ', file:'files/maket_171_3_ch1.pdf'},
+  {cat:'mvd', group:'Инструкции', title:'Инструкция по делопроизводству в ОВД', file:'files/instruktsiya_po_deloproizvodstvu.pdf'},
+  {cat:'general', group:'Образцы', title:'Образцы протоколов ОМП', file:'files/obraztsy_protokolov_omp.pdf'},
+  {cat:'general', group:'Справочные', title:'Виды экспертиз', file:'files/vidy_ekspertiz.docx'},
 ];
-(function renderMaterials(){
-  const box = document.getElementById('matContainer'); if(!box) return;
-  let n = 0;
-  box.innerHTML = MATERIALS.map(g => {
-    n += g.items.length;
-    return '<h3>'+esc(g.group)+'</h3><div class="filegrid">' + g.items.map(it => {
+document.querySelectorAll('.matbox').forEach(box => {
+  const items = MATERIALS.filter(m => m.cat === box.dataset.cat);
+  if(!items.length){
+    box.innerHTML = '<p class="sub">Пока нет материалов в этой категории.</p>'; return;
+  }
+  const groups = {};
+  items.forEach(m => (groups[m.group||'Файлы'] = groups[m.group||'Файлы'] || []).push(m));
+  box.innerHTML = Object.keys(groups).map(g =>
+    '<h4>'+esc(g)+'</h4><div class="filegrid">' + groups[g].map(it => {
       const ext = (it.file.split('.').pop()||'').toLowerCase();
       return '<a class="file" href="'+esc(it.file)+'" target="_blank" rel="noopener">'
         + '<div class="fi '+esc(ext)+'">'+esc(ext.toUpperCase())+'</div>'
         + '<div><div class="ft">'+esc(it.title)+'</div>'
         + (it.desc ? '<div class="fd">'+esc(it.desc)+'</div>' : '') + '</div></a>';
-    }).join('') + '</div>';
-  }).join('');
-  document.getElementById('matCount').textContent = n + ' файлов';
-})();
+    }).join('') + '</div>').join('');
+});
 
 /* ============================================================
    5. НАВИГАЦИЯ
