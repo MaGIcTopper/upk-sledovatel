@@ -2290,21 +2290,21 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     return String(pos).replace(/\s+следственного отдела.*$/i, '').trim();
   }
 
-  /* Собирает резолюцию как массив строк с выравниванием */
+  /* Собирает резолюцию как массив строк с выравниванием (всё справа — верхний правый угол) */
   function makeResolParts(days, untilShort, apPos, apRank, apFioIOF, apDate){
     if(!apPos && !apRank && !apFioIOF) return [];
     return [
-      {t:'Срок проверки сообщения о преступлении', a:'center'},
-      {t:'ПРОДЛЕВАЮ до ' + days + ' суток',        a:'center'},
-      {t:'т.е. до ' + untilShort,                  a:'center'},
+      {t:'Срок проверки сообщения о преступлении', a:'right'},
+      {t:'ПРОДЛЕВАЮ до ' + days + ' суток',        a:'right'},
+      {t:'т.е. до ' + untilShort,                  a:'right'},
       {t:'', a:'blank'},
-      {t: apPos || '',                              a:'justify'},
+      {t: apPos || '',                              a:'right'},
       {t:'', a:'blank'},
-      {t: apRank || '',                             a:'left'},
+      {t: apRank || '',                             a:'right'},
       {t:'', a:'blank'},
-      {t: '________________________ ' + (apFioIOF || '[ФИО]'), a:'left'},
+      {t: '________________________ ' + (apFioIOF || '[ФИО]'), a:'right'},
       {t:'', a:'blank'},
-      {t: apDate || '',                             a:'left'}
+      {t: apDate || '',                             a:'right'}
     ];
   }
 
@@ -2384,6 +2384,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       d.resolParts.forEach(p => {
         if(p.a === 'blank'){ blocks.push('<div class="pb">&nbsp;</div>'); return; }
         const style = p.a === 'center'  ? 'text-align:center'
+                    : p.a === 'right'   ? 'text-align:right'
                     : p.a === 'justify' ? 'text-align:justify'
                     : '';
         blocks.push('<div style="' + style + '">' + esc2(p.t) + '</div>');
@@ -2473,7 +2474,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     if(d.resolParts && d.resolParts.length){
       d.resolParts.forEach(p => {
         if(p.a === 'blank'){ body.push(P('')); return; }
-        const jc = p.a === 'center' ? 'center' : p.a === 'justify' ? 'both' : 'left';
+        const jc = p.a === 'center' ? 'center' : p.a === 'justify' ? 'both' : p.a === 'right' ? 'right' : 'left';
         body.push(P(run(p.t), {jc: jc}));
       });
     }
