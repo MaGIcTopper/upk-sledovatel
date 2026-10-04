@@ -2239,15 +2239,16 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   g('prDocDate').value = today();
   g('prNumDate').value = today();
 
-  const dLong = (iso) => {
-    if(!iso) return '[дата]';
+  /* --- Даты --- */
+  const dQuoteShort = (iso) => {
+    if(!iso) return '«__» ________ 20__';
     const [y,m,dd] = iso.split('-').map(Number);
-    return dd + ' ' + MON[m-1] + ' ' + y + ' года';
+    return '«' + String(dd).padStart(2,'0') + '» ' + MON[m-1] + ' ' + y;
   };
-  const dQuote = (iso) => {
-    if(!iso) return '«__» ________ 20__ г.';
+  const dQuoteLong = (iso) => {
+    if(!iso) return '«__» ________ 20__ года';
     const [y,m,dd] = iso.split('-').map(Number);
-    return '«' + String(dd).padStart(2,'0') + '» ' + MON[m-1] + ' ' + y + ' г.';
+    return '«' + String(dd).padStart(2,'0') + '» ' + MON[m-1] + ' ' + y + ' года';
   };
   const dShort = (iso) => {
     if(!iso) return '[дата]';
@@ -2261,6 +2262,35 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     return d.toISOString().slice(0,10);
   };
 
+  /* --- ФИО --- */
+  function fioFIO(s){
+    if(!s) return '';
+    const t = String(s).trim();
+    const parts = t.split(/\s+/);
+    if(parts.length === 1) return t;
+    if(parts[0].indexOf('.') !== -1) return parts.slice(1).join(' ') + ' ' + parts[0];
+    if(parts[1].indexOf('.') !== -1) return t;
+    const surname = parts[0];
+    const inits = parts.slice(1).map(p => p[0].toUpperCase() + '.').join('');
+    return surname + ' ' + inits;
+  }
+  function fioIOF(s){
+    if(!s) return '';
+    const t = String(s).trim();
+    const parts = t.split(/\s+/);
+    if(parts.length === 1) return t;
+    if(parts[0].indexOf('.') !== -1) return t;
+    if(parts[1].indexOf('.') !== -1) return parts[1] + ' ' + parts[0];
+    const surname = parts[0];
+    const inits = parts.slice(1).map(p => p[0].toUpperCase() + '.').join('');
+    return inits + ' ' + surname;
+  }
+  function shortPos(pos){
+    if(!pos) return '';
+    return String(pos).replace(/\s+следственного отдела.*$/i, '').trim();
+  }
+
+  /* --- Автоподсчёт даты «до какой продлить» --- */
   function recalcUntil(){
     const days = +g('prDays').value;
     const base = v('prDocDate');
@@ -2279,34 +2309,37 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   g('prDocDate').addEventListener('change', recalcUntil);
   recalcUntil();
 
+  /* --- Данные документа --- */
   function buildDoc(){
     const days = +g('prDays').value;
-    const untilIso = v('prUntil');
-    const untilShort = dShort(untilIso);
+    const untilShort = dShort(v('prUntil'));
     const num = v('prNum');
     const numDate = dShort(v('prNumDate'));
-    const subj = v('prSubject') || '[по факту чего]';
+    const subj = (v('prSubject') || '[по факту чего]').replace(/[.\s]+$/, '');
     const reasons = (v('prReasons') || '').replace(/[.\s]+$/,'');
     const org = v('prOrg') || '[подразделение]';
     const sigPos = v('prSigPos') || '[должность]';
     const sigRank = v('prSigRank') || '[звание]';
-    const sigFio = v('prSigFio') || '[ФИО]';
+    const sigFioRaw = v('prSigFio') || '[ФИО]';
     const city = v('prCity') || 'г. Левобережный';
     const docDate = v('prDocDate');
-    const apPos = v('prApPos') || '';
+    const apPos = v('prApPos') || 'Руководитель следственного отдела по городу Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области';
     const apRank = v('prApRank') || '';
-    const apFio = v('prApFio') || '';
+    const apFioRaw = v('prApFio') || '';
     const apDate = v('prApDate');
 
-    const resol = (apFio || apRank)
+    const resol = (apFioRaw || apRank)
       ? ('Срок проверки сообщения о преступлении ПРОДЛЕВАЮ до ' + days + ' суток т.е. до ' + untilShort + '\n\n'
-         + (apPos || '') + '\n\n'
-         + (apRank ? apRank + '\n\n' : '')
-         + '_____ ' + (apFio || '[ФИО]') + '\n\n'
-         + dQuote(apDate || docDate))
+         + apPos + '\n\n'
+         + apRank + '\n\n'
+         + '_____ ' + fioIOF(apFioRaw || '[ФИО]') + '\n\n'
+         + dQuoteLong(apDate || docDate))
       : '';
 
-    const header1 = sigPos + ' ' + sigRank + ' ' + sigFio
+    const sigFioFIO = fioFIO(sigFioRaw);
+    const sigFioIOF = fioIOF(sigFioRaw);
+
+    const header1 = sigPos + ' ' + sigRank + ' ' + sigFioFIO
       + ', рассмотрев материал проверки сообщения о преступлении, зарегистрированный в КРСоП '
       + org + ' за №' + (num || '[№]') + ' от ' + (numDate || '[дата]') + ',';
 
@@ -2319,10 +2352,12 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const pBase = 'На основании изложенного, руководствуясь ч. 3 ст. 144 УПК РФ,';
     const pPostText = 'Ходатайствовать перед руководителем следственного органа о продлении сроков проверки сообщения о преступлении до ' + days + ' суток, то есть до ' + untilShort + '.';
 
-    return { resol, days, untilShort, num, numDate, subj, org, sigPos, sigRank, sigFio,
+    return { resol, days, untilShort, num, numDate, subj, org,
+             sigPos, sigRank, sigFio: sigFioIOF, sigFioFIO: sigFioFIO,
              city, docDate, pFact, pWhy, pBase, pPostText, header1 };
   }
 
+  /* --- Предпросмотр --- */
   function esc2(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
   function drawPrev(){
@@ -2330,19 +2365,18 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const blocks = [];
 
     if(d.resol){
-      blocks.push('<div class="pp" style="font-weight:600">' + esc2(d.resol.split('\n')[0]) + '</div>');
-      const parts = d.resol.split('\n\n').slice(1);
-      parts.forEach(p => {
-        blocks.push('<div style="margin-top:10px">' + p.split('\n').map(x => esc2(x)).join('<br>') + '</div>');
+      d.resol.split('\n\n').forEach(line => {
+        blocks.push('<div>' + esc2(line) + '</div>');
+        blocks.push('<div class="pb">&nbsp;</div>');
       });
-      blocks.push('<div class="pb">&nbsp;</div>');
     }
 
     blocks.push('<div class="pt">ПОСТАНОВЛЕНИЕ</div>');
     blocks.push('<div class="pt">о возбуждении перед руководителем следственного органа</div>');
     blocks.push('<div class="pt">ходатайства о продлении сроков проверки сообщения о преступлении</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
-    blocks.push('<div class="pcd"><span>' + esc2(d.city) + '</span><span>' + esc2(dQuote(d.docDate)) + '</span></div>');
+    blocks.push('<div class="pb">&nbsp;</div>');
+    blocks.push('<div class="pcd"><span>' + esc2(d.city) + '</span><span>' + esc2(dQuoteShort(d.docDate)) + '</span></div>');
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pp">' + esc2(d.header1) + '</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
@@ -2358,7 +2392,9 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pp">' + esc2(d.pPostText) + '</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
-    blocks.push('<div class="pcd"><span>' + esc2(d.sigPos.split(' ')[0]) + '</span><span></span></div>');
+    blocks.push('<div>' + esc2(shortPos(d.sigPos)) + '</div>');
+    blocks.push('<div class="pb">&nbsp;</div>');
+    blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pcd"><span>' + esc2(d.sigRank) + '</span><span>' + esc2(d.sigFio) + '</span></div>');
 
     g('prPrev').innerHTML = blocks.join('');
@@ -2368,6 +2404,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   document.querySelectorAll('#prolongations select').forEach(i => i.addEventListener('change', drawPrev));
   drawPrev();
 
+  /* --- Word (.docx) --- */
   const X = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const rpr = b => '<w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>'+(b?'<w:b/><w:bCs/>':'')+'<w:sz w:val="28"/><w:szCs w:val="28"/></w:rPr>';
   const run = (t,b) => '<w:r>'+rpr(b)+'<w:t xml:space="preserve">'+X(t)+'</w:t></w:r>';
@@ -2379,28 +2416,33 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const days = +r.days;
     const untilShort = dShort(r.until);
     const org = r.org || '';
-    const apFio = r.approveFio || '';
+    const apFioIOF = fioIOF(r.approveFio || '');
     const apRank = r.approveRank || '';
     const apPos = r.approvePos || '';
     const apDate = r.approveDate || r.docDate;
-    const resol = (apFio || apRank)
+    const resol = (apFioIOF || apRank)
       ? ('Срок проверки сообщения о преступлении ПРОДЛЕВАЮ до ' + days + ' суток т.е. до ' + untilShort + '\n\n'
          + (apPos || '') + '\n\n'
          + (apRank ? apRank + '\n\n' : '')
-         + '_____ ' + (apFio || '[ФИО]') + '\n\n'
-         + dQuote(apDate))
+         + '_____ ' + (apFioIOF || '[ФИО]') + '\n\n'
+         + dQuoteLong(apDate))
       : '';
-    const header1 = r.sigPos + ' ' + r.sigRank + ' ' + r.sigFio
+    const sigFioFIO = fioFIO(r.sigFio || '');
+    const sigFioIOF = fioIOF(r.sigFio || '');
+    const header1 = r.sigPos + ' ' + r.sigRank + ' ' + sigFioFIO
       + ', рассмотрев материал проверки сообщения о преступлении, зарегистрированный в КРСоП '
       + org + ' за №' + (r.num || '[№]') + ' от ' + dShort(r.numDate) + ',';
+    const subj = (r.subject || '').replace(/[.\s]+$/, '');
     return {
-      resol, days, untilShort, city: r.city || 'г. Левобережный', docDate: r.docDate,
+      resol, days, untilShort,
+      city: r.city || 'г. Левобережный',
+      docDate: r.docDate,
       header1,
-      pFact: 'В производстве ' + org + ' находится материал проверки сообщения о преступлении, зарегистрированный в КРСоП ' + org + ' за №' + r.num + ' от ' + dShort(r.numDate) + ', по факту ' + r.subject + '.',
+      pFact: 'В производстве ' + org + ' находится материал проверки сообщения о преступлении, зарегистрированный в КРСоП ' + org + ' за №' + r.num + ' от ' + dShort(r.numDate) + ', по факту ' + subj + '.',
       pWhy: (r.reasons || '').replace(/[.\s]+$/,'') + ', в связи с чем срок проверки сообщения о преступлении необходимо продлить до ' + days + ' суток, то есть до ' + untilShort + '.',
       pBase: 'На основании изложенного, руководствуясь ч. 3 ст. 144 УПК РФ,',
       pPostText: 'Ходатайствовать перед руководителем следственного органа о продлении сроков проверки сообщения о преступлении до ' + days + ' суток, то есть до ' + untilShort + '.',
-      sigPos: r.sigPos, sigRank: r.sigRank, sigFio: r.sigFio
+      sigPos: r.sigPos, sigRank: r.sigRank, sigFio: sigFioIOF
     };
   }
 
@@ -2408,17 +2450,20 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     if(!window.JSZip) throw new Error('nozip');
     const d = recForApproval ? buildDocFromRec(recForApproval) : buildDoc();
     const body = [];
+
     if(d.resol){
       d.resol.split('\n\n').forEach(line => {
-        line.split('\n').forEach(l => body.push(P(run(l), {jc:'both'})));
+        body.push(P(run(line)));
+        body.push(P(''));
       });
-      body.push(P(''));
     }
+
     body.push(P(run('ПОСТАНОВЛЕНИЕ', true), {jc:'center'}));
     body.push(P(run('о возбуждении перед руководителем следственного органа', true), {jc:'center'}));
     body.push(P(run('ходатайства о продлении сроков проверки сообщения о преступлении', true), {jc:'center'}));
     body.push(P(''));
-    body.push(P(run(d.city)+TAB+run(dQuote(d.docDate)), {tabs:1}));
+    body.push(P(''));
+    body.push(P(run(d.city)+TAB+run(dQuoteShort(d.docDate)), {tabs:1}));
     body.push(P(''));
     body.push(P(run(d.header1), {ind:'w:firstLine="709"', jc:'both'}));
     body.push(P(''));
@@ -2434,9 +2479,10 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     body.push(P(''));
     body.push(P(run(d.pPostText), {ind:'w:firstLine="709"', jc:'both'}));
     body.push(P(''));
-    body.push(P(run(d.sigPos.split(' ')[0])));
+    body.push(P(run(shortPos(d.sigPos))));
     body.push(P(''));
-    body.push(P(run(d.sigRank)+TAB+TAB+TAB+TAB+run(d.sigFio), {tabs:1}));
+    body.push(P(''));
+    body.push(P(run(d.sigRank)+TAB+run(d.sigFio), {tabs:1}));
 
     const docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
       + '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
@@ -2469,7 +2515,8 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       'о возбуждении перед руководителем следственного органа',
       'ходатайства о продлении сроков проверки сообщения о преступлении',
       '',
-      d.city + '\t' + dQuote(d.docDate),
+      '',
+      d.city + '\t' + dQuoteShort(d.docDate),
       '',
       d.header1,
       '',
@@ -2485,9 +2532,11 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       '',
       d.pPostText,
       '',
-      d.sigPos.split(' ')[0],
+      shortPos(d.sigPos),
+      '',
+      '',
       d.sigRank + '\t\t\t\t' + d.sigFio
-    ].filter(Boolean).join('\n');
+    ].join('\n').replace(/\n{3,}/g, '\n\n');
     navigator.clipboard.writeText(txt).then(() => { st.textContent = 'Текст скопирован ✓'; });
   };
 
@@ -2547,7 +2596,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
         '<td>' + esc(dShort(r.docDate)) + '</td>' +
         '<td>' + (r.days || '—') + ' сут.</td>' +
         '<td>' + esc(dShort(r.until)) + '</td>' +
-        '<td>' + esc(r.sigFio || '—') + '</td>' +
+        '<td>' + esc(fioFIO(r.sigFio || '—')) + '</td>' +
         '<td>' + esc(r.author || '—') + '</td>' +
         '<td>' + status + '</td>' +
         '<td><div class="row-actions">' +
@@ -2577,11 +2626,11 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
           'Обстоятельства:',
           (r.reasons || '—'),
           '',
-          'Составил: ' + [r.sigRank, r.sigFio].filter(Boolean).join(' '),
+          'Составил: ' + [r.sigRank, fioFIO(r.sigFio)].filter(Boolean).join(' '),
           'Автор записи: ' + (r.author || '—'),
           '',
           'Статус: ' + (r.status === 'approved' ? 'Утверждено' : r.status === 'rejected' ? 'Отклонено' : 'Ожидает'),
-          r.status === 'approved' ? ('Утвердил: ' + [r.approveRank, r.approveFio].filter(Boolean).join(' ') + ' · ' + dShort(r.approveDate)) : ''
+          r.status === 'approved' ? ('Утвердил: ' + [r.approveRank, fioIOF(r.approveFio)].filter(Boolean).join(' ') + ' · ' + dShort(r.approveDate)) : ''
         ].join('\n'));
       });
     });
@@ -2606,16 +2655,16 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
           const r = list.find(x => x.id === b.dataset.appr);
           if(!r) return;
           const u = currentUser();
-          const apPos = prompt('Должность утверждающего:', r.apPos || 'Руководитель следственного отдела по городу Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области');
+          const defPos = r.apPos || 'Руководитель следственного отдела по городу Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области';
+          const apPos = prompt('Должность утверждающего:', defPos);
           if(apPos === null) return;
-          const apRank = prompt('Звание утверждающего:', r.apRank || (u && u.zvan) || 'майор юстиции');
+          const defRank = r.apRank || (u && u.zvan) || 'майор юстиции';
+          const apRank = prompt('Звание утверждающего:', defRank);
           if(apRank === null) return;
-          let defaultFio = '';
-          if(u && u.full){
-            const parts = u.full.split(' ');
-            defaultFio = parts[0] + ' ' + parts.slice(1).map(x => x[0] + '.').join('');
-          }
-          const apFio = prompt('ФИО утверждающего:', r.apFio || defaultFio);
+          let defFio = r.apFio || '';
+          if(!defFio && u && u.full) defFio = fioIOF(u.full);
+          if(!defFio && u && u.name) defFio = fioIOF(u.name);
+          const apFio = prompt('ФИО утверждающего (в формате «И.О. Фамилия»):', defFio);
           if(apFio === null) return;
           const apDate = prompt('Дата утверждения (ГГГГ-ММ-ДД):', today());
           if(apDate === null) return;
