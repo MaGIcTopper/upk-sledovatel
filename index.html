@@ -88,14 +88,36 @@ header .spacer{flex:1}
 .user-badge{font-size:12.5px;color:#c8d6ea;padding:6px 12px;border-radius:20px;
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);white-space:nowrap;}
 .user-badge b{color:#fff;font-weight:600}
-.online-badge{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#c8d6ea;
-  padding:6px 12px;border-radius:20px;background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.15);white-space:nowrap;}
+
+/* ---- Онлайн-бейдж с выпадающим списком ---- */
+.online-badge{position:relative;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;
+  color:#c8d6ea;padding:6px 12px;border-radius:20px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);white-space:nowrap;cursor:pointer;user-select:none;
+  transition:.15s;}
+.online-badge:hover{background:rgba(255,255,255,.14);border-color:var(--gold)}
 .online-badge .dot{width:8px;height:8px;border-radius:50%;background:#3fbf85;
-  box-shadow:0 0 0 3px rgba(63,191,133,.25);animation:onlinePulse 2s infinite ease-in-out;}
+  box-shadow:0 0 0 3px rgba(63,191,133,.25);animation:onlinePulse 2s infinite ease-in-out;flex:0 0 8px}
 .online-badge.off .dot{background:#8a9bb3;box-shadow:none;animation:none}
-.online-badge b{color:#fff;font-weight:600}
+.online-badge b{color:#fff;font-weight:600;font-variant-numeric:tabular-nums}
 @keyframes onlinePulse{0%,100%{box-shadow:0 0 0 3px rgba(63,191,133,.25)}50%{box-shadow:0 0 0 6px rgba(63,191,133,.08)}}
+.online-pop{display:none;position:absolute;top:calc(100% + 10px);right:0;min-width:250px;max-width:340px;
+  background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:10px;
+  box-shadow:0 12px 36px rgba(0,0,0,.28);padding:0;z-index:120;overflow:hidden;cursor:default;text-align:left;}
+.online-badge.open .online-pop{display:block}
+.online-pop .ot{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);
+  padding:9px 14px;border-bottom:1px solid var(--border);font-weight:600;background:var(--chip-bg2)}
+.online-pop .olist{max-height:320px;overflow-y:auto}
+.online-pop .oi{padding:9px 14px;font-size:13px;display:flex;align-items:center;gap:9px;
+  border-bottom:1px solid var(--td-line);}
+.online-pop .oi:last-child{border-bottom:none}
+.online-pop .oi::before{content:"";width:8px;height:8px;border-radius:50%;background:#3fbf85;
+  box-shadow:0 0 0 2px rgba(63,191,133,.2);flex:0 0 8px}
+.online-pop .oi .on{font-weight:600;color:var(--head);flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.online-pop .oi small{color:var(--muted);font-size:11.5px;white-space:nowrap}
+.online-pop .oi.empty{color:var(--muted);justify-content:center;padding:20px 14px;font-size:13px}
+.online-pop .oi.empty::before{display:none}
+
 #globalSearch{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
   color:#fff;padding:9px 14px;border-radius:8px;width:280px;font-size:14px;outline:none;}
 #globalSearch::placeholder{color:#8ea6c4}
@@ -190,6 +212,8 @@ td{padding:10px 12px;border-bottom:1px solid var(--td-line);vertical-align:top}
 tr:hover td{background:var(--row-hover)}
 td.term{font-weight:600;color:var(--head);white-space:nowrap}
 td.law{color:var(--accent);font-size:12.5px;white-space:nowrap}
+td.suspect{font-weight:500}
+td.suspect.unknown{color:var(--muted);font-style:italic;font-weight:400}
 .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
 .tag.red{background:var(--tag-red-bg);color:var(--red)}
 .tag.green{background:var(--tag-green-bg);color:var(--green)}
@@ -324,7 +348,13 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
     <p>Рабочий справочник по УПК РФ · алгоритмы · сроки · материалы</p>
   </div>
   <div class="spacer"></div>
-  <span class="online-badge off" id="onlineBadge" title="Сотрудников онлайн"><span class="dot"></span><b>0</b>&nbsp;онлайн</span>
+  <div class="online-badge off" id="onlineBadge" title="Показать, кто в сети">
+    <span class="dot"></span><b id="onlineCount">0</b>&nbsp;онлайн
+    <div class="online-pop" id="onlinePop">
+      <div class="ot">Сотрудники в сети</div>
+      <div class="olist" id="onlineList"><div class="oi empty">Пока никого…</div></div>
+    </div>
+  </div>
   <div class="user-badge" id="userBadge"></div>
   <button class="hbtn" id="themeBtn" title="Тёмная / светлая тема">🌓</button>
   <button class="hbtn" id="logoutBtn" title="Выйти">🚪</button>
@@ -449,6 +479,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
           <div class="field"><label>Номер</label><input id="arNum" placeholder="123456"></div>
           <div class="field"><label>Дата возбуждения</label><input type="date" id="arDate"></div>
           <div class="field"><label>Статья УК РФ</label><input id="arArt" placeholder="158 ч. 2"></div>
+          <div class="field w"><label>ФИО подозреваемого (жулика)</label><input id="arSuspect" placeholder="Иванов Иван Иванович"><div class="hint">Если оставить пустым — в таблице отобразится «неустановленное лицо».</div></div>
         </div>
 
         <h3>Где, кем, кому поручено</h3>
@@ -1817,7 +1848,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     db = firebase.database();
   }catch(e){ console.error('Firebase init failed', e); }
 
-  /* ---- Права: кто может удалять ---- */
+  /* ---- Текущий пользователь ---- */
   function currentUser(){
     try{ return JSON.parse(localStorage.getItem('upk_user') || 'null'); }catch(e){ return null; }
   }
@@ -1826,7 +1857,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     if(!u) return false;
     if(u.name === 'Администратор') return true;
     const pos = (u.pos || '').toLowerCase();
-    // «Руководитель отдела» и «Зам. руководителя отдела» — обе должности содержат «руководител»
     return pos.indexOf('руководител') !== -1;
   }
 
@@ -1840,20 +1870,63 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     sel.parentElement.appendChild(syncBadge);
   })();
 
-  /* ---- Онлайн-счётчик (presence) ---- */
+  /* ---- Онлайн: список сотрудников в сети ---- */
   const onlineBadge = g('onlineBadge');
-  function setOnline(n, connected){
-    if(!onlineBadge) return;
-    onlineBadge.classList.toggle('off', !connected);
-    const b = onlineBadge.querySelector('b');
-    if(b) b.textContent = connected ? n : '—';
-    onlineBadge.title = connected ? ('Сотрудников онлайн: ' + n) : 'Нет соединения';
+  const onlineCount = g('onlineCount');
+  const onlineList  = g('onlineList');
+  let lastOnline = []; // {name, pos, ts}
+
+  function renderOnline(list, connected){
+    lastOnline = list;
+    if(onlineBadge) onlineBadge.classList.toggle('off', !connected);
+    if(onlineCount) onlineCount.textContent = connected ? list.length : '—';
+
+    if(!onlineList) return;
+    if(!connected){
+      onlineList.innerHTML = '<div class="oi empty">Нет соединения с сервером</div>';
+      return;
+    }
+    if(!list.length){
+      onlineList.innerHTML = '<div class="oi empty">Пока никого…</div>';
+      return;
+    }
+    // Сортируем: администратор первый, потом по алфавиту
+    const sorted = list.slice().sort((a,b) => {
+      const aA = a.name === 'Администратор' ? 0 : 1;
+      const bA = b.name === 'Администратор' ? 0 : 1;
+      if(aA !== bA) return aA - bA;
+      return a.name.localeCompare(b.name, 'ru');
+    });
+    onlineList.innerHTML = sorted.map(u =>
+      '<div class="oi" title="' + esc(u.pos || '') + '">' +
+        '<span class="on">' + esc(u.name) + '</span>' +
+        (u.pos ? '<small>' + esc(u.pos) + '</small>' : '') +
+      '</div>'
+    ).join('');
   }
+
+  function setOnline(n, connected){ renderOnline(lastOnline, connected); }
+
+  // Открытие/закрытие попапа по клику на бейдж
+  if(onlineBadge){
+    onlineBadge.addEventListener('click', function(e){
+      // не закрываем сразу после открытия
+      e.stopPropagation();
+      onlineBadge.classList.toggle('open');
+    });
+    onlineBadge.querySelector('.online-pop').addEventListener('click', e => e.stopPropagation());
+    document.addEventListener('click', function(){
+      onlineBadge.classList.remove('open');
+    });
+    window.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') onlineBadge.classList.remove('open');
+    });
+  }
+
   (function presenceInit(){
-    if(!db){ setOnline(0, false); return; }
+    if(!db){ renderOnline([], false); return; }
     const u = currentUser();
     const rawName = (u && u.name) || 'Гость';
-    // Firebase keys: нельзя . # $ [ ] /
     const safeKey = rawName.replace(/[.#$\[\]/]/g, '_');
     const ref = db.ref('presence/' + safeKey);
     const connRef = db.ref('.info/connected');
@@ -1865,13 +1938,12 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
           ref.set({name: rawName, pos: (u && u.pos) || '', ts: Date.now()});
         });
       } else {
-        setOnline(0, false);
+        renderOnline([], false);
       }
     });
 
-    // Heartbeat — на случай, если onDisconnect не сработает (редко)
     setInterval(() => {
-      if(db && db.ref('.info/connected')) {
+      if(db){
         try{ ref.update({ts: Date.now()}); }catch(e){}
       }
     }, 60000);
@@ -1879,14 +1951,14 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     db.ref('presence').on('value', snap => {
       const val = snap.val() || {};
       const now = Date.now();
-      const ids = Object.keys(val).filter(k => {
-        const t = val[k] && val[k].ts;
-        return t && (now - t) < 3 * 60 * 1000; // активные за последние 3 минуты
-      });
-      setOnline(ids.length, true);
+      const list = Object.keys(val)
+        .map(k => val[k])
+        .filter(p => p && p.ts && (now - p.ts) < 3 * 60 * 1000)
+        .map(p => ({name: p.name || 'Гость', pos: p.pos || '', ts: p.ts}));
+      renderOnline(list, true);
     }, err => {
       console.warn('presence read error', err);
-      setOnline(0, false);
+      renderOnline([], false);
     });
   })();
 
@@ -1909,6 +1981,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     g('arMpCount').textContent = mp.length;
 
     const allowDel = canDelete();
+    const UNKNOWN = 'неустановленное лицо';
 
     function drawList(arr, boxId){
       const box = g(boxId);
@@ -1917,22 +1990,25 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
         return;
       }
       const head = '<tr>' +
-          '<th>№</th><th>Дата</th><th>Статья</th><th>Город</th>' +
-          '<th>Кем возбуждено</th><th>Кому поручено</th><th>Кто добавил</th>' +
+          '<th>№</th><th>Дата</th><th>Статья</th><th>ФИО подозреваемого</th>' +
+          '<th>Город</th><th>Кем возбуждено</th><th>Кому поручено</th><th>Кто добавил</th>' +
           (allowDel ? '<th></th>' : '') +
         '</tr>';
-      const rows = arr.sort((a,b) => (b.ts||0) - (a.ts||0)).map(r =>
-        '<tr>' +
+      const rows = arr.sort((a,b) => (b.ts||0) - (a.ts||0)).map(r => {
+        const suspect = (r.suspect && r.suspect.trim()) ? r.suspect.trim() : UNKNOWN;
+        const isUnknown = suspect === UNKNOWN;
+        return '<tr>' +
           '<td class="term">' + esc(r.num || '—') + '</td>' +
           '<td>' + esc(fmtDate(r.date)) + '</td>' +
           '<td class="law">' + esc(r.art || '—') + '</td>' +
+          '<td class="suspect' + (isUnknown ? ' unknown' : '') + '">' + esc(suspect) + '</td>' +
           '<td>' + esc(r.where || '—') + '</td>' +
           '<td>' + esc(r.by || '—') + '</td>' +
           '<td>' + esc(r.to || r.by || '—') + '</td>' +
           '<td>' + esc(r.author || '—') + '</td>' +
           (allowDel ? '<td><button class="btn" data-del="' + r.id + '" title="Удалить">✕</button></td>' : '') +
-        '</tr>'
-      ).join('');
+        '</tr>';
+      }).join('');
       box.innerHTML = '<table><thead>' + head + '</thead><tbody>' + rows + '</tbody></table>';
 
       if(allowDel){
@@ -1969,7 +2045,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     render();
   }
 
-  /* ---- Автозаполнение «Кому поручено» из «Кем возбуждено» ---- */
+  /* ---- Автозаполнение «Кому поручено» ---- */
   g('arBy').addEventListener('input', () => { g('arTo').value = g('arBy').value; });
 
   /* ---- Добавление записи ---- */
@@ -1989,6 +2065,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       num: v('arNum'),
       date: v('arDate'),
       art: v('arArt'),
+      suspect: v('arSuspect') || 'неустановленное лицо',
       where: v('arWhere'),
       by: v('arBy'),
       to: v('arTo') || v('arBy'),
@@ -1998,7 +2075,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
 
     db.ref('records').push(rec)
       .then(() => {
-        ['arNum','arArt','arWhere','arBy','arTo'].forEach(i => g(i).value = '');
+        ['arNum','arArt','arWhere','arBy','arTo','arSuspect'].forEach(i => g(i).value = '');
         g('arDate').value = '';
         g('arSt').textContent = '✓ Запись добавлена (видна всем)';
         setTimeout(() => { g('arSt').textContent = ''; }, 2500);
@@ -2009,7 +2086,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   });
 
   g('arClear').addEventListener('click', () => {
-    ['arNum','arArt','arWhere','arBy','arTo'].forEach(i => g(i).value = '');
+    ['arNum','arArt','arWhere','arBy','arTo','arSuspect'].forEach(i => g(i).value = '');
     g('arDate').value = '';
     g('arSt').textContent = '';
   });
