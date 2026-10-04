@@ -312,7 +312,6 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 .paper{background:#fff;color:#000;font-family:"Times New Roman",serif;font-size:15px;line-height:1.25;padding:32px 38px;border:1px solid #ccc;box-shadow:0 4px 18px rgba(0,0,0,.15);max-width:794px;margin:14px auto}
 .paper .pa{margin-left:48%;text-align:justify}.paper .pb{height:1.25em}.paper .pt{text-align:center;font-weight:700}
 .paper .pcd{display:flex;justify-content:space-between;gap:16px}.paper .pp{text-indent:2.2em;text-align:justify}
-/* ---- Модальное окно редактирования ---- */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,36,64,.55);
   z-index:200;place-items:center;padding:20px;backdrop-filter:blur(3px);}
 .modal-overlay.on{display:grid}
@@ -405,6 +404,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <li><a href="#" data-target="cat-fsb">🛡 Следователи ФСБ</a></li>
         <li><a href="#" data-target="cat-dozn">📝 Дознаватели</a></li>
         <div class="navgroup">Отдел</div>
+        <li><a href="#" data-target="allropp">🗂 Все РОПП</a></li>
         <li><a href="#" data-target="staff">👥 Личный состав</a></li>
         <li><a href="#" data-target="addrecord">➕ Добавить запись</a></li>
       </ul>
@@ -426,6 +426,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
           <div class="quick" data-goto="algos"><div class="qi">📋</div><div class="qt">Алгоритмы действий</div><div class="qd">10 пошаговых чек-листов: от проверки сообщения до направления дела прокурору</div></div>
           <div class="quick" data-goto="deadlines"><div class="qi">⏱</div><div class="qt">Сроки и калькулятор</div><div class="qd">Полная таблица сроков + расчёт контрольных дат от исходной даты</div></div>
           <div class="quick" data-goto="ropp"><div class="qi">📄</div><div class="qt">Рапорт (РОПП)</div><div class="qd">Конструктор рапорта об обнаружении признаков преступления · Word · отправка в реестр</div></div>
+          <div class="quick" data-goto="allropp"><div class="qi">🗂</div><div class="qt">Все РОПП</div><div class="qd">Реестр отправленных рапортов · создание материалов проверки</div></div>
           <div class="quick" data-goto="addrecord"><div class="qi">➕</div><div class="qt">Добавить запись</div><div class="qd">Общий учёт уголовных дел и материалов проверки (синхронизируется у всех)</div></div>
           <div class="quick" data-goto="articles"><div class="qi">📖</div><div class="qt">Ключевые статьи</div><div class="qd">Что требует судебного решения, основания задержания, меры пресечения, прекращение</div></div>
           <div class="quick" data-goto="memo"><div class="qi">💡</div><div class="qt">Памятки</div><div class="qd">Типичные ошибки, запреты, правила составления протокола</div></div>
@@ -481,6 +482,14 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
       </div>
     </section>
 
+    <section id="allropp">
+      <div class="card">
+        <h2>Все РОПП <span class="badge" id="roppCount">0</span></h2>
+        <p class="sub">Реестр отправленных рапортов об обнаружении признаков преступления. Отсюда можно в один клик создать материал проверки по рапорту.</p>
+        <div id="roppList"></div>
+      </div>
+    </section>
+
     <section id="addrecord">
       <div class="card rform">
         <h2>Добавить запись <span class="badge">общий учёт</span></h2>
@@ -512,6 +521,17 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
           <div class="field w"><label>Кому поручено</label><input id="arTo" readonly placeholder="для уголовного дела заполняется автоматически из поля «Кто сообщил»"><div class="hint">Для уголовного дела — автоматически повторяет «Кто сообщил». Для материала проверки остаётся пустым.</div></div>
         </div>
 
+        <div id="arFileWrap" style="display:none">
+          <h3>Файл <span class="badge">для материала проверки</span></h3>
+          <div class="rgrid">
+            <div class="field w">
+              <label>Прикрепить файл (до 5 МБ)</label>
+              <input type="file" id="arFile">
+              <div class="hint">Файл сохранится в базе и будет доступен всем сотрудникам. Для уголовного дела файл при создании не прикрепляется — добавьте его потом кнопкой 📎 в таблице.</div>
+            </div>
+          </div>
+        </div>
+
         <div class="steps">
           <button class="pill" id="arAdd">➕ Добавить запись</button>
           <button class="pill" id="arClear">Очистить форму</button>
@@ -533,7 +553,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
     <section id="ropp">
       <div class="card rform">
         <h2>Рапорт об обнаружении признаков преступления <span class="badge">ст. 143 УПК РФ</span></h2>
-        <p class="sub">1) Заполните форму · 2) Скачайте Word · 3) Отправьте в реестр — рапорт с файлом уйдёт руководителю.</p>
+        <p class="sub">1) Заполните форму · 2) Скачайте Word · 3) Отправьте в реестр — рапорт уйдёт руководителю и появится в разделе «Все РОПП».</p>
 
         <h3>Адресат</h3>
         <div class="rgrid">
@@ -1289,27 +1309,92 @@ function esc(s){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
   });
 }
+function currentUser(){
+  try{ return JSON.parse(localStorage.getItem('upk_user') || 'null'); }catch(e){ return null; }
+}
+function canManage(){
+  const u = currentUser();
+  if(!u) return false;
+  if(u.name === 'Администратор') return true;
+  const pos = (u.pos || '').toLowerCase();
+  return pos.indexOf('руководител') !== -1;
+}
 
-/* ---- Личный состав: выговоры и отпуска ---- */
+/* ============================================================
+   FIREBASE
+   ============================================================ */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyA0no1h1Sz5PjFcAzDTFzFawSwommpNpXU",
+  authDomain: "sk-kirov.firebaseapp.com",
+  databaseURL: "https://sk-kirov-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sk-kirov",
+  storageBucket: "sk-kirov.firebasestorage.app",
+  messagingSenderId: "385562080905",
+  appId: "1:385562080905:web:b78511334b920e8b0d3858"
+};
+let db = null;
+try{
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+}catch(e){ console.error('Firebase init failed', e); }
+window.__db = db;
+
+/* ---- Работа с файлами (base64 в RTDB) ---- */
+function shortName(n){
+  n = String(n || '');
+  return n.length > 22 ? n.slice(0,19) + '…' : n;
+}
+function uploadFileToRecord(recordId, file){
+  return new Promise((resolve, reject) => {
+    if(!db){ reject(new Error('нет соединения')); return; }
+    if(!file){ reject(new Error('файл не выбран')); return; }
+    if(file.size > 5 * 1024 * 1024){ reject(new Error('файл больше 5 МБ')); return; }
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('не удалось прочитать файл'));
+    reader.onload = () => {
+      const result = String(reader.result || '');
+      const b64 = result.indexOf(',') >= 0 ? result.split(',')[1] : result;
+      const u = currentUser();
+      const meta = {
+        name: file.name || 'file',
+        type: file.type || 'application/octet-stream',
+        size: file.size || 0,
+        data: b64,
+        by: (u && u.name) || '',
+        ts: Date.now()
+      };
+      db.ref('records/' + recordId + '/file').set(meta).then(resolve).catch(reject);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function downloadRecordFile(rec){
+  const f = rec && rec.file;
+  if(!f || !f.data){ alert('Файл не найден'); return; }
+  const bin = atob(f.data);
+  const arr = new Uint8Array(bin.length);
+  for(let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  const blob = new Blob([arr], {type: f.type || 'application/octet-stream'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = f.name || 'file';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 5000);
+}
+
+/* ---- Личный состав: отметки ---- */
 let staffMarks = {};
 
 function canManageStaff(){
-  try{
-    const u = JSON.parse(localStorage.getItem('upk_user') || 'null');
-    if(!u) return false;
-    if(u.name === 'Администратор') return true;
-    const pos = (u.pos || '').toLowerCase();
-    return pos.indexOf('руководител') !== -1;
-  }catch(e){ return false; }
+  return canManage();
 }
-
 function fmtDateShort(d){
   if(!d) return '—';
   const p = String(d).split('-');
   if(p.length !== 3) return d;
   return p[2] + '.' + p[1] + '.' + p[0];
 }
-
 function renderStaff(){
   const box = document.getElementById('staffBox');
   const cnt = document.getElementById('staffCount');
@@ -1878,6 +1963,9 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   });
 })();
 
+/* ============================================================
+   РОПП: конструктор + отправка в Discord + сохранение в Firebase
+   ============================================================ */
 (function(){
   const g = id => document.getElementById(id), v = id => g(id).value.trim();
   const URL_HOOK = 'https://discord.com/api/webhooks/1556276379002212383/w6zda8nxiRq4dnnVZ3arWIdNB3Y1CC9Oy9LD9OV1ujG0tVo524U4Vb4ysjWlyZfdOKbS';
@@ -1941,11 +2029,44 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     catch(e){ st.textContent = 'Не удалось собрать .docx (не загрузилась библиотека — проверьте интернет). Можно скопировать текст.'; }
   };
   g('rCopy').onclick = () => navigator.clipboard.writeText(blocks().map(b => b.k==='cd' ? b.l+'\t'+b.r : b.t||'').join('\n')).then(() => { st.textContent = 'Текст скопирован ✓'; });
+
   g('rSend').onclick = async () => {
-    if(!confirm('Отправить рапорт в реестр руководителю?\n\nОтправка мгновенная — отменить её будет невозможно.')) return;
+    if(!confirm('Отправить рапорт в реестр руководителю?\n\nРапорт уйдёт в Discord и появится в разделе «Все РОПП».')) return;
     const btn = g('rSend'); btn.disabled = true; st.textContent = 'Отправка…';
     const A = arts(), days = +g('rDays').value, f = (n,val) => ({name:n, value:(String(val||'').slice(0,1000)||'—'), inline:false});
     let until = '—'; if(v('rWhen')){ const d = new Date(v('rWhen')+'T00:00'); d.setDate(d.getDate()+days); until = d.toLocaleDateString('ru-RU')+' ('+days+' сут.)'; }
+
+    /* ---- Сохранение в Firebase (видно в «Все РОПП») ---- */
+    const rec = {
+      num: v('rNum'),
+      city: v('rCity'),
+      when: v('rWhen'),
+      time: v('rTime'),
+      boss: v('rBoss'),
+      rank: v('rRank'),
+      fio: v('rFio'),
+      org: v('rOrg'),
+      orgG: v('rOrgG'),
+      src: v('rSrc'),
+      text: v('rText'),
+      who: v('rWho'),
+      arts: A,
+      days: days,
+      until: until,
+      sigRank: v('rSigRank'),
+      sigFio: v('rSigFio'),
+      author: (currentUser() && currentUser().name) || '',
+      ts: Date.now()
+    };
+    let fbOk = false;
+    try{
+      if(window.__db){
+        await window.__db.ref('ropp').push(rec);
+        fbOk = true;
+      }
+    }catch(e){ console.warn('ropp save failed', e); }
+
+    /* ---- Discord ---- */
     const emb = {title:'📄 Рапорт об обнаружении признаков преступления', color:3447003, timestamp:new Date().toISOString(), fields:[
       f('Кому',[v('rBoss'),v('rRank'),v('rFio')].filter(Boolean).join(' ')), f('Поступило',dLong()+timeTxt()), f('От кого',v('rSrc')), f('Суть',v('rText')),
       f('В действиях',v('rWho')||'неустановленного лица'), f('Статьи УК РФ',A.length?(A.length>1?'ст.ст. ':'ст. ')+A.join(', '):''),
@@ -1953,48 +2074,123 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const fd = new FormData(); fd.append('payload_json', JSON.stringify({embeds:[emb], allowed_mentions:{parse:[]}}));
     let withFile = false;
     try{ fd.append('files[0]', await makeDocx(), fname()); withFile = true; }catch(e){}
+    let ok = false;
     try{
       const r = await fetch(URL_HOOK, {method:'POST', body:fd});
-      st.textContent = r.ok ? '✓ Отправлено в реестр'+(withFile?' (с файлом Word)':' (без файла)') : 'Ошибка отправки: '+r.status;
-    } catch(e){ st.textContent = 'Не удалось отправить (проверьте интернет).'; }
+      ok = r.ok;
+    }catch(e){}
+
+    if(ok && fbOk) st.textContent = '✓ Отправлено в реестр' + (withFile?' (с файлом Word)':'');
+    else if(ok && !fbOk) st.textContent = '✓ Отправлено в Discord (сохранение в реестр не удалось)';
+    else if(!ok && fbOk) st.textContent = '⚠ Сохранено в реестре, но Discord недоступен';
+    else st.textContent = 'Ошибка отправки';
     setTimeout(() => btn.disabled = false, 3000);
   };
 })();
 
 /* ============================================================
-   ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ ЗАПИСЕЙ + PRESENCE + ОТМЕТКИ
+   РАЗДЕЛ «ВСЕ РОПП»
+   ============================================================ */
+(function(){
+  const box = document.getElementById('roppList');
+  const cnt = document.getElementById('roppCount');
+  if(!box || !window.__db) return;
+
+  window.__db.ref('ropp').on('value', snap => {
+    const val = snap.val() || {};
+    const list = Object.keys(val).map(k => Object.assign({id:k}, val[k]))
+                                .sort((a,b) => (b.ts||0) - (a.ts||0));
+    if(cnt) cnt.textContent = list.length;
+    if(!list.length){
+      box.innerHTML = '<p class="sub">Пока нет отправленных рапортов. Отправьте первый во вкладке «Рапорт (РОПП)».</p>';
+      return;
+    }
+    const manage = canManage();
+    const rows = list.map(r => {
+      const arts = (r.arts || []).join(', ');
+      return '<tr>' +
+        '<td class="term">' + esc(r.num || '—') + '</td>' +
+        '<td>' + esc(fmtDateShort(r.when) || '—') + '</td>' +
+        '<td>' + esc(r.src || '—') + '</td>' +
+        '<td class="law">' + esc(arts || '—') + '</td>' +
+        '<td>' + esc(r.who || '—') + '</td>' +
+        '<td>' + esc(r.author || '—') + '</td>' +
+        '<td>' + esc(r.until || '—') + '</td>' +
+        '<td><div class="row-actions">' +
+          '<button class="btn" data-view="' + r.id + '">👁</button>' +
+          '<button class="btn primary" data-createmp="' + r.id + '">→ МП</button>' +
+          (manage ? '<button class="btn" data-delropp="' + r.id + '" title="Удалить">✕</button>' : '') +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+    box.innerHTML = '<table><thead><tr>' +
+      '<th>№ КРСоП</th><th>Дата</th><th>От кого</th><th>Статьи</th><th>В действиях</th><th>Следователь</th><th>Срок до</th><th></th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table>';
+
+    box.querySelectorAll('[data-view]').forEach(b => {
+      b.addEventListener('click', () => {
+        const r = list.find(x => x.id === b.dataset.view);
+        if(!r) return;
+        const info = [
+          '№ в КРСоП: ' + (r.num || '—'),
+          'Город: ' + (r.city || '—'),
+          'Дата сообщения: ' + fmtDateShort(r.when) + (r.time ? ' в ' + r.time : ''),
+          'От кого: ' + (r.src || '—'),
+          'Суть: ' + (r.text || '—'),
+          'В действиях: ' + (r.who || '—'),
+          'Статьи УК РФ: ' + ((r.arts || []).join(', ') || '—'),
+          'Следователь: ' + [r.sigRank, r.sigFio].filter(Boolean).join(' '),
+          'Автор записи: ' + (r.author || '—'),
+          'Срок проверки до: ' + (r.until || '—')
+        ].join('\n\n');
+        alert(info);
+      });
+    });
+
+    box.querySelectorAll('[data-createmp]').forEach(b => {
+      b.addEventListener('click', () => {
+        const r = list.find(x => x.id === b.dataset.createmp);
+        if(!r) return;
+        goTo('addrecord');
+        setTimeout(() => {
+          const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+          const arType = document.getElementById('arType');
+          if(arType){ arType.value = 'mp'; arType.dispatchEvent(new Event('change')); }
+          set('arNum', r.num || '');
+          set('arDate', r.when || '');
+          set('arArt', (r.arts || []).join(', '));
+          set('arSuspect', '');
+          set('arWhere', r.city || '');
+          set('arBy', [r.sigRank, r.sigFio].filter(Boolean).join(' ') || r.author || '');
+          set('arTo', '');
+          const st = document.getElementById('arSt');
+          if(st) st.textContent = 'Поля предзаполнены из РОПП № ' + (r.num || '—') + '. Проверьте и сохраните.';
+        }, 250);
+      });
+    });
+
+    if(manage){
+      box.querySelectorAll('[data-delropp]').forEach(b => {
+        b.addEventListener('click', () => {
+          if(!confirm('Удалить рапорт из реестра?')) return;
+          window.__db.ref('ropp/' + b.dataset.delropp).remove();
+        });
+      });
+    }
+  }, err => {
+    console.warn('ropp read error', err);
+    box.innerHTML = '<p class="sub">Не удалось загрузить реестр РОПП.</p>';
+  });
+})();
+
+/* ============================================================
+   ЗАПИСИ (УД + МП) + ФАЙЛЫ + PRESENCE + ОТМЕТКИ ЛИЧНОГО СОСТАВА
    ============================================================ */
 (function(){
   const g = id => document.getElementById(id);
   const v = id => g(id).value.trim();
 
-  const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyA0no1h1Sz5PjFcAzDTFzFawSwommpNpXU",
-    authDomain: "sk-kirov.firebaseapp.com",
-    databaseURL: "https://sk-kirov-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "sk-kirov",
-    storageBucket: "sk-kirov.firebasestorage.app",
-    messagingSenderId: "385562080905",
-    appId: "1:385562080905:web:b78511334b920e8b0d3858"
-  };
-
-  let db = null, syncBadge = null;
-  try{
-    firebase.initializeApp(FIREBASE_CONFIG);
-    db = firebase.database();
-  }catch(e){ console.error('Firebase init failed', e); }
-
-  function currentUser(){
-    try{ return JSON.parse(localStorage.getItem('upk_user') || 'null'); }catch(e){ return null; }
-  }
-  /* Кто может редактировать/удалять записи: admin, руководитель СО, зам. руководителя СО */
-  function canManage(){
-    const u = currentUser();
-    if(!u) return false;
-    if(u.name === 'Администратор') return true;
-    const pos = (u.pos || '').toLowerCase();
-    return pos.indexOf('руководител') !== -1;
-  }
+  let syncBadge = null;
 
   /* ---- Бейдж синхронизации ---- */
   (function addSyncBadge(){
@@ -2002,7 +2198,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     if(!sel) return;
     syncBadge = document.createElement('span');
     syncBadge.className = 'sync-badge';
-    syncBadge.textContent = db ? 'Подключение…' : 'Оффлайн';
+    syncBadge.textContent = window.__db ? 'Подключение…' : 'Оффлайн';
     sel.parentElement.appendChild(syncBadge);
   })();
 
@@ -2053,12 +2249,12 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   }
 
   (function presenceInit(){
-    if(!db){ renderOnline([], false); return; }
+    if(!window.__db){ renderOnline([], false); return; }
     const u = currentUser();
     const rawName = (u && u.name) || 'Гость';
     const safeKey = rawName.replace(/[.#$\[\]/]/g, '_');
-    const ref = db.ref('presence/' + safeKey);
-    const connRef = db.ref('.info/connected');
+    const ref = window.__db.ref('presence/' + safeKey);
+    const connRef = window.__db.ref('.info/connected');
 
     connRef.on('value', snap => {
       const ok = snap.val() === true;
@@ -2072,12 +2268,12 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     });
 
     setInterval(() => {
-      if(db){
+      if(window.__db){
         try{ ref.update({ts: Date.now()}); }catch(e){}
       }
     }, 60000);
 
-    db.ref('presence').on('value', snap => {
+    window.__db.ref('presence').on('value', snap => {
       const val = snap.val() || {};
       const now = Date.now();
       const list = Object.keys(val)
@@ -2121,12 +2317,27 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       const head = '<tr>' +
           '<th>№</th><th>Дата</th><th>Статья</th><th>ФИО заподозренного</th>' +
           '<th>Город</th><th>Кто сообщил</th><th>Кому поручено</th><th>Кто добавил</th>' +
+          '<th>Файл</th>' +
           '<th>Принятое решение</th>' +
           (allowManage ? '<th></th>' : '') +
         '</tr>';
       const rows = arr.sort((a,b) => (b.ts||0) - (a.ts||0)).map(r => {
         const suspect = (r.suspect && r.suspect.trim()) ? r.suspect.trim() : UNKNOWN;
         const isUnknown = suspect === UNKNOWN;
+
+        /* ---- ячейка файла ---- */
+        const f = r.file;
+        let fileCell;
+        if(f && f.data){
+          fileCell =
+            '<div class="row-actions">' +
+              '<button class="btn" data-dl="' + r.id + '" title="Скачать: ' + esc(f.name || '') + '">📥 ' + esc(shortName(f.name || 'файл')) + '</button>' +
+              (allowManage ? '<button class="btn" data-delfile="' + r.id + '" title="Удалить файл">✕</button>' : '') +
+            '</div>';
+        } else {
+          fileCell = '<button class="btn" data-up="' + r.id + '">📎 Загрузить</button>';
+        }
+
         return '<tr>' +
           '<td class="term">' + esc(r.num || '—') + '</td>' +
           '<td>' + esc(fmtDate(r.date)) + '</td>' +
@@ -2136,6 +2347,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
           '<td>' + esc(r.by || '—') + '</td>' +
           '<td>' + (isUd ? esc(r.to || r.by || '—') : '') + '</td>' +
           '<td>' + esc(r.author || '—') + '</td>' +
+          '<td>' + fileCell + '</td>' +
           '<td class="decision">' + esc(r.decision || '—') + '</td>' +
           (allowManage ? '<td><div class="row-actions">' +
             '<button class="btn edit" data-edit="' + r.id + '" title="Редактировать">✏️</button>' +
@@ -2145,12 +2357,13 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       }).join('');
       box.innerHTML = '<table><thead>' + head + '</thead><tbody>' + rows + '</tbody></table>';
 
+      /* ---- обработчики ---- */
       if(allowManage){
         box.querySelectorAll('[data-del]').forEach(b => {
           b.addEventListener('click', () => {
             if(!confirm('Удалить запись? Она исчезнет у всех.')) return;
-            if(!db) return;
-            db.ref('records/' + b.dataset.del).remove();
+            if(!window.__db) return;
+            window.__db.ref('records/' + b.dataset.del).remove();
           });
         });
         box.querySelectorAll('[data-edit]').forEach(b => {
@@ -2159,7 +2372,37 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
             if(rec) openEditModal(rec);
           });
         });
+        box.querySelectorAll('[data-delfile]').forEach(b => {
+          b.addEventListener('click', () => {
+            if(!confirm('Удалить файл?')) return;
+            if(!window.__db) return;
+            window.__db.ref('records/' + b.dataset.delfile + '/file').remove();
+          });
+        });
       }
+
+      box.querySelectorAll('[data-up]').forEach(b => {
+        b.addEventListener('click', () => {
+          if(!canManage()){ alert('Прикреплять файлы может только администратор, руководитель СО и его заместитель.'); return; }
+          const inp = document.createElement('input');
+          inp.type = 'file';
+          inp.onchange = () => {
+            const file = inp.files && inp.files[0];
+            if(!file) return;
+            uploadFileToRecord(b.dataset.up, file)
+              .then(() => alert('Файл загружен ✓'))
+              .catch(err => alert('Ошибка: ' + (err && err.message ? err.message : err)));
+          };
+          inp.click();
+        });
+      });
+
+      box.querySelectorAll('[data-dl]').forEach(b => {
+        b.addEventListener('click', () => {
+          const rec = records.find(x => x.id === b.dataset.dl);
+          if(rec) downloadRecordFile(rec);
+        });
+      });
     }
 
     drawList(ud, 'arUdList', true);
@@ -2190,7 +2433,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     window.addEventListener('keydown', e => { if(e.key === 'Escape' && editModal.classList.contains('on')) closeEditModal(); });
 
     g('edSave').addEventListener('click', () => {
-      if(!editingId || !db){ closeEditModal(); return; }
+      if(!editingId || !window.__db){ closeEditModal(); return; }
       const upd = {
         art: v('edArt') || '',
         suspect: v('edSuspect') || 'неустановленное лицо',
@@ -2199,15 +2442,15 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       };
       const btn = g('edSave');
       btn.disabled = true;
-      db.ref('records/' + editingId).update(upd)
+      window.__db.ref('records/' + editingId).update(upd)
         .then(() => { closeEditModal(); })
         .catch(err => { alert('Ошибка сохранения: ' + (err.message || err)); })
         .then(() => { btn.disabled = false; });
     });
   }
 
-  if(db){
-    db.ref('records').on('value', snap => {
+  if(window.__db){
+    window.__db.ref('records').on('value', snap => {
       const val = snap.val() || {};
       records = Object.keys(val).map(k => Object.assign({id: k}, val[k]));
       cacheSave();
@@ -2225,27 +2468,38 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     render();
   }
 
-  /* ---- Автозаполнение «Кому поручено» (только для уголовных дел) ---- */
+  /* ---- Автозаполнение «Кому поручено» + показ поля файла ---- */
   function updateArTo(){
-    if(g('arType').value === 'ud') g('arTo').value = g('arBy').value;
-    else g('arTo').value = '';
+    const isUd = g('arType').value === 'ud';
+    g('arTo').value = isUd ? g('arBy').value : '';
+    if(g('arFileWrap')) g('arFileWrap').style.display = isUd ? 'none' : '';
   }
   g('arBy').addEventListener('input', updateArTo);
   g('arType').addEventListener('change', updateArTo);
+  updateArTo();
 
   /* ---- Добавление записи ---- */
   g('arAdd').addEventListener('click', () => {
     if(!v('arNum')){ g('arSt').textContent = 'Укажите номер.'; return; }
     if(!v('arBy')){ g('arSt').textContent = 'Укажите, кто сообщил.'; return; }
-    if(!db){ g('arSt').textContent = 'Нет соединения с базой.'; return; }
-
-    let author = '';
-    try{
-      const u = currentUser();
-      author = u && u.name ? u.name : '';
-    }catch(e){}
+    if(!window.__db){ g('arSt').textContent = 'Нет соединения с базой.'; return; }
 
     const type = g('arType').value;
+    const fileInput = g('arFile');
+    const file = fileInput && fileInput.files && fileInput.files[0];
+
+    if(type === 'ud' && file){
+      g('arSt').textContent = 'Для уголовного дела файл при создании прикрепить нельзя — добавьте после через таблицу.';
+      return;
+    }
+    if(file && file.size > 5 * 1024 * 1024){
+      g('arSt').textContent = 'Файл больше 5 МБ — уменьшите размер.';
+      return;
+    }
+
+    const u = currentUser();
+    const author = (u && u.name) || '';
+
     const rec = {
       type: type,
       num: v('arNum'),
@@ -2260,21 +2514,27 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       ts: Date.now()
     };
 
-    db.ref('records').push(rec)
-      .then(() => {
-        ['arNum','arArt','arWhere','arBy','arTo','arSuspect'].forEach(i => g(i).value = '');
-        g('arDate').value = '';
-        g('arSt').textContent = '✓ Запись добавлена (видна всем)';
-        setTimeout(() => { g('arSt').textContent = ''; }, 2500);
-      })
-      .catch(err => {
-        g('arSt').textContent = 'Ошибка записи: ' + (err.message || err);
-      });
+    g('arSt').textContent = 'Сохранение…';
+
+    window.__db.ref('records').push(rec).then(ref => {
+      if(type === 'mp' && file){
+        return uploadFileToRecord(ref.key, file);
+      }
+    }).then(() => {
+      ['arNum','arArt','arWhere','arBy','arTo','arSuspect'].forEach(i => g(i).value = '');
+      g('arDate').value = '';
+      if(fileInput) fileInput.value = '';
+      g('arSt').textContent = '✓ Запись добавлена (видна всем)' + (type === 'mp' && file ? ' · файл загружен' : '');
+      setTimeout(() => { g('arSt').textContent = ''; }, 3000);
+    }).catch(err => {
+      g('arSt').textContent = 'Ошибка: ' + (err && err.message ? err.message : err);
+    });
   });
 
   g('arClear').addEventListener('click', () => {
     ['arNum','arArt','arWhere','arBy','arTo','arSuspect'].forEach(i => g(i).value = '');
     g('arDate').value = '';
+    if(g('arFile')) g('arFile').value = '';
     g('arSt').textContent = '';
   });
 
@@ -2308,8 +2568,8 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     box.querySelectorAll('[data-delmark]').forEach(b => {
       b.addEventListener('click', () => {
         if(!confirm('Удалить отметку?')) return;
-        if(!db) return;
-        db.ref('staff_marks/' + currentStaffSurname + '/' + b.dataset.delmark).remove();
+        if(!window.__db) return;
+        window.__db.ref('staff_marks/' + currentStaffSurname + '/' + b.dataset.delmark).remove();
       });
     });
   }
@@ -2346,7 +2606,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       }
     });
     g('smAdd').addEventListener('click', () => {
-      if(!currentStaffSurname || !db) return;
+      if(!currentStaffSurname || !window.__db) return;
       const type   = g('smType').value;
       const reason = g('smReason').value.trim();
       const date   = g('smDate').value;
@@ -2355,15 +2615,15 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       const u = currentUser();
       const by = u && u.name ? u.name : '';
       const mark = {type: type, reason: reason, date: date, end: type === 'vacation' ? end : '', by: by, ts: Date.now()};
-      db.ref('staff_marks/' + currentStaffSurname).push(mark).then(() => {
+      window.__db.ref('staff_marks/' + currentStaffSurname).push(mark).then(() => {
         g('smReason').value = '';
         g('smEnd').value = '';
       });
     });
   }
 
-  if(db){
-    db.ref('staff_marks').on('value', snap => {
+  if(window.__db){
+    window.__db.ref('staff_marks').on('value', snap => {
       staffMarks = snap.val() || {};
       renderStaff();
       if(staffModal && staffModal.classList.contains('on')) renderStaffMarksModal();
