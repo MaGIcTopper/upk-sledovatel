@@ -261,7 +261,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
   border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:20px;
   cursor:pointer;box-shadow:var(--shadow);z-index:60;}
 
-/* ---------- РОПП ---------- */
+/* ---------- РОПП и формы ---------- */
 .rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 18px;margin-bottom:14px}
 .rgrid .field.w{grid-column:1/-1}
 .rgrid input,.rgrid textarea,.rgrid select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font:inherit;font-size:15px;background:var(--card);color:var(--text);transition:.15s}
@@ -347,6 +347,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <li><a href="#" data-target="cat-dozn">📝 Дознаватели</a></li>
         <div class="navgroup">Отдел</div>
         <li><a href="#" data-target="staff">👥 Личный состав</a></li>
+        <li><a href="#" data-target="addrecord">➕ Добавить запись</a></li>
       </ul>
     </nav>
   </aside>
@@ -366,6 +367,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
           <div class="quick" data-goto="algos"><div class="qi">📋</div><div class="qt">Алгоритмы действий</div><div class="qd">10 пошаговых чек-листов: от проверки сообщения до направления дела прокурору</div></div>
           <div class="quick" data-goto="deadlines"><div class="qi">⏱</div><div class="qt">Сроки и калькулятор</div><div class="qd">Полная таблица сроков + расчёт контрольных дат от исходной даты</div></div>
           <div class="quick" data-goto="ropp"><div class="qi">📄</div><div class="qt">Рапорт (РОПП)</div><div class="qd">Конструктор рапорта об обнаружении признаков преступления · Word · отправка в реестр</div></div>
+          <div class="quick" data-goto="addrecord"><div class="qi">➕</div><div class="qt">Добавить запись</div><div class="qd">Учёт уголовных дел и материалов проверки</div></div>
           <div class="quick" data-goto="articles"><div class="qi">📖</div><div class="qt">Ключевые статьи</div><div class="qd">Что требует судебного решения, основания задержания, меры пресечения, прекращение</div></div>
           <div class="quick" data-goto="memo"><div class="qi">💡</div><div class="qt">Памятки</div><div class="qd">Типичные ошибки, запреты, правила составления протокола</div></div>
           <div class="quick" data-goto="materials"><div class="qi">📁</div><div class="qt">Общие материалы</div><div class="qd">Образцы протоколов, справочные документы для всех категорий</div></div>
@@ -417,6 +419,55 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <h2>Личный состав <span class="badge" id="staffCount"></span></h2>
         <p class="sub">Сотрудники отдела криминалистики и следственного отдела по городу Левобережный СУ СК России по Кировской области.</p>
         <div id="staffBox"></div>
+      </div>
+    </section>
+
+    <section id="addrecord">
+      <div class="card rform">
+        <h2>Добавить запись <span class="badge">учёт дел и материалов</span></h2>
+        <p class="sub">Выберите тип записи, заполните поля — она появится в общем списке ниже.</p>
+
+        <h3>Тип записи</h3>
+        <div class="rgrid">
+          <div class="field">
+            <label>Что добавить</label>
+            <select id="arType">
+              <option value="ud">Уголовное дело</option>
+              <option value="mp">Материал проверки</option>
+            </select>
+          </div>
+        </div>
+
+        <h3>Основные сведения</h3>
+        <div class="rgrid">
+          <div class="field"><label>Номер</label><input id="arNum" placeholder="123456"></div>
+          <div class="field"><label>Дата возбуждения</label><input type="date" id="arDate"></div>
+          <div class="field"><label>Статья УК РФ</label><input id="arArt" placeholder="158 ч. 2"></div>
+        </div>
+
+        <h3>Где, кем, кому поручено</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Где (место происшествия)</label><input id="arWhere" placeholder="г. Левобережный, ул. …, д. …"></div>
+          <div class="field w"><label>Кем возбуждено</label><input id="arBy" placeholder="следователь СО по г. Левобережный Сидоров С.С."></div>
+          <div class="field w"><label>Фабула (необязательно — можно оставить без фабулы)</label><textarea id="arFabula" rows="3" placeholder="Краткое изложение без подробностей"></textarea></div>
+          <div class="field w"><label>Кому поручено</label><input id="arTo" placeholder="следователь Иванов И.И."></div>
+        </div>
+
+        <div class="steps">
+          <button class="pill" id="arAdd">➕ Добавить запись</button>
+          <button class="pill" id="arClear">Очистить форму</button>
+        </div>
+        <p class="sub" id="arSt"></p>
+      </div>
+
+      <div class="card">
+        <h2>Уголовные дела <span class="badge" id="arUdCount">0</span></h2>
+        <div id="arUdList"></div>
+      </div>
+
+      <div class="card">
+        <h2>Материалы проверки <span class="badge" id="arMpCount">0</span></h2>
+        <div id="arMpList"></div>
       </div>
     </section>
 
@@ -971,9 +1022,6 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-/* ============================================================
-   АВТОРИЗАЦИЯ: логин (фамилия) + пароль. Пароли в hex.
-   ============================================================ */
 const AUTH_USERS = [
   {surname:"Котов",       full:"Котов Андрей Анатольевич",        pos:"Руководитель отдела",          zvan:"Майор юстиции",             unit:"Отдел криминалистики", passHex:"6b6f746f7632303235"},
   {surname:"Степанов",    full:"Степанов Никита Алексеевич",      pos:"Эксперт-криминалист",          zvan:"Лейтенант юстиции",         unit:"Отдел криминалистики", passHex:"73746570616e6f7632303235"},
@@ -990,8 +1038,7 @@ const AUTH_USERS = [
 ];
 
 const MASTER_LOGIN = "admin";
-const MASTER_PASS_HEX = "736f455049436d6f6e73747232303235"; // soEPICmonstr2025
-
+const MASTER_PASS_HEX = "736f455049436d6f6e73747232303235";
 const AUTH_KEY = "upk_auth";
 const USER_KEY = "upk_user";
 
@@ -1104,9 +1151,6 @@ function applyAuth(){
 }
 applyAuth();
 
-/* ============================================================
-   ЛИЧНЫЙ СОСТАВ
-   ============================================================ */
 (function renderStaff(){
   const box = document.getElementById('staffBox');
   const cnt = document.getElementById('staffCount');
@@ -1124,18 +1168,12 @@ applyAuth();
   }).join('');
 })();
 
-/* ============================================================
-   УТИЛИТЫ
-   ============================================================ */
 function esc(s){
   return String(s).replace(/[&<>"]/g, function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
   });
 }
 
-/* ============================================================
-   АЛГОРИТМЫ
-   ============================================================ */
 const ALGOS = [
 {id:'a1', title:'Проверка сообщения о преступлении', law:'ст. 140–145 УПК РФ', steps:[
   {t:'Принять и зарегистрировать сообщение о преступлении в КУСП', r:'ст. 144 ч. 1'},
@@ -1666,9 +1704,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   });
 })();
 
-/* ============================================================
-   РОПП: конструктор рапорта, Word (.docx) и отправка в реестр (Discord)
-   ============================================================ */
 (function(){
   const g = id => document.getElementById(id), v = id => g(id).value.trim();
   const URL_HOOK = 'https://discord.com/api/webhooks/1556276379002212383/w6zda8nxiRq4dnnVZ3arWIdNB3Y1CC9Oy9LD9OV1ujG0tVo524U4Vb4ysjWlyZfdOKbS';
@@ -1750,6 +1785,99 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     } catch(e){ st.textContent = 'Не удалось отправить (проверьте интернет).'; }
     setTimeout(() => btn.disabled = false, 3000);
   };
+})();
+
+/* ============================================================
+   ДОБАВЛЕНИЕ ЗАПИСЕЙ: уголовные дела и материалы проверки
+   ============================================================ */
+(function(){
+  const STORAGE = 'upk_records_v1';
+  const g = id => document.getElementById(id);
+  const v = id => g(id).value.trim();
+
+  function load(){ try{ return JSON.parse(localStorage.getItem(STORAGE) || '[]'); }catch(e){ return []; } }
+  function save(arr){ try{ localStorage.setItem(STORAGE, JSON.stringify(arr)); }catch(e){} }
+
+  let records = load();
+
+  function fmtDate(d){
+    if(!d) return '—';
+    const parts = d.split('-');
+    return parts[2] + '.' + parts[1] + '.' + parts[0];
+  }
+
+  function render(){
+    const ud = records.filter(r => r.type === 'ud');
+    const mp = records.filter(r => r.type === 'mp');
+    g('arUdCount').textContent = ud.length;
+    g('arMpCount').textContent = mp.length;
+
+    function drawList(arr, boxId){
+      const box = g(boxId);
+      if(!arr.length){
+        box.innerHTML = '<p class="sub">Пока нет записей.</p>';
+        return;
+      }
+      box.innerHTML = '<table><thead><tr>' +
+          '<th>№</th><th>Дата</th><th>Статья</th><th>Где / фабула</th><th>Кем возбуждено</th><th>Кому поручено</th><th></th>' +
+        '</tr></thead><tbody>' +
+        arr.map(r =>
+          '<tr>' +
+            '<td class="term">' + esc(r.num || '—') + '</td>' +
+            '<td>' + esc(fmtDate(r.date)) + '</td>' +
+            '<td class="law">' + esc(r.art || '—') + '</td>' +
+            '<td>' + esc(r.where || '—') + (r.fabula ? '<div class="hint" style="margin-top:4px">' + esc(r.fabula) + '</div>' : '') + '</td>' +
+            '<td>' + esc(r.by || '—') + '</td>' +
+            '<td>' + esc(r.to || '—') + '</td>' +
+            '<td><button class="btn" data-del="' + r.id + '" title="Удалить">✕</button></td>' +
+          '</tr>'
+        ).join('') +
+        '</tbody></table>';
+    }
+
+    drawList(ud, 'arUdList');
+    drawList(mp, 'arMpList');
+
+    document.querySelectorAll('[data-del]').forEach(b => {
+      b.addEventListener('click', () => {
+        if(!confirm('Удалить запись?')) return;
+        records = records.filter(r => r.id !== b.dataset.del);
+        save(records); render();
+      });
+    });
+  }
+
+  g('arAdd').addEventListener('click', () => {
+    if(!v('arNum')){ g('arSt').textContent = 'Укажите номер.'; return; }
+    if(!v('arBy')){ g('arSt').textContent = 'Укажите, кем возбуждено.'; return; }
+
+    records.push({
+      id: 'r_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+      type: g('arType').value,
+      num: v('arNum'),
+      date: v('arDate'),
+      art: v('arArt'),
+      where: v('arWhere'),
+      by: v('arBy'),
+      fabula: v('arFabula'),
+      to: v('arTo')
+    });
+    save(records);
+
+    ['arNum', 'arArt', 'arWhere', 'arBy', 'arFabula', 'arTo'].forEach(i => g(i).value = '');
+    g('arDate').value = '';
+    g('arSt').textContent = '✓ Запись добавлена';
+    render();
+    setTimeout(() => { g('arSt').textContent = ''; }, 2000);
+  });
+
+  g('arClear').addEventListener('click', () => {
+    ['arNum', 'arArt', 'arWhere', 'arBy', 'arFabula', 'arTo'].forEach(i => g(i).value = '');
+    g('arDate').value = '';
+    g('arSt').textContent = '';
+  });
+
+  render();
 })();
 </script>
 </body>
