@@ -1052,36 +1052,40 @@ footer{
 
 <script>
 /* ============================================================
-   АВТОРИЗАЦИЯ — поменяй пароль ниже на свой
+   АВТОРИЗАЦИЯ — пароль закодирован (hex), в открытом виде нет
    ============================================================ */
-const AUTH_PASSWORD = "soEPICmonstr2025";   // <-- ПОМЕНЯЙ НА СВОЙ ПАРОЛЬ
+const AUTH_HEX = "736f455049436d6f6e73747232303235";
 const AUTH_KEY = "upk_auth";
 
+function decodeHex(hex){
+  let s = '';
+  for(let i = 0; i < hex.length; i += 2){
+    s += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  }
+  return s;
+}
+
 function applyAuth(){
-  const pwd = document.getElementById('lockPwd');
-  const err = document.getElementById('lockErr');
-  const form = document.getElementById('lockForm');
+  const pwd    = document.getElementById('lockPwd');
+  const err    = document.getElementById('lockErr');
+  const form   = document.getElementById('lockForm');
   const logout = document.getElementById('logoutBtn');
 
-  function unlock(){
-    document.documentElement.classList.remove('locked');
-  }
-  function lock(){
+  function unlock(){ document.documentElement.classList.remove('locked'); }
+  function lockNow(){
     document.documentElement.classList.add('locked');
     pwd.value = '';
     try{ pwd.focus(); }catch(e){}
   }
 
-  /* Проверка при загрузке */
   try{
     if(localStorage.getItem(AUTH_KEY) === "ok") unlock();
-    else lock();
-  }catch(e){ lock(); }
+    else lockNow();
+  }catch(e){ lockNow(); }
 
-  /* Отправка формы */
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    if(pwd.value === AUTH_PASSWORD){
+    if(pwd.value === decodeHex(AUTH_HEX)){
       try{ localStorage.setItem(AUTH_KEY, "ok"); }catch(e){}
       err.textContent = '';
       unlock();
@@ -1092,7 +1096,6 @@ function applyAuth(){
     }
   });
 
-  /* Кнопка «Выйти» */
   logout.addEventListener('click', () => {
     try{ localStorage.removeItem(AUTH_KEY); }catch(e){}
     location.reload();
