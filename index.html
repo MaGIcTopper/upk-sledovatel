@@ -5,13 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Кабинет следователя — рабочий справочник</title>
 <script>
-/* Проверка пароля до отрисовки — чтобы не мигало */
 (function(){
   try{
     if(localStorage.getItem("upk_auth") !== "ok") document.documentElement.classList.add("locked");
   }catch(e){ document.documentElement.classList.add("locked"); }
 })();
-/* Инициализация темы */
 (function(){
   try{
     var t = localStorage.getItem('theme');
@@ -23,170 +21,88 @@
 <style>
 :root{
   color-scheme: light;
-  --navy:#0f2440;
-  --navy-2:#16325c;
-  --accent:#2f6fd0;
-  --accent-h:#255cb5;
-  --gold:#c8a24a;
-  --bg:#f4f6f9;
-  --card:#ffffff;
-  --text:#1a2332;
-  --text-2:#2c3a4e;
-  --head:#0f2440;
-  --muted:#5b6b80;
-  --border:#dfe6ef;
-  --green:#1e8e5a;
-  --red:#c0392b;
-  --amber:#b7791f;
-  --radius:10px;
-  --shadow:0 1px 2px rgba(16,36,64,.06),0 4px 14px rgba(16,36,64,.06);
-  --hover:#f7fafd;
-  --hover-2:#e6edf6;
-  --chip-bg:#e8f0fb;
-  --chip-tx:#2f6fd0;
-  --chip-bg2:#f1f4f8;
-  --th-bg:#f0f5fb;
-  --th-line:#dbe6f3;
-  --td-line:#eef3f9;
-  --row-hover:#fafcfe;
-  --track:#e8eef6;
-  --box-bd:#c3cfdd;
-  --ref-bg:#eef4fd;
-  --note-bg:#fdfaf1;
-  --note-blue:#f2f7fd;
-  --note-red:#fdf4f3;
-  --cr-bg:#fbfdff;
-  --cr-urgent:#fffafa;
-  --tag-red-bg:#fdecea;
-  --tag-green-bg:#e7f6ef;
-  --tag-amber-bg:#fdf4e3;
-  --tag-blue-bg:#eaf1fd;
-  --scroll:#c9d4e2;
-  --mark:#fff2a8;
-  --mark-tx:#111111;
+  --navy:#0f2440;--navy-2:#16325c;--accent:#2f6fd0;--accent-h:#255cb5;--gold:#c8a24a;
+  --bg:#f4f6f9;--card:#fff;--text:#1a2332;--text-2:#2c3a4e;--head:#0f2440;
+  --muted:#5b6b80;--border:#dfe6ef;--green:#1e8e5a;--red:#c0392b;--amber:#b7791f;
+  --radius:10px;--shadow:0 1px 2px rgba(16,36,64,.06),0 4px 14px rgba(16,36,64,.06);
+  --hover:#f7fafd;--hover-2:#e6edf6;--chip-bg:#e8f0fb;--chip-tx:#2f6fd0;--chip-bg2:#f1f4f8;
+  --th-bg:#f0f5fb;--th-line:#dbe6f3;--td-line:#eef3f9;--row-hover:#fafcfe;--track:#e8eef6;
+  --box-bd:#c3cfdd;--ref-bg:#eef4fd;--note-bg:#fdfaf1;--note-blue:#f2f7fd;--note-red:#fdf4f3;
+  --cr-bg:#fbfdff;--cr-urgent:#fffafa;--tag-red-bg:#fdecea;--tag-green-bg:#e7f6ef;
+  --tag-amber-bg:#fdf4e3;--tag-blue-bg:#eaf1fd;--scroll:#c9d4e2;--mark:#fff2a8;--mark-tx:#111;
 }
-
 html[data-theme="dark"]{
-  color-scheme: dark;
-  --bg:#0d131b;
-  --card:#151e2a;
-  --text:#e3e9f1;
-  --text-2:#c6d2e2;
-  --head:#a9c8ff;
-  --muted:#92a2b8;
-  --border:#263446;
-  --accent:#5b95e8;
-  --accent-h:#4a83d6;
-  --gold:#d4b163;
-  --green:#3fbf85;
-  --red:#e57366;
-  --amber:#e0a94a;
+  color-scheme:dark;
+  --bg:#0d131b;--card:#151e2a;--text:#e3e9f1;--text-2:#c6d2e2;--head:#a9c8ff;--muted:#92a2b8;
+  --border:#263446;--accent:#5b95e8;--accent-h:#4a83d6;--gold:#d4b163;--green:#3fbf85;
+  --red:#e57366;--amber:#e0a94a;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);
-  --hover:#1c2837;
-  --hover-2:#1c2837;
-  --chip-bg:#1f2d40;
-  --chip-tx:#a9c8ff;
-  --chip-bg2:#1f2d40;
-  --th-bg:#1c2837;
-  --th-line:#2a3a4f;
-  --td-line:#1e2b3c;
-  --row-hover:#1a2534;
-  --track:#1f2d40;
-  --box-bd:#3a4a60;
-  --ref-bg:#1f2d40;
-  --note-bg:#221f14;
-  --note-blue:#14212f;
-  --note-red:#2a1614;
-  --cr-bg:#131c27;
-  --cr-urgent:#1e1414;
-  --tag-red-bg:#3a1a17;
-  --tag-green-bg:#12301f;
-  --tag-amber-bg:#33260f;
-  --tag-blue-bg:#16273f;
-  --scroll:#2f4054;
+  --hover:#1c2837;--hover-2:#1c2837;--chip-bg:#1f2d40;--chip-tx:#a9c8ff;--chip-bg2:#1f2d40;
+  --th-bg:#1c2837;--th-line:#2a3a4f;--td-line:#1e2b3c;--row-hover:#1a2534;--track:#1f2d40;
+  --box-bd:#3a4a60;--ref-bg:#1f2d40;--note-bg:#221f14;--note-blue:#14212f;--note-red:#2a1614;
+  --cr-bg:#131c27;--cr-urgent:#1e1414;--tag-red-bg:#3a1a17;--tag-green-bg:#12301f;
+  --tag-amber-bg:#33260f;--tag-blue-bg:#16273f;--scroll:#2f4054;
 }
-
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{
-  font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;
+body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;
   background:var(--bg);color:var(--text);line-height:1.55;font-size:15px;
-  transition:background .2s ease,color .2s ease;
-}
+  transition:background .2s ease,color .2s ease;}
 
-/* ---------- ЭКРАН ЛОГИНА ---------- */
-#lockScreen{
-  display:none;
-  position:fixed;inset:0;z-index:9999;
+/* ЛОГИН */
+#lockScreen{display:none;position:fixed;inset:0;z-index:9999;
   background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);
-  place-items:center;padding:20px;
-}
+  place-items:center;padding:20px;}
 html.locked #lockScreen{display:grid}
 html.locked body > header,
 html.locked body > .layout,
 html.locked body > footer,
 html.locked body > #searchRes,
 html.locked body > #toTop{display:none!important}
-
-#lockForm{
-  background:var(--card);border-radius:14px;padding:34px 30px;width:100%;max-width:390px;
-  box-shadow:0 20px 60px rgba(0,0,0,.4);position:relative;overflow:hidden;
-}
-#lockForm::after{
-  content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;
-  border-radius:50%;background:radial-gradient(circle,rgba(200,162,74,.2),transparent 70%);pointer-events:none;
-}
-#lockForm h1{font-size:20px;font-weight:600;color:var(--head);margin-bottom:6px;display:flex;align-items:center;gap:10px}
+#lockForm{background:var(--card);border-radius:14px;padding:34px 30px;width:100%;max-width:390px;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);position:relative;overflow:hidden;}
+#lockForm::after{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;
+  border-radius:50%;background:radial-gradient(circle,rgba(200,162,74,.2),transparent 70%);pointer-events:none;}
+#lockForm h1{font-size:20px;font-weight:600;color:var(--head);margin-bottom:6px;display:flex;align-items:center;gap:10px;}
 #lockForm .lg{font-size:24px}
 #lockForm .lead{color:var(--muted);font-size:13.5px;margin-bottom:22px}
-#lockForm input[type=password]{
-  width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:9px;
-  font-size:15px;font-family:inherit;outline:none;transition:.15s;
-  background:var(--card);color:var(--text);
-}
-#lockForm input[type=password]:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(47,111,208,.15)}
-#lockForm button{
-  width:100%;background:var(--accent);color:#fff;border:none;border-radius:9px;
+#lockForm input{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:9px;
+  font-size:15px;font-family:inherit;outline:none;transition:.15s;background:var(--card);color:var(--text);}
+#lockForm input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(47,111,208,.15)}
+#lockForm input + input{margin-top:10px}
+#lockForm button{width:100%;background:var(--accent);color:#fff;border:none;border-radius:9px;
   padding:12px 16px;font-size:15px;font-weight:600;cursor:pointer;margin-top:18px;
-  font-family:inherit;transition:.15s;
-}
+  font-family:inherit;transition:.15s;}
 #lockForm button:hover{background:var(--accent-h)}
-#lockErr{color:var(--red);font-size:13.5px;margin-top:12px;min-height:18px;text-align:center;font-weight:500}
+#lockErr{color:var(--red);font-size:13.5px;margin-top:12px;min-height:18px;text-align:center;font-weight:500;}
 
-/* ---------- HEADER ---------- */
-header{
-  position:sticky;top:0;z-index:50;
+/* HEADER */
+header{position:sticky;top:0;z-index:50;
   background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);
   color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;
-  box-shadow:0 2px 12px rgba(15,36,64,.25);
-}
-header .logo{
-  width:40px;height:40px;flex:0 0 40px;border-radius:9px;
+  box-shadow:0 2px 12px rgba(15,36,64,.25);}
+header .logo{width:40px;height:40px;flex:0 0 40px;border-radius:9px;
   background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
-  display:grid;place-items:center;font-size:20px;
-}
+  display:grid;place-items:center;font-size:20px;}
 header h1{font-size:17px;font-weight:600;letter-spacing:.2px}
 header p{font-size:12px;color:#9fb4d0;margin-top:1px}
 header .spacer{flex:1}
-#globalSearch{
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
-  color:#fff;padding:9px 14px;border-radius:8px;width:280px;font-size:14px;outline:none;
-}
+.user-badge{font-size:12.5px;color:#c8d6ea;padding:6px 12px;border-radius:20px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);white-space:nowrap;}
+.user-badge b{color:#fff;font-weight:600}
+#globalSearch{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
+  color:#fff;padding:9px 14px;border-radius:8px;width:280px;font-size:14px;outline:none;}
 #globalSearch::placeholder{color:#8ea6c4}
 #globalSearch:focus{background:rgba(255,255,255,.14);border-color:var(--gold)}
-/* ---------- LAYOUT ---------- */
+/* LAYOUT */
 .layout{display:flex;max-width:1500px;margin:0 auto;gap:22px;padding:22px}
-aside{
-  width:250px;flex:0 0 250px;position:sticky;top:88px;align-self:flex-start;
-  max-height:calc(100vh - 110px);overflow-y:auto;
-}
+aside{width:250px;flex:0 0 250px;position:sticky;top:88px;align-self:flex-start;
+  max-height:calc(100vh - 110px);overflow-y:auto;}
 aside::-webkit-scrollbar{width:6px}
 aside::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:3px}
 nav ul{list-style:none}
-nav a{
-  display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;
-  color:var(--text);text-decoration:none;font-size:14px;transition:.15s;margin-bottom:2px;
-}
+nav a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;
+  color:var(--text);text-decoration:none;font-size:14px;transition:.15s;margin-bottom:2px;}
 nav a:hover{background:var(--hover-2);color:var(--accent)}
 nav a.active{background:var(--accent);color:#fff;font-weight:500}
 nav .navgroup{font-size:11px;text-transform:uppercase;letter-spacing:.7px;
@@ -195,15 +111,11 @@ main{flex:1;min-width:0}
 section{display:none;animation:fade .25s ease}
 section.visible{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-/* ---------- CARDS ---------- */
-.card{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-  padding:20px 22px;margin-bottom:18px;box-shadow:var(--shadow);
-}
-.card > h2{
-  font-size:19px;font-weight:600;margin-bottom:4px;color:var(--head);
-  display:flex;align-items:center;gap:9px;
-}
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px 22px;margin-bottom:18px;box-shadow:var(--shadow);}
+.card > h2{font-size:19px;font-weight:600;margin-bottom:4px;color:var(--head);
+  display:flex;align-items:center;gap:9px;}
 .card > h2 .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;
   background:var(--chip-bg);color:var(--chip-tx);letter-spacing:.3px}
 .sub{color:var(--muted);font-size:13.5px;margin-bottom:16px}
@@ -212,62 +124,46 @@ h4{font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--head)}
 p{margin-bottom:10px}
 ul.plain,ol.plain{margin:0 0 12px 20px}
 ul.plain li,ol.plain li{margin-bottom:5px}
-/* ---------- DASHBOARD ---------- */
-.hero{
-  background:linear-gradient(135deg,var(--navy) 0%,#1d4272 100%);
+/* DASHBOARD */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#1d4272 100%);
   color:#fff;border-radius:var(--radius);padding:28px 30px;margin-bottom:20px;
-  box-shadow:0 6px 24px rgba(15,36,64,.2);position:relative;overflow:hidden;
-}
-.hero::after{
-  content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;
-  border-radius:50%;background:radial-gradient(circle,rgba(200,162,74,.25),transparent 70%);
-}
+  box-shadow:0 6px 24px rgba(15,36,64,.2);position:relative;overflow:hidden;}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;
+  border-radius:50%;background:radial-gradient(circle,rgba(200,162,74,.25),transparent 70%);}
 .hero h2{font-size:24px;font-weight:600;margin-bottom:8px}
 .hero p{color:#b9cbe4;font-size:14.5px;max-width:720px;margin-bottom:0}
 .quickgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:6px}
-.quick{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+.quick{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
   padding:16px;cursor:pointer;transition:.18s;box-shadow:var(--shadow);
-  display:flex;flex-direction:column;gap:6px;
-}
+  display:flex;flex-direction:column;gap:6px;}
 .quick:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 8px 22px rgba(47,111,208,.15)}
 .quick .qi{font-size:22px}
 .quick .qt{font-weight:600;font-size:14.5px;color:var(--head)}
 .quick .qd{font-size:12.5px;color:var(--muted)}
-/* ---------- ALGORITHMS ---------- */
-.algo{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-  margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);
-}
-.algo-head{
-  padding:15px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;
-  transition:.15s;user-select:none;
-}
+/* ALGO */
+.algo{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);}
+.algo-head{padding:15px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;
+  transition:.15s;user-select:none;}
 .algo-head:hover{background:var(--hover)}
-.algo-head .num{
-  flex:0 0 30px;height:30px;border-radius:8px;background:var(--chip-bg);color:var(--chip-tx);
-  display:grid;place-items:center;font-weight:700;font-size:13px;
-}
+.algo-head .num{flex:0 0 30px;height:30px;border-radius:8px;background:var(--chip-bg);
+  color:var(--chip-tx);display:grid;place-items:center;font-weight:700;font-size:13px;}
 .algo-head .t{flex:1;font-weight:600;font-size:15px;color:var(--head)}
 .algo-head .law{font-size:11.5px;color:var(--muted);background:var(--chip-bg2);
   padding:3px 9px;border-radius:20px;white-space:nowrap}
 .algo-head .arrow{color:var(--muted);transition:.25s;font-size:12px}
 .algo.open .algo-head .arrow{transform:rotate(90deg)}
-.algo-body{display:none;padding:0 20px 20px 20px;border-top:1px solid var(--border)}
+.algo-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border)}
 .algo.open .algo-body{display:block}
 .progress{height:5px;background:var(--track);border-radius:3px;margin:14px 0 16px;overflow:hidden}
 .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#4b8ee0);
-  width:0%;transition:width .3s ease;border-radius:3px}
-.step{
-  display:flex;gap:11px;padding:9px 12px;border-radius:8px;transition:.15s;
-  align-items:flex-start;cursor:pointer;
-}
+  width:0;transition:width .3s ease;border-radius:3px}
+.step{display:flex;gap:11px;padding:9px 12px;border-radius:8px;transition:.15s;
+  align-items:flex-start;cursor:pointer;}
 .step:hover{background:var(--hover)}
 .step input{display:none}
-.step .box{
-  flex:0 0 19px;height:19px;border:2px solid var(--box-bd);border-radius:5px;margin-top:1px;
-  display:grid;place-items:center;transition:.15s;background:var(--card);
-}
+.step .box{flex:0 0 19px;height:19px;border:2px solid var(--box-bd);border-radius:5px;margin-top:1px;
+  display:grid;place-items:center;transition:.15s;background:var(--card);}
 .step .box::after{content:"✓";font-size:12px;color:#fff;opacity:0;font-weight:700}
 .step.done .box{background:var(--green);border-color:var(--green)}
 .step.done .box::after{opacity:1}
@@ -277,20 +173,16 @@ ul.plain li,ol.plain li{margin-bottom:5px}
   border-radius:20px;white-space:nowrap;margin-left:8px;font-weight:500}
 .step.warn .txt::before{content:"⚠ ";color:var(--amber)}
 .algo-foot{display:flex;gap:10px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)}
-.btn{
-  font-size:12.5px;padding:7px 14px;border-radius:7px;border:1px solid var(--border);
-  background:var(--card);color:var(--muted);cursor:pointer;transition:.15s;font-family:inherit;
-}
+.btn{font-size:12.5px;padding:7px 14px;border-radius:7px;border:1px solid var(--border);
+  background:var(--card);color:var(--muted);cursor:pointer;transition:.15s;font-family:inherit;}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
 .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn.primary:hover{background:var(--accent-h)}
-/* ---------- TABLES ---------- */
+/* TABLE */
 table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0 16px}
-th{
-  text-align:left;padding:10px 12px;background:var(--th-bg);color:var(--head);
+th{text-align:left;padding:10px 12px;background:var(--th-bg);color:var(--head);
   font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;
-  border-bottom:2px solid var(--th-line);
-}
+  border-bottom:2px solid var(--th-line);}
 th:first-child{border-radius:8px 0 0 0}
 th:last-child{border-radius:0 8px 0 0}
 td{padding:10px 12px;border-bottom:1px solid var(--td-line);vertical-align:top}
@@ -302,35 +194,27 @@ td.law{color:var(--accent);font-size:12.5px;white-space:nowrap}
 .tag.green{background:var(--tag-green-bg);color:var(--green)}
 .tag.amber{background:var(--tag-amber-bg);color:var(--amber)}
 .tag.blue{background:var(--tag-blue-bg);color:var(--accent)}
-/* ---------- CALCULATOR ---------- */
+/* CALC */
 .calc-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
-.field input,.field select{
-  padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;
-  font-family:inherit;background:var(--card);color:var(--text);outline:none;min-width:170px;
-}
+.field input,.field select{padding:9px 12px;border:1px solid var(--border);border-radius:8px;
+  font-size:14px;font-family:inherit;background:var(--card);color:var(--text);outline:none;min-width:170px;}
 .field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,208,.1)}
-.dateinput{
-  padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;
-  font-family:inherit;background:var(--card);color:var(--text);outline:none;margin-bottom:10px;
-}
+.dateinput{padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;
+  font-family:inherit;background:var(--card);color:var(--text);outline:none;margin-bottom:10px;}
 .dateinput:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,208,.1)}
 .calc-result{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.cr{
-  border:1px solid var(--border);border-radius:9px;padding:13px 15px;background:var(--cr-bg);
-  border-left:4px solid var(--accent);
-}
+.cr{border:1px solid var(--border);border-radius:9px;padding:13px 15px;background:var(--cr-bg);
+  border-left:4px solid var(--accent);}
 .cr.urgent{border-left-color:var(--red);background:var(--cr-urgent)}
 .cr .lbl{font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:600}
 .cr .val{font-size:16px;font-weight:700;color:var(--head)}
 .cr .ref{font-size:11.5px;color:var(--accent);margin-top:3px}
-/* ---------- ACCORDION (articles) ---------- */
+/* ACC */
 .acc{border:1px solid var(--border);border-radius:9px;margin-bottom:9px;overflow:hidden;background:var(--card)}
-.acc-h{
-  padding:13px 17px;cursor:pointer;font-weight:600;font-size:14px;color:var(--head);
-  display:flex;align-items:center;gap:10px;transition:.15s;user-select:none;
-}
+.acc-h{padding:13px 17px;cursor:pointer;font-weight:600;font-size:14px;color:var(--head);
+  display:flex;align-items:center;gap:10px;transition:.15s;user-select:none;}
 .acc-h:hover{background:var(--hover)}
 .acc-h .ar{margin-left:auto;color:var(--muted);font-size:11px;transition:.25s}
 .acc.open .acc-h .ar{transform:rotate(90deg)}
@@ -339,55 +223,53 @@ td.law{color:var(--accent);font-size:12.5px;white-space:nowrap}
 .acc-b ul{margin:10px 0 10px 20px}
 .acc-b li{margin-bottom:6px}
 .acc-b .cite{color:var(--accent);font-size:12.5px;font-weight:600}
-/* ---------- MISC ---------- */
-.note{
-  border-left:4px solid var(--gold);background:var(--note-bg);padding:13px 17px;
-  border-radius:0 8px 8px 0;font-size:13.5px;margin:14px 0;
-}
+/* MISC */
+.note{border-left:4px solid var(--gold);background:var(--note-bg);padding:13px 17px;
+  border-radius:0 8px 8px 0;font-size:13.5px;margin:14px 0;}
 .note.red{border-left-color:var(--red);background:var(--note-red)}
 .note.blue{border-left-color:var(--accent);background:var(--note-blue)}
 .note b{color:var(--head)}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.pill{
-  font-size:12.5px;padding:6px 13px;border-radius:20px;border:1px solid var(--border);
-  background:var(--card);cursor:pointer;transition:.15s;font-family:inherit;color:var(--muted);
-}
+.pill{font-size:12.5px;padding:6px 13px;border-radius:20px;border:1px solid var(--border);
+  background:var(--card);cursor:pointer;transition:.15s;font-family:inherit;color:var(--muted);}
 .pill:hover{border-color:var(--accent);color:var(--accent)}
 .pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .empty{padding:30px;text-align:center;color:var(--muted);font-size:14px}
-footer{
-  text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
-  border-top:1px solid var(--border);margin-top:20px;
-}
-/* ---------- МАТЕРИАЛЫ (файлы) ---------- */
+footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
+  border-top:1px solid var(--border);margin-top:20px;}
 .filegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:8px}
 .file{display:flex;align-items:center;gap:12px;padding:13px 15px;background:var(--card);
-  border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;color:var(--text);transition:.15s}
+  border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;color:var(--text);transition:.15s;}
 .file:hover{border-color:var(--accent);box-shadow:0 6px 18px rgba(47,111,208,.14);transform:translateY(-1px)}
-.file .fi{flex:0 0 40px;height:40px;border-radius:9px;display:grid;place-items:center;font-size:11px;
-  font-weight:700;color:#fff;background:var(--red)}
+.file .fi{flex:0 0 40px;height:40px;border-radius:9px;display:grid;place-items:center;
+  font-size:11px;font-weight:700;color:#fff;background:var(--red)}
 .file .fi.docx{background:var(--accent)}
 .file .ft{font-weight:600;font-size:14px;color:var(--head);line-height:1.3}
 .file .fd{font-size:12px;color:var(--muted);margin-top:2px}
-
-/* ---------- ПРОЧЕЕ ---------- */
-.hbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:8px 11px;cursor:pointer;font-size:15px}
+.hbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;
+  border-radius:8px;padding:8px 11px;cursor:pointer;font-size:15px;}
 .hbtn:hover{border-color:var(--gold)}
-#searchRes{display:none;position:fixed;top:66px;right:22px;width:min(520px,92vw);max-height:70vh;overflow-y:auto;z-index:80;
-  background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 36px rgba(0,0,0,.28)}
+#searchRes{display:none;position:fixed;top:66px;right:22px;width:min(520px,92vw);max-height:70vh;
+  overflow-y:auto;z-index:80;background:var(--card);border:1px solid var(--border);
+  border-radius:10px;box-shadow:0 12px 36px rgba(0,0,0,.28);}
 #searchRes.on{display:block}
 #searchRes .sr{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;font-size:13.5px}
 #searchRes .sr:hover{background:rgba(47,111,208,.1)}
-#searchRes .sr b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);margin-bottom:2px}
+#searchRes .sr b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--accent);margin-bottom:2px;}
 #searchRes mark,.flash{background:var(--mark);color:var(--mark-tx);border-radius:3px}
 .flash{animation:fl 2s ease}
 @keyframes fl{from{background:#ffd54a}to{background:transparent}}
-.timer-row{display:flex;justify-content:space-between;gap:12px;padding:9px 12px;border-bottom:1px solid var(--border);font-size:14px}
+.timer-row{display:flex;justify-content:space-between;gap:12px;padding:9px 12px;
+  border-bottom:1px solid var(--border);font-size:14px;}
 .timer-row b{white-space:nowrap}
 .hot{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:6px}
-.hot div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;padding:10px 12px;font-size:12.5px;color:var(--muted)}
+.hot div{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;
+  padding:10px 12px;font-size:12.5px;color:var(--muted);}
 .hot div b{display:block;font-size:20px;color:var(--head)}
-#toTop{display:none;position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:20px;cursor:pointer;box-shadow:var(--shadow);z-index:60}
+#toTop{display:none;position:fixed;right:20px;bottom:20px;width:44px;height:44px;
+  border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:20px;
+  cursor:pointer;box-shadow:var(--shadow);z-index:60;}
 @media print{header,aside,#toTop,#searchRes{display:none!important}section{display:block!important}.layout{display:block}}
 @media(max-width:960px){
   .layout{flex-direction:column;padding:14px}
@@ -397,6 +279,7 @@ footer{
   nav a{font-size:13px;padding:7px 11px}
   header{flex-wrap:wrap;padding:12px 15px}
   #globalSearch{width:100%;order:3}
+  .user-badge{order:2}
   .hero{padding:20px}
   .hero h2{font-size:19px}
 }
@@ -404,12 +287,12 @@ footer{
 </head>
 <body>
 
-<!-- ==================== ЭКРАН ЛОГИНА ==================== -->
 <div id="lockScreen">
   <form id="lockForm" autocomplete="off">
     <h1><span class="lg">⚖️</span> Кабинет следователя</h1>
-    <p class="lead">Доступ только для своих. Введите пароль.</p>
-    <input type="password" id="lockPwd" placeholder="Пароль" autocomplete="current-password" autofocus>
+    <p class="lead">Доступ только для сотрудников. Введите логин и пароль.</p>
+    <input type="text" id="lockLogin" placeholder="Логин (фамилия)" autocomplete="username" autofocus>
+    <input type="password" id="lockPwd" placeholder="Пароль" autocomplete="current-password">
     <button type="submit">Войти</button>
     <div id="lockErr"></div>
   </form>
@@ -422,6 +305,7 @@ footer{
     <p>Рабочий справочник по УПК РФ · алгоритмы · сроки · материалы</p>
   </div>
   <div class="spacer"></div>
+  <div class="user-badge" id="userBadge"></div>
   <button class="hbtn" id="themeBtn" title="Тёмная / светлая тема">🌓</button>
   <button class="hbtn" id="logoutBtn" title="Выйти">🚪</button>
   <input type="search" id="globalSearch" placeholder="Поиск по справочнику… (Ctrl+K)">
@@ -446,13 +330,14 @@ footer{
         <li><a href="#" data-target="cat-sk">🏛 Следователи СК</a></li>
         <li><a href="#" data-target="cat-fsb">🛡 Следователи ФСБ</a></li>
         <li><a href="#" data-target="cat-dozn">📝 Дознаватели</a></li>
+        <div class="navgroup">Отдел</div>
+        <li><a href="#" data-target="staff">👥 Личный состав</a></li>
       </ul>
     </nav>
   </aside>
 
   <main>
 
-    <!-- ================= ГЛАВНАЯ ================= -->
     <section id="dashboard" class="visible">
       <div class="hero">
         <h2>Рабочий справочник следователя</h2>
@@ -463,26 +348,12 @@ footer{
         <h2>Общее для всех</h2>
         <p class="sub">Алгоритмы, сроки и нормы, которые одинаковы для всех категорий</p>
         <div class="quickgrid">
-          <div class="quick" data-goto="algos">
-            <div class="qi">📋</div><div class="qt">Алгоритмы действий</div>
-            <div class="qd">10 пошаговых чек-листов: от проверки сообщения до направления дела прокурору</div>
-          </div>
-          <div class="quick" data-goto="deadlines">
-            <div class="qi">⏱</div><div class="qt">Сроки и калькулятор</div>
-            <div class="qd">Полная таблица сроков + расчёт контрольных дат от исходной даты</div>
-          </div>
-          <div class="quick" data-goto="articles">
-            <div class="qi">📖</div><div class="qt">Ключевые статьи</div>
-            <div class="qd">Что требует судебного решения, основания задержания, меры пресечения, прекращение</div>
-          </div>
-          <div class="quick" data-goto="memo">
-            <div class="qi">💡</div><div class="qt">Памятки</div>
-            <div class="qd">Типичные ошибки, запреты, правила составления протокола</div>
-          </div>
-          <div class="quick" data-goto="materials">
-            <div class="qi">📁</div><div class="qt">Общие материалы</div>
-            <div class="qd">Образцы протоколов, справочные документы для всех категорий</div>
-          </div>
+          <div class="quick" data-goto="algos"><div class="qi">📋</div><div class="qt">Алгоритмы действий</div><div class="qd">10 пошаговых чек-листов: от проверки сообщения до направления дела прокурору</div></div>
+          <div class="quick" data-goto="deadlines"><div class="qi">⏱</div><div class="qt">Сроки и калькулятор</div><div class="qd">Полная таблица сроков + расчёт контрольных дат от исходной даты</div></div>
+          <div class="quick" data-goto="articles"><div class="qi">📖</div><div class="qt">Ключевые статьи</div><div class="qd">Что требует судебного решения, основания задержания, меры пресечения, прекращение</div></div>
+          <div class="quick" data-goto="memo"><div class="qi">💡</div><div class="qt">Памятки</div><div class="qd">Типичные ошибки, запреты, правила составления протокола</div></div>
+          <div class="quick" data-goto="materials"><div class="qi">📁</div><div class="qt">Общие материалы</div><div class="qd">Образцы протоколов, справочные документы для всех категорий</div></div>
+          <div class="quick" data-goto="staff"><div class="qi">👥</div><div class="qt">Личный состав</div><div class="qd">Сотрудники отдела криминалистики и СО по г. Левобережный</div></div>
         </div>
       </div>
 
@@ -519,19 +390,20 @@ footer{
 
       <div class="card">
         <h2>Три правила, которые нельзя нарушать</h2>
-        <div class="note red">
-          <b>1. Судебное решение.</b> Перечень действий, допускаемых только по решению суда, установлен ч. 2 ст. 29 УПК РФ. В неотложных случаях — ч. 5 ст. 165 УПК РФ (уведомить судью и прокурора в течение 3 суток).
-        </div>
-        <div class="note red">
-          <b>2. Согласие руководителя / прокурора.</b> Ряд действий следователь совершает с согласия руководителя следственного органа, дознаватель — с согласия прокурора. См. ст. 29, 108, 115, 164.1, 165 УПК РФ.
-        </div>
-        <div class="note red">
-          <b>3. Недопустимые доказательства.</b> Доказательства, полученные с нарушением УПК РФ, не имеют юридической силы и не могут быть положены в основу обвинения (ст. 75 УПК РФ).
-        </div>
+        <div class="note red"><b>1. Судебное решение.</b> Перечень действий, допускаемых только по решению суда, установлен ч. 2 ст. 29 УПК РФ. В неотложных случаях — ч. 5 ст. 165 УПК РФ (уведомить судью и прокурора в течение 3 суток).</div>
+        <div class="note red"><b>2. Согласие руководителя / прокурора.</b> Ряд действий следователь совершает с согласия руководителя следственного органа, дознаватель — с согласия прокурора. См. ст. 29, 108, 115, 164.1, 165 УПК РФ.</div>
+        <div class="note red"><b>3. Недопустимые доказательства.</b> Доказательства, полученные с нарушением УПК РФ, не имеют юридической силы и не могут быть положены в основу обвинения (ст. 75 УПК РФ).</div>
       </div>
     </section>
 
-    <!-- ================= АЛГОРИТМЫ ================= -->
+    <section id="staff">
+      <div class="card">
+        <h2>Личный состав <span class="badge" id="staffCount"></span></h2>
+        <p class="sub">Сотрудники отдела криминалистики и следственного отдела по городу Левобережный СУ СК России по Кировской области.</p>
+        <div id="staffBox"></div>
+      </div>
+    </section>
+
     <section id="algos">
       <div class="card">
         <h2>Алгоритмы действий <span class="badge">10 чек-листов</span></h2>
@@ -545,18 +417,13 @@ footer{
       </div>
     </section>
 
-    <!-- ================= СРОКИ ================= -->
     <section id="deadlines">
       <div class="card">
         <h2>Калькулятор контрольных дат</h2>
         <p class="sub">Укажите исходную дату и тип события — получите расчётные сроки</p>
         <div class="calc-row">
-          <div class="field">
-            <label>Исходная дата</label>
-            <input type="date" id="calcDate">
-          </div>
-          <div class="field">
-            <label>Событие</label>
+          <div class="field"><label>Исходная дата</label><input type="date" id="calcDate"></div>
+          <div class="field"><label>Событие</label>
             <select id="calcType">
               <option value="check">Проверка сообщения о преступлении (ст. 144)</option>
               <option value="detention">Задержание подозреваемого (ст. 92, 94, 108)</option>
@@ -568,9 +435,7 @@ footer{
           </div>
           <button class="btn primary" id="calcBtn">Рассчитать</button>
         </div>
-        <div class="calc-result" id="calcResult">
-          <div class="empty">Выберите дату и событие, затем нажмите «Рассчитать»</div>
-        </div>
+        <div class="calc-result" id="calcResult"><div class="empty">Выберите дату и событие, затем нажмите «Рассчитать»</div></div>
       </div>
 
       <div class="card">
@@ -644,7 +509,6 @@ footer{
       </div>
     </section>
 
-    <!-- ================= СТАТЬИ ================= -->
     <section id="articles">
       <div class="card">
         <h2>Ключевые статьи УПК РФ</h2>
@@ -674,9 +538,7 @@ footer{
               <li>о получении информации о соединениях между абонентами и (или) абонентскими устройствами;</li>
               <li>о разрешении отмены постановления о прекращении уголовного дела или уголовного преследования (ч. 1.1 ст. 214).</li>
             </ul>
-            <div class="note blue">
-              <b>В неотложных случаях</b> (ч. 5 ст. 165 УПК РФ) осмотр жилища, обыск и выемка в жилище, личный обыск, выемка в ломбарде, наложение ареста на имущество (ч. 1 ст. 104.1 УК РФ) могут быть произведены на основании постановления следователя или дознавателя без судебного решения. Уведомить судью и прокурора — <b>не позднее 3 суток</b> с момента начала.
-            </div>
+            <div class="note blue"><b>В неотложных случаях</b> (ч. 5 ст. 165 УПК РФ) осмотр жилища, обыск и выемка в жилище, личный обыск, выемка в ломбарде, наложение ареста на имущество (ч. 1 ст. 104.1 УК РФ) могут быть произведены на основании постановления следователя или дознавателя без судебного решения. Уведомить судью и прокурора — <b>не позднее 3 суток</b> с момента начала.</div>
           </div>
         </div>
 
@@ -858,7 +720,6 @@ footer{
       </div>
     </section>
 
-    <!-- ================= МАТЕРИАЛЫ ================= -->
     <section id="materials">
       <div class="card">
         <h2>Общие материалы</h2>
@@ -867,7 +728,6 @@ footer{
       </div>
     </section>
 
-    <!-- ================= Следователи МВД ================= -->
     <section id="cat-mvd">
       <div class="card">
         <h2>Следователи МВД <span class="badge">ст. 151 УПК РФ</span></h2>
@@ -879,7 +739,6 @@ footer{
       </div>
     </section>
 
-    <!-- ================= Следователи СК ================= -->
     <section id="cat-sk">
       <div class="card">
         <h2>Следователи СК <span class="badge">ст. 151 УПК РФ</span></h2>
@@ -891,7 +750,6 @@ footer{
       </div>
     </section>
 
-    <!-- ================= Следователи ФСБ ================= -->
     <section id="cat-fsb">
       <div class="card">
         <h2>Следователи ФСБ <span class="badge">ст. 151 УПК РФ</span></h2>
@@ -903,7 +761,6 @@ footer{
       </div>
     </section>
 
-    <!-- ================= Дознаватели ================= -->
     <section id="cat-dozn">
       <div class="card">
         <h2>Дознаватели <span class="badge">ст. 150, 223 УПК РФ</span></h2>
@@ -915,7 +772,6 @@ footer{
       </div>
     </section>
 
-    <!-- ================= ЗАКОНОДАТЕЛЬСТВО ================= -->
     <section id="laws">
       <div class="card">
         <h2>Законодательство <span class="badge">УК · УПК · смежные</span></h2>
@@ -952,7 +808,6 @@ footer{
       </div>
     </section>
 
-    <!-- ================= ПАМЯТКИ ================= -->
     <section id="memo">
       <div class="card">
         <h2>Памятки и типичные ошибки</h2>
@@ -985,15 +840,9 @@ footer{
         </ul>
 
         <h3>Что нужно помнить о сроках</h3>
-        <div class="note blue">
-          <b>Правило «7 суток».</b> Ходатайство о продлении срока содержания под стражей представляется в суд не позднее чем за 7 суток до его истечения (ч. 8 ст. 109 УПК РФ). Ходатайство о продлении срока ареста имущества — не позднее чем за 7 суток (ч. 2 ст. 115.1).
-        </div>
-        <div class="note blue">
-          <b>Правило «30 суток».</b> Материалы оконченного расследованием дела должны быть предъявлены обвиняемому, содержащемуся под стражей, и его защитнику не позднее чем за 30 суток до окончания предельного срока содержания под стражей (ч. 5 ст. 109 УПК РФ).
-        </div>
-        <div class="note blue">
-          <b>Правило «8 часов».</b> Постановление о возбуждении ходатайства об избрании заключения под стражу и материалы должны быть представлены судье не позднее чем за 8 часов до истечения срока задержания (ч. 3 ст. 108 УПК РФ).
-        </div>
+        <div class="note blue"><b>Правило «7 суток».</b> Ходатайство о продлении срока содержания под стражей представляется в суд не позднее чем за 7 суток до его истечения (ч. 8 ст. 109 УПК РФ). Ходатайство о продлении срока ареста имущества — не позднее чем за 7 суток (ч. 2 ст. 115.1).</div>
+        <div class="note blue"><b>Правило «30 суток».</b> Материалы оконченного расследованием дела должны быть предъявлены обвиняемому, содержащемуся под стражей, и его защитнику не позднее чем за 30 суток до окончания предельного срока содержания под стражей (ч. 5 ст. 109 УПК РФ).</div>
+        <div class="note blue"><b>Правило «8 часов».</b> Постановление о возбуждении ходатайства об избрании заключения под стражу и материалы должны быть представлены судье не позднее чем за 8 часов до истечения срока задержания (ч. 3 ст. 108 УПК РФ).</div>
       </div>
 
       <div class="card">
@@ -1036,9 +885,7 @@ footer{
           <li>являться на допрос с адвокатом;</li>
           <li>ходатайствовать о применении мер безопасности.</li>
         </ul>
-        <div class="note red">
-          <b>Не подлежат допросу в качестве свидетелей:</b> судья, присяжный заседатель (об обстоятельствах дела); адвокат, защитник (об обстоятельствах, ставших известными в связи с оказанием юридической помощи); священнослужитель (об обстоятельствах из исповеди); член Совета Федерации, депутат Государственной Думы без их согласия; должностное лицо налогового органа (о специальной декларации); арбитр (третейский судья); Уполномоченный по правам человека без его согласия (ч. 3 ст. 56 УПК РФ).
-        </div>
+        <div class="note red"><b>Не подлежат допросу в качестве свидетелей:</b> судья, присяжный заседатель (об обстоятельствах дела); адвокат, защитник (об обстоятельствах, ставших известными в связи с оказанием юридической помощи); священнослужитель (об обстоятельствах из исповеди); член Совета Федерации, депутат Государственной Думы без их согласия; должностное лицо налогового органа (о специальной декларации); арбитр (третейский судья); Уполномоченный по правам человека без его согласия (ч. 3 ст. 56 УПК РФ).</div>
       </div>
     </section>
 
@@ -1052,470 +899,526 @@ footer{
 
 <script>
 /* ============================================================
-   АВТОРИЗАЦИЯ — пароль закодирован (hex), в открытом виде нет
+   АВТОРИЗАЦИЯ: логин (фамилия) + пароль. Пароли в hex.
    ============================================================ */
-const AUTH_HEX = "736f455049436d6f6e73747232303235";
+const AUTH_USERS = [
+  {surname:"Котов",       full:"Котов Андрей Анатольевич",        pos:"Руководитель отдела",          zvan:"Майор юстиции",             unit:"Отдел криминалистики", passHex:"6b6f746f7632303235"},
+  {surname:"Степанов",    full:"Степанов Никита Алексеевич",      pos:"Эксперт-криминалист",          zvan:"Лейтенант юстиции",         unit:"Отдел криминалистики", passHex:"73746570616e6f7632303235"},
+  {surname:"Шолоков",     full:"Шолоков Владимир Иванович",       pos:"Следователь-криминалист",      zvan:"Старший лейтенант юстиции", unit:"Отдел криминалистики", passHex:"73686f6c6f6b6f7632303235"},
+  {surname:"Воробьев",    full:"Воробьев Максим Александрович",   pos:"Эксперт-криминалист",          zvan:"Лейтенант юстиции",         unit:"Отдел криминалистики", passHex:"766f726f6269657632303235"},
+  {surname:"Соколов",     full:"Соколов Дмитрий Александрович",   pos:"Руководитель отдела",          zvan:"Майор юстиции",             unit:"СО по г. Левобережный", passHex:"736f6b6f6c6f7632303235"},
+  {surname:"Петров",      full:"Петров Иван Владимирович",        pos:"Зам. руководителя отдела",     zvan:"Капитан юстиции",           unit:"СО по г. Левобережный", passHex:"706574726f7632303235"},
+  {surname:"Ермалов",     full:"Ермалов Александр Викторович",    pos:"Следователь",                  zvan:"Лейтенант юстиции",         unit:"СО по г. Левобережный", passHex:"7965726d616c6f7632303235"},
+  {surname:"Азаренко",    full:"Азаренко Виктор Сергеевич",       pos:"Следователь",                  zvan:"Лейтенант юстиции",         unit:"СО по г. Левобережный", passHex:"617a6172656e6b6f32303235"},
+  {surname:"Борисов",     full:"Борисов Николай Сергеевич",       pos:"Следователь",                  zvan:"Лейтенант юстиции",         unit:"СО по г. Левобережный", passHex:"626f7269736f7632303235"},
+  {surname:"Маяковский",  full:"Маяковский Маркус Александрович", pos:"Следователь",                  zvan:"Лейтенант юстиции",         unit:"СО по г. Левобережный", passHex:"6d6179616b6f76736b7932303235"},
+  {surname:"Смирнов",     full:"Смирнов Виктор Алексеевич",       pos:"Следователь",                  zvan:"Лейтенант юстиции",         unit:"СО по г. Левобережный", passHex:"736d69726e6f7632303235"},
+  {surname:"Мамалашвили", full:"Мамалашвили Тамаз Отарович",      pos:"Помощник следователя",         zvan:"Младший лейтенант юстиции", unit:"СО по г. Левобережный", passHex:"6d616d616c61736876696c6932303235"}
+];
+
+const MASTER_LOGIN = "admin";
+const MASTER_PASS_HEX = "736f455049436d6f6e73747232303235"; // soEPICmonstr2025
+
 const AUTH_KEY = "upk_auth";
+const USER_KEY = "upk_user";
 
 function decodeHex(hex){
   let s = '';
   for(let i = 0; i < hex.length; i += 2){
-    s += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    s += String.fromCharCode(parseInt(hex.slice(i, i+2), 16));
   }
   return s;
 }
+function norm(s){
+  return String(s || '').toLowerCase().replace(/ё/g,'е').replace(/\s+/g,' ').trim();
+}
+function initials(full){
+  const parts = String(full || '').split(' ');
+  if(parts.length < 2) return '';
+  return ' ' + parts.slice(1).map(function(w){ return w[0] + '.'; }).join('');
+}
+function findUser(loginInput){
+  const n = norm(loginInput);
+  if(!n) return null;
+  const first = n.split(' ')[0];
+  for(let i = 0; i < AUTH_USERS.length; i++){
+    const u = AUTH_USERS[i];
+    if(first === norm(u.surname)) return u;
+    if(n === norm(u.full)) return u;
+  }
+  return null;
+}
 
 function applyAuth(){
-  const pwd    = document.getElementById('lockPwd');
-  const err    = document.getElementById('lockErr');
-  const form   = document.getElementById('lockForm');
-  const logout = document.getElementById('logoutBtn');
+  const loginEl = document.getElementById('lockLogin');
+  const pwdEl   = document.getElementById('lockPwd');
+  const err     = document.getElementById('lockErr');
+  const form    = document.getElementById('lockForm');
+  const logout  = document.getElementById('logoutBtn');
+  const badge   = document.getElementById('userBadge');
 
+  function showBadge(name, pos){
+    if(!badge) return;
+    badge.innerHTML = '<b>' + name + '</b>' + (pos ? ' · ' + pos : '');
+  }
   function unlock(){ document.documentElement.classList.remove('locked'); }
   function lockNow(){
     document.documentElement.classList.add('locked');
-    pwd.value = '';
-    try{ pwd.focus(); }catch(e){}
+    if(pwdEl) pwdEl.value = '';
+    if(loginEl) loginEl.value = '';
+    try{ loginEl.focus(); }catch(e){}
   }
 
-  try{
-    if(localStorage.getItem(AUTH_KEY) === "ok") unlock();
-    else lockNow();
-  }catch(e){ lockNow(); }
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if(pwd.value === decodeHex(AUTH_HEX)){
-      try{ localStorage.setItem(AUTH_KEY, "ok"); }catch(e){}
+  function tryLogin(login, pass){
+    const L = (login || '').trim();
+    const P = pass || '';
+    if(!L || !P){
+      err.textContent = 'Введите логин и пароль';
+      return;
+    }
+    // Мастер-доступ
+    if(norm(L) === norm(MASTER_LOGIN) && P === decodeHex(MASTER_PASS_HEX)){
+      try{
+        localStorage.setItem(AUTH_KEY, "ok");
+        localStorage.setItem(USER_KEY, JSON.stringify({name:'Администратор', pos:''}));
+      }catch(e){}
       err.textContent = '';
+      showBadge('Администратор', '');
+      unlock();
+      return;
+    }
+    // Пользователь по фамилии
+    const u = findUser(L);
+    if(!u || P !== decodeHex(u.passHex)){
+      err.textContent = 'Неверный логин или пароль';
+      if(pwdEl) pwdEl.value = '';
+      try{ pwdEl.focus(); }catch(e){}
+      return;
+    }
+    try{
+      localStorage.setItem(AUTH_KEY, "ok");
+      localStorage.setItem(USER_KEY, JSON.stringify({
+        name: u.surname + initials(u.full),
+        pos: u.pos, full: u.full, zvan: u.zvan, unit: u.unit
+      }));
+    }catch(e){}
+    err.textContent = '';
+    showBadge(u.surname + initials(u.full), u.pos);
+    unlock();
+  }
+
+  // Восстановление сессии
+  try{
+    if(localStorage.getItem(AUTH_KEY) === "ok"){
+      let ud = null;
+      try{ ud = JSON.parse(localStorage.getItem(USER_KEY) || 'null'); }catch(e){}
+      if(ud) showBadge(ud.name || '', ud.pos || '');
       unlock();
     } else {
-      err.textContent = 'Неверный пароль';
-      pwd.value = '';
-      pwd.focus();
+      lockNow();
     }
+  }catch(e){ lockNow(); }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    tryLogin(loginEl.value, pwdEl.value);
   });
 
-  logout.addEventListener('click', () => {
-    try{ localStorage.removeItem(AUTH_KEY); }catch(e){}
+  logout.addEventListener('click', function(){
+    try{
+      localStorage.removeItem(AUTH_KEY);
+      localStorage.removeItem(USER_KEY);
+    }catch(e){}
     location.reload();
   });
 }
 applyAuth();
 
 /* ============================================================
-   0. УТИЛИТЫ
+   ЛИЧНЫЙ СОСТАВ
+   ============================================================ */
+(function renderStaff(){
+  const box = document.getElementById('staffBox');
+  const cnt = document.getElementById('staffCount');
+  if(!box) return;
+  if(cnt) cnt.textContent = AUTH_USERS.length + ' чел.';
+  const units = {};
+  AUTH_USERS.forEach(function(u){
+    (units[u.unit] = units[u.unit] || []).push(u);
+  });
+  box.innerHTML = Object.keys(units).map(function(unit){
+    const rows = units[unit].map(function(u){
+      return '<tr><td class="term">' + esc(u.full) + '</td><td>' + esc(u.pos) + '</td><td>' + esc(u.zvan) + '</td></tr>';
+    }).join('');
+    return '<h3>' + esc(unit) + '</h3><table><thead><tr><th>ФИО</th><th>Должность</th><th>Звание</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  }).join('');
+})();
+
+/* ============================================================
+   УТИЛИТЫ
    ============================================================ */
 function esc(s){
-  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  return String(s).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+  });
 }
 
 /* ============================================================
-   1. АЛГОРИТМЫ
+   АЛГОРИТМЫ
    ============================================================ */
 const ALGOS = [
-{
-  id:'a1', title:'Проверка сообщения о преступлении', law:'ст. 140–145 УПК РФ',
-  steps:[
-    {t:'Принять и зарегистрировать сообщение о преступлении в КУСП', r:'ст. 144 ч. 1'},
-    {t:'Выдать заявителю документ о принятии сообщения с указанием данных о принявшем лице, даты и времени', r:'ст. 144 ч. 4'},
-    {t:'Разъяснить участникам их права и обязанности, обеспечить возможность их осуществления', r:'ст. 144 ч. 1.1'},
-    {t:'Предупредить заявителя об уголовной ответственности за заведомо ложный донос', r:'ст. 306 УК РФ'},
-    {t:'Проверить сообщение: получить объяснения, образцы для сравнительного исследования, истребовать документы и предметы', r:'ст. 144 ч. 1'},
-    {t:'Провести осмотр места происшествия, документов, предметов, трупов; освидетельствование', r:'ст. 144 ч. 1', w:1},
-    {t:'Назначить судебную экспертизу, при необходимости — принять участие в её производстве', r:'ст. 144 ч. 1'},
-    {t:'Дать органу дознания обязательное для исполнения письменное поручение о проведении ОРМ', r:'ст. 144 ч. 1'},
-    {t:'При необходимости — продлить срок проверки до 10 суток (руководитель СО / начальник ОД)', r:'ст. 144 ч. 3'},
-    {t:'При необходимости ревизий, экспертиз, исследований, ОРМ — продлить до 30 суток', r:'ст. 144 ч. 3', w:1},
-    {t:'Принять одно из решений: возбудить дело / отказать / передать по подследственности', r:'ст. 145 ч. 1'},
-    {t:'Сообщить заявителю о принятом решении, разъяснить право и порядок обжалования', r:'ст. 145 ч. 2'},
-    {t:'Направить копию постановления о передаче сообщения по подследственности прокурору в течение 24 часов', r:'ст. 145 ч. 2'},
-    {t:'Принять меры по сохранению следов преступления при передаче сообщения по подследственности', r:'ст. 145 ч. 3'}
-  ]
-},
-{
-  id:'a2', title:'Задержание подозреваемого', law:'ст. 91, 92, 94, 96, 108 УПК РФ',
-  steps:[
-    {t:'Проверить наличие основания задержания (застигнут при совершении / указание потерпевших или очевидцев / явные следы преступления)', r:'ст. 91 ч. 1'},
-    {t:'Либо проверить наличие иных данных: пытался скрыться, нет постоянного места жительства, не установлена личность, направлено ходатайство о заключении под стражу', r:'ст. 91 ч. 2'},
-    {t:'Составить протокол задержания не позднее 3 часов с момента доставления', r:'ст. 92 ч. 1', w:1},
-    {t:'Сделать в протоколе отметку о разъяснении прав, предусмотренных ст. 46 УПК РФ', r:'ст. 92 ч. 1'},
-    {t:'Обеспечить участие защитника при составлении протокола, если он участвует с момента фактического задержания', r:'ст. 92 ч. 1.1'},
-    {t:'Указать в протоколе дату, время, место, основания и мотивы задержания, результаты личного обыска', r:'ст. 92 ч. 2'},
-    {t:'Сообщить прокурору в письменном виде в течение 12 часов с момента задержания', r:'ст. 92 ч. 3'},
-    {t:'Предоставить подозреваемому право на один телефонный разговор не позднее 3 часов с момента доставления', r:'ст. 96 ч. 1'},
-    {t:'Уведомить близких родственников, родственников или близких лиц', r:'ст. 96 ч. 1'},
-    {t:'Уведомить командование воинской части (если военнослужащий) / начальника органа (если сотрудник ОВД)', r:'ст. 96 ч. 2'},
-    {t:'Уведомить секретаря Общественной палаты РФ и общественную наблюдательную комиссию (если член ОНК)', r:'ст. 96 ч. 2.1'},
-    {t:'Уведомить адвокатскую палату субъекта РФ (если адвокат)', r:'ст. 96 ч. 2.2'},
-    {t:'Уведомить посольство или консульство иностранного государства (если иностранный гражданин)', r:'ст. 96 ч. 3'},
-    {t:'Обеспечить свидание с защитником наедине и конфиденциально до первого допроса (не менее 2 часов)', r:'ст. 92 ч. 4'},
-    {t:'Допросить подозреваемого не позднее 24 часов с момента фактического задержания', r:'ст. 46 ч. 2', w:1},
-    {t:'Решить вопрос о мере пресечения до истечения 48 часов', r:'ст. 94 ч. 2'},
-    {t:'При необходимости заключения под стражу — направить ходатайство в суд не позднее чем за 8 часов до истечения срока задержания', r:'ст. 108 ч. 3'},
-    {t:'При освобождении — вынести постановление и выдать справку с указанием оснований задержания и освобождения', r:'ст. 94 ч. 5'}
-  ]
-},
-{
-  id:'a3', title:'Избрание меры пресечения', law:'ст. 97–101, 108–110 УПК РФ',
-  steps:[
-    {t:'Установить наличие оснований, предусмотренных ст. 97 УПК РФ', r:'ст. 97'},
-    {t:'Учесть обстоятельства: тяжесть преступления, личность, возраст, состояние здоровья, семейное положение, род занятий', r:'ст. 99'},
-    {t:'Определить вид меры пресечения, достаточный для обеспечения производства по делу', r:'ст. 98'},
-    {t:'Вынести постановление о возбуждении перед судом ходатайства (для мер, требующих судебного решения)', r:'ст. 101, 108'},
-    {t:'Изложить в постановлении мотивы и основания, в силу которых возникла необходимость в избрании меры', r:'ст. 108 ч. 3'},
-    {t:'Получить согласие руководителя следственного органа (для следователя) или прокурора (для дознавателя)', r:'ст. 108 ч. 3'},
-    {t:'Приложить материалы, подтверждающие обоснованность ходатайства', r:'ст. 108 ч. 3'},
-    {t:'Учесть, что для заключения под стражу необходимо наказание в виде лишения свободы свыше 3 лет, а также невозможность применения иной меры', r:'ст. 108 ч. 1'},
-    {t:'Проверить исключения: для несовершеннолетних — только тяжкое или особо тяжкое, в исключительных случаях — средней тяжести', r:'ст. 108 ч. 2'},
-    {t:'Проверить запрет на заключение под стражу по экономическим составам при отсутствии обстоятельств п. 1–4 ч. 1 ст. 108', r:'ст. 108 ч. 1.1'},
-    {t:'Учесть, что обвинение подозреваемому должно быть предъявлено не позднее 10 суток с момента применения меры (45 суток — по отдельным составам)', r:'ст. 100', w:1},
-    {t:'Вручить копию постановления или определения лицу, в отношении которого оно вынесено, а также защитнику или законному представителю по их просьбе', r:'ст. 101 ч. 2'},
-    {t:'Разъяснить порядок обжалования решения об избрании меры пресечения', r:'ст. 101 ч. 3'},
-    {t:'Отменить или изменить меру пресечения, когда в ней отпадает необходимость или изменяются основания', r:'ст. 110'}
-  ]
-},
-{
-  id:'a4', title:'Привлечение в качестве обвиняемого и предъявление обвинения', law:'ст. 171–175 УПК РФ',
-  steps:[
-    {t:'Убедиться в наличии достаточных доказательств, дающих основания для обвинения лица в совершении преступления', r:'ст. 171 ч. 1'},
-    {t:'Вынести постановление о привлечении в качестве обвиняемого с указанием даты, места, кем составлено, данных лица, описания преступления, статьи УК РФ, решения', r:'ст. 171 ч. 2', w:1},
-    {t:'При обвинении в нескольких преступлениях — указать, какие деяния вменяются по каждой норме', r:'ст. 171 ч. 3'},
-    {t:'При привлечении нескольких лиц — вынести постановление в отношении каждого', r:'ст. 171 ч. 4'},
-    {t:'Известить обвиняемого о дне предъявления обвинения, разъяснить право пригласить защитника', r:'ст. 172 ч. 2'},
-    {t:'Известить обвиняемого, содержащегося под стражей, через администрацию места содержания', r:'ст. 172 ч. 3'},
-    {t:'Предъявить обвинение не позднее 3 суток со дня вынесения постановления в присутствии защитника', r:'ст. 172 ч. 1', w:1},
-    {t:'Удостовериться в личности обвиняемого, объявить постановление, разъяснить существо обвинения и права по ст. 47', r:'ст. 172 ч. 5'},
-    {t:'Вручить обвиняемому и его защитнику копию постановления', r:'ст. 172 ч. 8'},
-    {t:'Направить копию постановления прокурору', r:'ст. 172 ч. 9'},
-    {t:'Допросить обвиняемого немедленно после предъявления обвинения', r:'ст. 173 ч. 1'},
-    {t:'Выяснить, признаёт ли он себя виновным, желает ли дать показания и на каком языке', r:'ст. 173 ч. 2'},
-    {t:'Составить протокол допроса с указанием данных о личности', r:'ст. 174'},
-    {t:'При изменении обвинения — вынести новое постановление и предъявить в порядке ст. 172', r:'ст. 175 ч. 1'},
-    {t:'При неподтверждении части обвинения — прекратить уголовное преследование в соответствующей части, уведомить обвиняемого, защитника, прокурора', r:'ст. 175 ч. 2'}
-  ]
-},
-{
-  id:'a5', title:'Производство следственного действия (общие правила)', law:'ст. 164, 166, 167 УПК РФ',
-  steps:[
-    {t:'Определить цель и основание следственного действия', r:'ст. 164'},
-    {t:'Проверить, требуется ли судебное решение (ч. 2 ст. 29 УПК РФ)', r:'ст. 29 ч. 2', w:1},
-    {t:'При необходимости — вынести постановление о возбуждении ходатайства и получить согласие руководителя СО / прокурора', r:'ст. 165 ч. 1'},
-    {t:'При необходимости — вынести постановление следователя (для действий по ч. 1 ст. 164)', r:'ст. 164 ч. 1'},
-    {t:'Убедиться, что действие не производится в ночное время (22:00–06:00), кроме неотложных случаев', r:'ст. 164 ч. 3'},
-    {t:'Удостовериться в личности участников, разъяснить права, обязанности, ответственность и порядок производства', r:'ст. 164 ч. 5'},
-    {t:'Предупредить потерпевшего, свидетеля, специалиста, эксперта, переводчика об ответственности по ст. 307 и 308 УК РФ', r:'ст. 164 ч. 5'},
-    {t:'Предупредить лицо, в отношении которого выделено дело в связи с досудебным соглашением, о последствиях по гл. 40.1', r:'ст. 164 ч. 5'},
-    {t:'При применении технических средств — предупредить участников перед началом', r:'ст. 164 ч. 6'},
-    {t:'При необходимости — привлечь должностное лицо органа, осуществляющего ОРД, с отметкой в протоколе', r:'ст. 164 ч. 7'},
-    {t:'Составить протокол в соответствии со ст. 166 и 167', r:'ст. 166'},
-    {t:'Ознакомить участников с протоколом, обеспечить внесение замечаний', r:'ст. 166 ч. 6–8'},
-    {t:'При отказе от подписи — внести запись, удостоверяемую подписями следователя и иных лиц', r:'ст. 167', w:1}
-  ]
-},
-{
-  id:'a6', title:'Обыск и выемка', law:'ст. 182, 183, 165 УПК РФ',
-  steps:[
-    {t:'Установить наличие достаточных данных полагать, что в каком-либо месте или у какого-либо лица могут находиться орудия, предметы, документы, ценности, имеющие значение для дела', r:'ст. 182 ч. 1'},
-    {t:'Для выемки — убедиться, что точно известно, где и у кого находятся подлежащие изъятию предметы и документы', r:'ст. 183 ч. 1'},
-    {t:'Вынести постановление о производстве обыска (выемки)', r:'ст. 182 ч. 2'},
-    {t:'Обыск в жилище — только на основании судебного решения в порядке ст. 165', r:'ст. 182 ч. 3', w:1},
-    {t:'Выемка предметов и документов с государственной тайной, информации о вкладах и счетах, вещей в ломбарде — на основании судебного решения', r:'ст. 183 ч. 3'},
-    {t:'В неотложных случаях — произвести на основании постановления следователя, уведомить судью и прокурора не позднее 3 суток', r:'ст. 165 ч. 5', w:1},
-    {t:'До начала — предъявить постановление (или судебное решение)', r:'ст. 182 ч. 4'},
-    {t:'Предложить добровольно выдать подлежащие изъятию предметы, документы, ценности', r:'ст. 182 ч. 5'},
-    {t:'Обеспечить участие лица, в помещении которого производится обыск, либо совершеннолетних членов его семьи', r:'ст. 182 ч. 11'},
-    {t:'Обеспечить право присутствия защитника, а также адвоката того лица, в помещении которого производится обыск', r:'ст. 182 ч. 11'},
-    {t:'При участии понятых — разъяснить им цель, права и ответственность по ст. 60', r:'ст. 170 ч. 4'},
-    {t:'Изъять предметы и документы, изъятые из оборота', r:'ст. 182 ч. 9'},
-    {t:'Предъявить изъятое понятым и другим присутствующим лицам, упаковать и опечатать', r:'ст. 182 ч. 10'},
-    {t:'Принять меры к недопущению оглашения обстоятельств частной жизни', r:'ст. 182 ч. 7'},
-    {t:'Составить протокол с точным указанием количества, меры, веса, индивидуальных признаков и по возможности стоимости', r:'ст. 182 ч. 13'},
-    {t:'Вручить копию протокола лицу, в помещении которого произведён обыск, либо совершеннолетнему члену семьи', r:'ст. 182 ч. 15'},
-    {t:'При выемке в ломбарде — уведомить заёмщика или поклажедателя в трёхдневный срок', r:'ст. 183 ч. 6'}
-  ]
-},
-{
-  id:'a7', title:'Наложение ареста на имущество', law:'ст. 115, 115.1, 165 УПК РФ',
-  steps:[
-    {t:'Установить цель: обеспечение исполнения приговора в части гражданского иска, взыскания штрафа, других имущественных взысканий или возможной конфискации', r:'ст. 115 ч. 1'},
-    {t:'Вынести постановление о возбуждении перед судом ходатайства', r:'ст. 115 ч. 1'},
-    {t:'Получить согласие руководителя следственного органа (для следователя) или прокурора (для дознавателя)', r:'ст. 115 ч. 1'},
-    {t:'Указать конкретные фактические обстоятельства, на основании которых принимается решение', r:'ст. 115 ч. 1', w:1},
-    {t:'Установить ограничения, связанные с владением, пользованием, распоряжением имуществом', r:'ст. 115 ч. 1'},
-    {t:'Указать срок, на который налагается арест, с учётом срока предварительного расследования и времени для передачи дела в суд', r:'ст. 115 ч. 3'},
-    {t:'Проверить, что имущество не относится к тому, на которое не может быть обращено взыскание по ГПК РФ', r:'ст. 115 ч. 4'},
-    {t:'При необходимости — привлечь специалиста', r:'ст. 115 ч. 5'},
-    {t:'Составить протокол по ст. 166 и 167; при отсутствии имущества — указать об этом', r:'ст. 115 ч. 8'},
-    {t:'Вручить копию протокола лицу, на имущество которого наложен арест, разъяснить право обжалования', r:'ст. 115 ч. 8'},
-    {t:'При наложении ареста на денежные средства на счетах — операции прекращаются полностью или частично в пределах арестованных средств', r:'ст. 115 ч. 7'},
-    {t:'Для продления срока ареста имущества лиц, не являющихся подозреваемыми (обвиняемыми), — возбудить ходатайство не позднее чем за 7 суток до истечения срока', r:'ст. 115.1 ч. 2', w:1},
-    {t:'Отменить арест при отпадении необходимости либо по истечении установленного срока', r:'ст. 115 ч. 9'}
-  ]
-},
-{
-  id:'a8', title:'Назначение и производство судебной экспертизы', law:'ст. 195–207 УПК РФ',
-  steps:[
-    {t:'Признать необходимым назначение судебной экспертизы', r:'ст. 195 ч. 1'},
-    {t:'Вынести постановление с указанием оснований, данных эксперта или экспертного учреждения, вопросов, предоставляемых материалов', r:'ст. 195 ч. 1'},
-    {t:'Проверить, требуется ли помещение лица в медицинскую организацию (тогда — ходатайство перед судом)', r:'ст. 195 ч. 1, ст. 203'},
-    {t:'Ознакомить с постановлением подозреваемого, обвиняемого, защитника, потерпевшего, представителя; разъяснить права по ст. 198', r:'ст. 195 ч. 3', w:1},
-    {t:'Составить протокол, подписываемый следователем и ознакомленными лицами', r:'ст. 195 ч. 3'},
-    {t:'Учесть, что экспертиза в отношении потерпевшего (кроме п. 2, 4, 5 ст. 196) и свидетеля — с их согласия или согласия законных представителей', r:'ст. 195 ч. 4'},
-    {t:'Проверить обязательные случаи назначения экспертизы: причины смерти, характер и степень вреда здоровью, психическое или физическое состояние, возраст', r:'ст. 196', w:1},
-    {t:'Направить материалы руководителю экспертного учреждения или вручить постановление эксперту', r:'ст. 199'},
-    {t:'Разъяснить эксперту права и ответственность по ст. 57', r:'ст. 199 ч. 2, 4'},
-    {t:'Получить заключение эксперта, проверить его полноту и ясность', r:'ст. 204'},
-    {t:'При необходимости — допросить эксперта для разъяснения заключения', r:'ст. 205'},
-    {t:'Предъявить заключение потерпевшему, представителю, подозреваемому, обвиняемому, защитнику; разъяснить право ходатайствовать о дополнительной или повторной экспертизе', r:'ст. 206', w:1},
-    {t:'При недостаточной ясности или полноте — назначить дополнительную экспертизу; при сомнениях в обоснованности — повторную', r:'ст. 207'}
-  ]
-},
-{
-  id:'a9', title:'Окончание предварительного следствия с обвинительным заключением', law:'ст. 215–220 УПК РФ',
-  steps:[
-    {t:'Убедиться, что все следственные действия произведены, а доказательства достаточны для составления обвинительного заключения', r:'ст. 215 ч. 1'},
-    {t:'Уведомить обвиняемого об окончании следственных действий, разъяснить право на ознакомление с материалами дела лично и с помощью защитника', r:'ст. 215 ч. 1', w:1},
-    {t:'Составить протокол уведомления в соответствии со ст. 166 и 167', r:'ст. 215 ч. 1'},
-    {t:'Уведомить защитника, законного представителя обвиняемого, а также потерпевшего, гражданского истца, гражданского ответчика и их представителей', r:'ст. 215 ч. 2'},
-    {t:'При невозможности явки защитника — отложить ознакомление на срок не более 5 суток', r:'ст. 215 ч. 3'},
-    {t:'Ознакомить потерпевшего, гражданского истца, гражданского ответчика и их представителей с материалами дела (полностью или частично)', r:'ст. 216'},
-    {t:'Предъявить обвиняемому и его защитнику подшитые и пронумерованные материалы дела, а также вещественные доказательства', r:'ст. 217 ч. 1'},
-    {t:'Обеспечить возможность выписывать любые сведения, снимать копии с документов, в том числе с помощью технических средств', r:'ст. 217 ч. 2'},
-    {t:'При явном затягивании ознакомления — обратиться в суд в порядке ст. 125 для установления определённого срока', r:'ст. 217 ч. 3'},
-    {t:'Выяснить, какие имеются ходатайства и иные заявления; выяснить, каких свидетелей, экспертов, специалистов вызвать в суд', r:'ст. 217 ч. 4'},
-    {t:'Разъяснить право ходатайствовать о рассмотрении дела судом с участием присяжных, коллегией из трёх судей, в особом порядке, о проведении предварительных слушаний', r:'ст. 217 ч. 5'},
-    {t:'Составить протокол ознакомления с материалами дела, указать даты начала и окончания, заявленные ходатайства и заявления', r:'ст. 218'},
-    {t:'Разрешить заявленные ходатайства; при удовлетворении — дополнить материалы дела и ознакомить с ними участников', r:'ст. 219', w:1},
-    {t:'Составить обвинительное заключение с указанием всех предусмотренных ст. 220 сведений', r:'ст. 220 ч. 1'},
-    {t:'Приложить список лиц, подлежащих вызову в судебное заседание, и справку о сроках, мерах пресечения, вещественных доказательствах, гражданском иске, процессуальных издержках', r:'ст. 220 ч. 4–5'},
-    {t:'Направить уголовное дело с согласия руководителя следственного органа прокурору', r:'ст. 220 ч. 6'}
-  ]
-},
-{
-  id:'a10', title:'Прекращение уголовного дела', law:'ст. 24–28.1, 212–214 УПК РФ',
-  steps:[
-    {t:'Установить наличие основания прекращения (ст. 24, 25, 25.1, 27, 28, 28.1)', r:'ст. 24–28.1'},
-    {t:'Проверить, требуется ли согласие обвиняемого или потерпевшего на прекращение', r:'ст. 27 ч. 2', w:1},
-    {t:'Разъяснить лицу основания прекращения и право возражать против прекращения уголовного преследования', r:'ст. 27 ч. 3, ст. 28 ч. 3, ст. 28.1 ч. 4', w:1},
-    {t:'Вынести постановление о прекращении уголовного дела с указанием всех реквизитов, предусмотренных ст. 213', r:'ст. 213 ч. 2'},
-    {t:'Отразить в постановлении согласие обвиняемого или потерпевшего, если оно требуется', r:'ст. 213 ч. 3'},
-    {t:'Направить копию постановления прокурору', r:'ст. 213 ч. 1'},
-    {t:'Вручить или направить копию постановления лицу, в отношении которого прекращено преследование, потерпевшему, гражданскому истцу и гражданскому ответчику', r:'ст. 213 ч. 4'},
-    {t:'Разъяснить потерпевшему и гражданскому истцу право предъявить иск в порядке гражданского судопроизводства', r:'ст. 213 ч. 4'},
-    {t:'Отменить меры пресечения, арест имущества, корреспонденции, временное отстранение от должности, контроль и запись переговоров', r:'ст. 213 ч. 2'},
-    {t:'Решить вопрос о вещественных доказательствах', r:'ст. 213 ч. 2'},
-    {t:'При прекращении по основаниям, дающим право на реабилитацию, — принять меры по реабилитации (гл. 18)', r:'ст. 212 ч. 2', w:1},
-    {t:'По делам о налоговых преступлениях — направить копию постановления в налоговый орган или территориальный орган страховщика', r:'ст. 213 ч. 4'},
-    {t:'Решить вопрос о дальнейшем применении мер безопасности либо об их отмене', r:'ст. 213 ч. 6'},
-    {t:'Учесть, что отмена постановления о прекращении по истечении одного года допускается только на основании судебного решения', r:'ст. 214 ч. 1.1', w:1}
-  ]
-}
+{id:'a1', title:'Проверка сообщения о преступлении', law:'ст. 140–145 УПК РФ', steps:[
+  {t:'Принять и зарегистрировать сообщение о преступлении в КУСП', r:'ст. 144 ч. 1'},
+  {t:'Выдать заявителю документ о принятии сообщения с указанием данных о принявшем лице, даты и времени', r:'ст. 144 ч. 4'},
+  {t:'Разъяснить участникам их права и обязанности, обеспечить возможность их осуществления', r:'ст. 144 ч. 1.1'},
+  {t:'Предупредить заявителя об уголовной ответственности за заведомо ложный донос', r:'ст. 306 УК РФ'},
+  {t:'Проверить сообщение: получить объяснения, образцы для сравнительного исследования, истребовать документы и предметы', r:'ст. 144 ч. 1'},
+  {t:'Провести осмотр места происшествия, документов, предметов, трупов; освидетельствование', r:'ст. 144 ч. 1', w:1},
+  {t:'Назначить судебную экспертизу, при необходимости — принять участие в её производстве', r:'ст. 144 ч. 1'},
+  {t:'Дать органу дознания обязательное для исполнения письменное поручение о проведении ОРМ', r:'ст. 144 ч. 1'},
+  {t:'При необходимости — продлить срок проверки до 10 суток (руководитель СО / начальник ОД)', r:'ст. 144 ч. 3'},
+  {t:'При необходимости ревизий, экспертиз, исследований, ОРМ — продлить до 30 суток', r:'ст. 144 ч. 3', w:1},
+  {t:'Принять одно из решений: возбудить дело / отказать / передать по подследственности', r:'ст. 145 ч. 1'},
+  {t:'Сообщить заявителю о принятом решении, разъяснить право и порядок обжалования', r:'ст. 145 ч. 2'},
+  {t:'Направить копию постановления о передаче сообщения по подследственности прокурору в течение 24 часов', r:'ст. 145 ч. 2'},
+  {t:'Принять меры по сохранению следов преступления при передаче сообщения по подследственности', r:'ст. 145 ч. 3'}
+]},
+{id:'a2', title:'Задержание подозреваемого', law:'ст. 91, 92, 94, 96, 108 УПК РФ', steps:[
+  {t:'Проверить наличие основания задержания (застигнут при совершении / указание потерпевших или очевидцев / явные следы преступления)', r:'ст. 91 ч. 1'},
+  {t:'Либо проверить наличие иных данных: пытался скрыться, нет постоянного места жительства, не установлена личность, направлено ходатайство о заключении под стражу', r:'ст. 91 ч. 2'},
+  {t:'Составить протокол задержания не позднее 3 часов с момента доставления', r:'ст. 92 ч. 1', w:1},
+  {t:'Сделать в протоколе отметку о разъяснении прав, предусмотренных ст. 46 УПК РФ', r:'ст. 92 ч. 1'},
+  {t:'Обеспечить участие защитника при составлении протокола, если он участвует с момента фактического задержания', r:'ст. 92 ч. 1.1'},
+  {t:'Указать в протоколе дату, время, место, основания и мотивы задержания, результаты личного обыска', r:'ст. 92 ч. 2'},
+  {t:'Сообщить прокурору в письменном виде в течение 12 часов с момента задержания', r:'ст. 92 ч. 3'},
+  {t:'Предоставить подозреваемому право на один телефонный разговор не позднее 3 часов с момента доставления', r:'ст. 96 ч. 1'},
+  {t:'Уведомить близких родственников, родственников или близких лиц', r:'ст. 96 ч. 1'},
+  {t:'Уведомить командование воинской части (если военнослужащий) / начальника органа (если сотрудник ОВД)', r:'ст. 96 ч. 2'},
+  {t:'Уведомить секретаря Общественной палаты РФ и общественную наблюдательную комиссию (если член ОНК)', r:'ст. 96 ч. 2.1'},
+  {t:'Уведомить адвокатскую палату субъекта РФ (если адвокат)', r:'ст. 96 ч. 2.2'},
+  {t:'Уведомить посольство или консульство иностранного государства (если иностранный гражданин)', r:'ст. 96 ч. 3'},
+  {t:'Обеспечить свидание с защитником наедине и конфиденциально до первого допроса (не менее 2 часов)', r:'ст. 92 ч. 4'},
+  {t:'Допросить подозреваемого не позднее 24 часов с момента фактического задержания', r:'ст. 46 ч. 2', w:1},
+  {t:'Решить вопрос о мере пресечения до истечения 48 часов', r:'ст. 94 ч. 2'},
+  {t:'При необходимости заключения под стражу — направить ходатайство в суд не позднее чем за 8 часов до истечения срока задержания', r:'ст. 108 ч. 3'},
+  {t:'При освобождении — вынести постановление и выдать справку с указанием оснований задержания и освобождения', r:'ст. 94 ч. 5'}
+]},
+{id:'a3', title:'Избрание меры пресечения', law:'ст. 97–101, 108–110 УПК РФ', steps:[
+  {t:'Установить наличие оснований, предусмотренных ст. 97 УПК РФ', r:'ст. 97'},
+  {t:'Учесть обстоятельства: тяжесть преступления, личность, возраст, состояние здоровья, семейное положение, род занятий', r:'ст. 99'},
+  {t:'Определить вид меры пресечения, достаточный для обеспечения производства по делу', r:'ст. 98'},
+  {t:'Вынести постановление о возбуждении перед судом ходатайства (для мер, требующих судебного решения)', r:'ст. 101, 108'},
+  {t:'Изложить в постановлении мотивы и основания, в силу которых возникла необходимость в избрании меры', r:'ст. 108 ч. 3'},
+  {t:'Получить согласие руководителя следственного органа (для следователя) или прокурора (для дознавателя)', r:'ст. 108 ч. 3'},
+  {t:'Приложить материалы, подтверждающие обоснованность ходатайства', r:'ст. 108 ч. 3'},
+  {t:'Учесть, что для заключения под стражу необходимо наказание в виде лишения свободы свыше 3 лет, а также невозможность применения иной меры', r:'ст. 108 ч. 1'},
+  {t:'Проверить исключения: для несовершеннолетних — только тяжкое или особо тяжкое, в исключительных случаях — средней тяжести', r:'ст. 108 ч. 2'},
+  {t:'Проверить запрет на заключение под стражу по экономическим составам при отсутствии обстоятельств п. 1–4 ч. 1 ст. 108', r:'ст. 108 ч. 1.1'},
+  {t:'Учесть, что обвинение подозреваемому должно быть предъявлено не позднее 10 суток с момента применения меры (45 суток — по отдельным составам)', r:'ст. 100', w:1},
+  {t:'Вручить копию постановления или определения лицу, в отношении которого оно вынесено, а также защитнику или законному представителю по их просьбе', r:'ст. 101 ч. 2'},
+  {t:'Разъяснить порядок обжалования решения об избрании меры пресечения', r:'ст. 101 ч. 3'},
+  {t:'Отменить или изменить меру пресечения, когда в ней отпадает необходимость или изменяются основания', r:'ст. 110'}
+]},
+{id:'a4', title:'Привлечение в качестве обвиняемого и предъявление обвинения', law:'ст. 171–175 УПК РФ', steps:[
+  {t:'Убедиться в наличии достаточных доказательств, дающих основания для обвинения лица в совершении преступления', r:'ст. 171 ч. 1'},
+  {t:'Вынести постановление о привлечении в качестве обвиняемого с указанием даты, места, кем составлено, данных лица, описания преступления, статьи УК РФ, решения', r:'ст. 171 ч. 2', w:1},
+  {t:'При обвинении в нескольких преступлениях — указать, какие деяния вменяются по каждой норме', r:'ст. 171 ч. 3'},
+  {t:'При привлечении нескольких лиц — вынести постановление в отношении каждого', r:'ст. 171 ч. 4'},
+  {t:'Известить обвиняемого о дне предъявления обвинения, разъяснить право пригласить защитника', r:'ст. 172 ч. 2'},
+  {t:'Известить обвиняемого, содержащегося под стражей, через администрацию места содержания', r:'ст. 172 ч. 3'},
+  {t:'Предъявить обвинение не позднее 3 суток со дня вынесения постановления в присутствии защитника', r:'ст. 172 ч. 1', w:1},
+  {t:'Удостовериться в личности обвиняемого, объявить постановление, разъяснить существо обвинения и права по ст. 47', r:'ст. 172 ч. 5'},
+  {t:'Вручить обвиняемому и его защитнику копию постановления', r:'ст. 172 ч. 8'},
+  {t:'Направить копию постановления прокурору', r:'ст. 172 ч. 9'},
+  {t:'Допросить обвиняемого немедленно после предъявления обвинения', r:'ст. 173 ч. 1'},
+  {t:'Выяснить, признаёт ли он себя виновным, желает ли дать показания и на каком языке', r:'ст. 173 ч. 2'},
+  {t:'Составить протокол допроса с указанием данных о личности', r:'ст. 174'},
+  {t:'При изменении обвинения — вынести новое постановление и предъявить в порядке ст. 172', r:'ст. 175 ч. 1'},
+  {t:'При неподтверждении части обвинения — прекратить уголовное преследование в соответствующей части, уведомить обвиняемого, защитника, прокурора', r:'ст. 175 ч. 2'}
+]},
+{id:'a5', title:'Производство следственного действия (общие правила)', law:'ст. 164, 166, 167 УПК РФ', steps:[
+  {t:'Определить цель и основание следственного действия', r:'ст. 164'},
+  {t:'Проверить, требуется ли судебное решение (ч. 2 ст. 29 УПК РФ)', r:'ст. 29 ч. 2', w:1},
+  {t:'При необходимости — вынести постановление о возбуждении ходатайства и получить согласие руководителя СО / прокурора', r:'ст. 165 ч. 1'},
+  {t:'При необходимости — вынести постановление следователя (для действий по ч. 1 ст. 164)', r:'ст. 164 ч. 1'},
+  {t:'Убедиться, что действие не производится в ночное время (22:00–06:00), кроме неотложных случаев', r:'ст. 164 ч. 3'},
+  {t:'Удостовериться в личности участников, разъяснить права, обязанности, ответственность и порядок производства', r:'ст. 164 ч. 5'},
+  {t:'Предупредить потерпевшего, свидетеля, специалиста, эксперта, переводчика об ответственности по ст. 307 и 308 УК РФ', r:'ст. 164 ч. 5'},
+  {t:'Предупредить лицо, в отношении которого выделено дело в связи с досудебным соглашением, о последствиях по гл. 40.1', r:'ст. 164 ч. 5'},
+  {t:'При применении технических средств — предупредить участников перед началом', r:'ст. 164 ч. 6'},
+  {t:'При необходимости — привлечь должностное лицо органа, осуществляющего ОРД, с отметкой в протоколе', r:'ст. 164 ч. 7'},
+  {t:'Составить протокол в соответствии со ст. 166 и 167', r:'ст. 166'},
+  {t:'Ознакомить участников с протоколом, обеспечить внесение замечаний', r:'ст. 166 ч. 6–8'},
+  {t:'При отказе от подписи — внести запись, удостоверяемую подписями следователя и иных лиц', r:'ст. 167', w:1}
+]},
+{id:'a6', title:'Обыск и выемка', law:'ст. 182, 183, 165 УПК РФ', steps:[
+  {t:'Установить наличие достаточных данных полагать, что в каком-либо месте или у какого-либо лица могут находиться орудия, предметы, документы, ценности, имеющие значение для дела', r:'ст. 182 ч. 1'},
+  {t:'Для выемки — убедиться, что точно известно, где и у кого находятся подлежащие изъятию предметы и документы', r:'ст. 183 ч. 1'},
+  {t:'Вынести постановление о производстве обыска (выемки)', r:'ст. 182 ч. 2'},
+  {t:'Обыск в жилище — только на основании судебного решения в порядке ст. 165', r:'ст. 182 ч. 3', w:1},
+  {t:'Выемка предметов и документов с государственной тайной, информации о вкладах и счетах, вещей в ломбарде — на основании судебного решения', r:'ст. 183 ч. 3'},
+  {t:'В неотложных случаях — произвести на основании постановления следователя, уведомить судью и прокурора не позднее 3 суток', r:'ст. 165 ч. 5', w:1},
+  {t:'До начала — предъявить постановление (или судебное решение)', r:'ст. 182 ч. 4'},
+  {t:'Предложить добровольно выдать подлежащие изъятию предметы, документы, ценности', r:'ст. 182 ч. 5'},
+  {t:'Обеспечить участие лица, в помещении которого производится обыск, либо совершеннолетних членов его семьи', r:'ст. 182 ч. 11'},
+  {t:'Обеспечить право присутствия защитника, а также адвоката того лица, в помещении которого производится обыск', r:'ст. 182 ч. 11'},
+  {t:'При участии понятых — разъяснить им цель, права и ответственность по ст. 60', r:'ст. 170 ч. 4'},
+  {t:'Изъять предметы и документы, изъятые из оборота', r:'ст. 182 ч. 9'},
+  {t:'Предъявить изъятое понятым и другим присутствующим лицам, упаковать и опечатать', r:'ст. 182 ч. 10'},
+  {t:'Принять меры к недопущению оглашения обстоятельств частной жизни', r:'ст. 182 ч. 7'},
+  {t:'Составить протокол с точным указанием количества, меры, веса, индивидуальных признаков и по возможности стоимости', r:'ст. 182 ч. 13'},
+  {t:'Вручить копию протокола лицу, в помещении которого произведён обыск, либо совершеннолетнему члену семьи', r:'ст. 182 ч. 15'},
+  {t:'При выемке в ломбарде — уведомить заёмщика или поклажедателя в трёхдневный срок', r:'ст. 183 ч. 6'}
+]},
+{id:'a7', title:'Наложение ареста на имущество', law:'ст. 115, 115.1, 165 УПК РФ', steps:[
+  {t:'Установить цель: обеспечение исполнения приговора в части гражданского иска, взыскания штрафа, других имущественных взысканий или возможной конфискации', r:'ст. 115 ч. 1'},
+  {t:'Вынести постановление о возбуждении перед судом ходатайства', r:'ст. 115 ч. 1'},
+  {t:'Получить согласие руководителя следственного органа (для следователя) или прокурора (для дознавателя)', r:'ст. 115 ч. 1'},
+  {t:'Указать конкретные фактические обстоятельства, на основании которых принимается решение', r:'ст. 115 ч. 1', w:1},
+  {t:'Установить ограничения, связанные с владением, пользованием, распоряжением имуществом', r:'ст. 115 ч. 1'},
+  {t:'Указать срок, на который налагается арест, с учётом срока предварительного расследования и времени для передачи дела в суд', r:'ст. 115 ч. 3'},
+  {t:'Проверить, что имущество не относится к тому, на которое не может быть обращено взыскание по ГПК РФ', r:'ст. 115 ч. 4'},
+  {t:'При необходимости — привлечь специалиста', r:'ст. 115 ч. 5'},
+  {t:'Составить протокол по ст. 166 и 167; при отсутствии имущества — указать об этом', r:'ст. 115 ч. 8'},
+  {t:'Вручить копию протокола лицу, на имущество которого наложен арест, разъяснить право обжалования', r:'ст. 115 ч. 8'},
+  {t:'При наложении ареста на денежные средства на счетах — операции прекращаются полностью или частично в пределах арестованных средств', r:'ст. 115 ч. 7'},
+  {t:'Для продления срока ареста имущества лиц, не являющихся подозреваемыми (обвиняемыми), — возбудить ходатайство не позднее чем за 7 суток до истечения срока', r:'ст. 115.1 ч. 2', w:1},
+  {t:'Отменить арест при отпадении необходимости либо по истечении установленного срока', r:'ст. 115 ч. 9'}
+]},
+{id:'a8', title:'Назначение и производство судебной экспертизы', law:'ст. 195–207 УПК РФ', steps:[
+  {t:'Признать необходимым назначение судебной экспертизы', r:'ст. 195 ч. 1'},
+  {t:'Вынести постановление с указанием оснований, данных эксперта или экспертного учреждения, вопросов, предоставляемых материалов', r:'ст. 195 ч. 1'},
+  {t:'Проверить, требуется ли помещение лица в медицинскую организацию (тогда — ходатайство перед судом)', r:'ст. 195 ч. 1, ст. 203'},
+  {t:'Ознакомить с постановлением подозреваемого, обвиняемого, защитника, потерпевшего, представителя; разъяснить права по ст. 198', r:'ст. 195 ч. 3', w:1},
+  {t:'Составить протокол, подписываемый следователем и ознакомленными лицами', r:'ст. 195 ч. 3'},
+  {t:'Учесть, что экспертиза в отношении потерпевшего (кроме п. 2, 4, 5 ст. 196) и свидетеля — с их согласия или согласия законных представителей', r:'ст. 195 ч. 4'},
+  {t:'Проверить обязательные случаи назначения экспертизы: причины смерти, характер и степень вреда здоровью, психическое или физическое состояние, возраст', r:'ст. 196', w:1},
+  {t:'Направить материалы руководителю экспертного учреждения или вручить постановление эксперту', r:'ст. 199'},
+  {t:'Разъяснить эксперту права и ответственность по ст. 57', r:'ст. 199 ч. 2, 4'},
+  {t:'Получить заключение эксперта, проверить его полноту и ясность', r:'ст. 204'},
+  {t:'При необходимости — допросить эксперта для разъяснения заключения', r:'ст. 205'},
+  {t:'Предъявить заключение потерпевшему, представителю, подозреваемому, обвиняемому, защитнику; разъяснить право ходатайствовать о дополнительной или повторной экспертизе', r:'ст. 206', w:1},
+  {t:'При недостаточной ясности или полноте — назначить дополнительную экспертизу; при сомнениях в обоснованности — повторную', r:'ст. 207'}
+]},
+{id:'a9', title:'Окончание предварительного следствия с обвинительным заключением', law:'ст. 215–220 УПК РФ', steps:[
+  {t:'Убедиться, что все следственные действия произведены, а доказательства достаточны для составления обвинительного заключения', r:'ст. 215 ч. 1'},
+  {t:'Уведомить обвиняемого об окончании следственных действий, разъяснить право на ознакомление с материалами дела лично и с помощью защитника', r:'ст. 215 ч. 1', w:1},
+  {t:'Составить протокол уведомления в соответствии со ст. 166 и 167', r:'ст. 215 ч. 1'},
+  {t:'Уведомить защитника, законного представителя обвиняемого, а также потерпевшего, гражданского истца, гражданского ответчика и их представителей', r:'ст. 215 ч. 2'},
+  {t:'При невозможности явки защитника — отложить ознакомление на срок не более 5 суток', r:'ст. 215 ч. 3'},
+  {t:'Ознакомить потерпевшего, гражданского истца, гражданского ответчика и их представителей с материалами дела (полностью или частично)', r:'ст. 216'},
+  {t:'Предъявить обвиняемому и его защитнику подшитые и пронумерованные материалы дела, а также вещественные доказательства', r:'ст. 217 ч. 1'},
+  {t:'Обеспечить возможность выписывать любые сведения, снимать копии с документов, в том числе с помощью технических средств', r:'ст. 217 ч. 2'},
+  {t:'При явном затягивании ознакомления — обратиться в суд в порядке ст. 125 для установления определённого срока', r:'ст. 217 ч. 3'},
+  {t:'Выяснить, какие имеются ходатайства и иные заявления; выяснить, каких свидетелей, экспертов, специалистов вызвать в суд', r:'ст. 217 ч. 4'},
+  {t:'Разъяснить право ходатайствовать о рассмотрении дела судом с участием присяжных, коллегией из трёх судей, в особом порядке, о проведении предварительных слушаний', r:'ст. 217 ч. 5'},
+  {t:'Составить протокол ознакомления с материалами дела, указать даты начала и окончания, заявленные ходатайства и заявления', r:'ст. 218'},
+  {t:'Разрешить заявленные ходатайства; при удовлетворении — дополнить материалы дела и ознакомить с ними участников', r:'ст. 219', w:1},
+  {t:'Составить обвинительное заключение с указанием всех предусмотренных ст. 220 сведений', r:'ст. 220 ч. 1'},
+  {t:'Приложить список лиц, подлежащих вызову в судебное заседание, и справку о сроках, мерах пресечения, вещественных доказательствах, гражданском иске, процессуальных издержках', r:'ст. 220 ч. 4–5'},
+  {t:'Направить уголовное дело с согласия руководителя следственного органа прокурору', r:'ст. 220 ч. 6'}
+]},
+{id:'a10', title:'Прекращение уголовного дела', law:'ст. 24–28.1, 212–214 УПК РФ', steps:[
+  {t:'Установить наличие основания прекращения (ст. 24, 25, 25.1, 27, 28, 28.1)', r:'ст. 24–28.1'},
+  {t:'Проверить, требуется ли согласие обвиняемого или потерпевшего на прекращение', r:'ст. 27 ч. 2', w:1},
+  {t:'Разъяснить лицу основания прекращения и право возражать против прекращения уголовного преследования', r:'ст. 27 ч. 3, ст. 28 ч. 3, ст. 28.1 ч. 4', w:1},
+  {t:'Вынести постановление о прекращении уголовного дела с указанием всех реквизитов, предусмотренных ст. 213', r:'ст. 213 ч. 2'},
+  {t:'Отразить в постановлении согласие обвиняемого или потерпевшего, если оно требуется', r:'ст. 213 ч. 3'},
+  {t:'Направить копию постановления прокурору', r:'ст. 213 ч. 1'},
+  {t:'Вручить или направить копию постановления лицу, в отношении которого прекращено преследование, потерпевшему, гражданскому истцу и гражданскому ответчику', r:'ст. 213 ч. 4'},
+  {t:'Разъяснить потерпевшему и гражданскому истцу право предъявить иск в порядке гражданского судопроизводства', r:'ст. 213 ч. 4'},
+  {t:'Отменить меры пресечения, арест имущества, корреспонденции, временное отстранение от должности, контроль и запись переговоров', r:'ст. 213 ч. 2'},
+  {t:'Решить вопрос о вещественных доказательствах', r:'ст. 213 ч. 2'},
+  {t:'При прекращении по основаниям, дающим право на реабилитацию, — принять меры по реабилитации (гл. 18)', r:'ст. 212 ч. 2', w:1},
+  {t:'По делам о налоговых преступлениях — направить копию постановления в налоговый орган или территориальный орган страховщика', r:'ст. 213 ч. 4'},
+  {t:'Решить вопрос о дальнейшем применении мер безопасности либо об их отмене', r:'ст. 213 ч. 6'},
+  {t:'Учесть, что отмена постановления о прекращении по истечении одного года допускается только на основании судебного решения', r:'ст. 214 ч. 1.1', w:1}
+]}
 ];
 
 /* ============================================================
-   2. РЕНДЕР АЛГОРИТМОВ
+   РЕНДЕР АЛГОРИТМОВ
    ============================================================ */
 const algoBox = document.getElementById('algoContainer');
-
-ALGOS.forEach((a, idx) => {
+ALGOS.forEach(function(a, idx){
   const el = document.createElement('div');
   el.className = 'algo';
   el.dataset.id = a.id;
-  el.innerHTML = `
-    <div class="algo-head">
-      <div class="num">${idx+1}</div>
-      <div class="t">${esc(a.title)}</div>
-      <div class="law">${esc(a.law)}</div>
-      <div class="arrow">▶</div>
-    </div>
-    <div class="algo-body">
-      <div class="progress"><i></i></div>
-      ${a.steps.map((s,i)=>`
-        <label class="step ${s.w?'warn':''}" data-key="${a.id}_${i}">
-          <span class="box"></span>
-          <span class="txt">${esc(s.t)}</span>
-          ${s.r?`<span class="ref">${esc(s.r)}</span>`:''}
-        </label>`).join('')}
-      <div class="algo-foot">
-        <button class="btn" data-clear="${a.id}">Сбросить шаги</button>
-        <button class="btn" data-all="${a.id}">Отметить все</button>
-      </div>
-    </div>`;
+  el.innerHTML =
+    '<div class="algo-head"><div class="num">' + (idx+1) + '</div><div class="t">' + esc(a.title) + '</div><div class="law">' + esc(a.law) + '</div><div class="arrow">▶</div></div>' +
+    '<div class="algo-body"><div class="progress"><i></i></div>' +
+    a.steps.map(function(s,i){
+      return '<label class="step ' + (s.w?'warn':'') + '" data-key="' + a.id + '_' + i + '"><span class="box"></span><span class="txt">' + esc(s.t) + '</span>' + (s.r ? '<span class="ref">' + esc(s.r) + '</span>' : '') + '</label>';
+    }).join('') +
+    '<div class="algo-foot"><button class="btn" data-clear="' + a.id + '">Сбросить шаги</button><button class="btn" data-all="' + a.id + '">Отметить все</button></div></div>';
   algoBox.appendChild(el);
 });
 
-algoBox.addEventListener('click', e => {
+algoBox.addEventListener('click', function(e){
   const head = e.target.closest('.algo-head');
   if(head){ head.parentElement.classList.toggle('open'); saveOpen(); }
 });
 
 const STORE_KEY = 'upk_checklist_v1';
-function loadState(){
-  try{ return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }catch(e){ return {}; }
-}
+function loadState(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }catch(e){ return {}; } }
 function saveState(s){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(s)); }catch(e){} }
 let state = loadState();
-
 function applyState(){
-  document.querySelectorAll('.step').forEach(st => {
+  document.querySelectorAll('.step').forEach(function(st){
     if(state[st.dataset.key]) st.classList.add('done');
     else st.classList.remove('done');
   });
-  document.querySelectorAll('.algo').forEach(a => updateProgress(a.dataset.id));
+  document.querySelectorAll('.algo').forEach(function(a){ updateProgress(a.dataset.id); });
 }
 function updateProgress(id){
-  const algo = document.querySelector(`.algo[data-id="${id}"]`);
+  const algo = document.querySelector('.algo[data-id="' + id + '"]');
   if(!algo) return;
   const steps = algo.querySelectorAll('.step');
   const done = algo.querySelectorAll('.step.done').length;
   const pct = steps.length ? Math.round(done/steps.length*100) : 0;
   algo.querySelector('.progress i').style.width = pct + '%';
 }
-document.querySelectorAll('.step').forEach(st => {
-  st.addEventListener('click', e => {
+document.querySelectorAll('.step').forEach(function(st){
+  st.addEventListener('click', function(e){
     e.preventDefault();
     const k = st.dataset.key;
     if(state[k]){ delete state[k]; st.classList.remove('done'); }
     else { state[k] = 1; st.classList.add('done'); }
-    saveState(state);
-    updateProgress(st.closest('.algo').dataset.id);
+    saveState(state); updateProgress(st.closest('.algo').dataset.id);
   });
 });
-document.querySelectorAll('[data-clear]').forEach(b => {
-  b.addEventListener('click', () => {
+document.querySelectorAll('[data-clear]').forEach(function(b){
+  b.addEventListener('click', function(){
     const id = b.dataset.clear;
-    document.querySelectorAll(`.algo[data-id="${id}"] .step`).forEach(st => {
+    document.querySelectorAll('.algo[data-id="' + id + '"] .step').forEach(function(st){
       delete state[st.dataset.key]; st.classList.remove('done');
     });
     saveState(state); updateProgress(id);
   });
 });
-document.querySelectorAll('[data-all]').forEach(b => {
-  b.addEventListener('click', () => {
+document.querySelectorAll('[data-all]').forEach(function(b){
+  b.addEventListener('click', function(){
     const id = b.dataset.all;
-    document.querySelectorAll(`.algo[data-id="${id}"] .step`).forEach(st => {
+    document.querySelectorAll('.algo[data-id="' + id + '"] .step').forEach(function(st){
       state[st.dataset.key] = 1; st.classList.add('done');
     });
     saveState(state); updateProgress(id);
   });
 });
-document.querySelectorAll('[data-expand]').forEach(b => {
-  b.addEventListener('click', () => {
+document.querySelectorAll('[data-expand]').forEach(function(b){
+  b.addEventListener('click', function(){
     const open = b.dataset.expand === 'all';
-    document.querySelectorAll('.algo').forEach(a => a.classList.toggle('open', open));
+    document.querySelectorAll('.algo').forEach(function(a){ a.classList.toggle('open', open); });
     saveOpen();
   });
 });
-document.querySelector('[data-reset]')?.addEventListener('click', () => {
+document.querySelector('[data-reset]') && document.querySelector('[data-reset]').addEventListener('click', function(){
   if(!confirm('Сбросить все отметки во всех алгоритмах?')) return;
   state = {}; saveState(state); applyState();
 });
-
 function saveOpen(){
-  const open = [...document.querySelectorAll('.algo.open')].map(a => a.dataset.id);
+  const open = [].slice.call(document.querySelectorAll('.algo.open')).map(function(a){ return a.dataset.id; });
   try{ localStorage.setItem('upk_open_v1', JSON.stringify(open)); }catch(e){}
 }
 (function restoreOpen(){
   try{
     const open = JSON.parse(localStorage.getItem('upk_open_v1') || '[]');
-    open.forEach(id => document.querySelector(`.algo[data-id="${id}"]`)?.classList.add('open'));
+    open.forEach(function(id){
+      const el = document.querySelector('.algo[data-id="' + id + '"]');
+      if(el) el.classList.add('open');
+    });
   }catch(e){}
 })();
-
 applyState();
 
 /* ============================================================
-   3. МАТЕРИАЛЫ
+   МАТЕРИАЛЫ
    ============================================================ */
 const MATERIALS = [
-  {"cat": "dozn", "group": "Макеты уголовных дел", "title": "Макет по ч. 1 ст. 119 УК РФ", "file": "files/maket_119_uk.pdf"},
-  {"cat": "mvd", "group": "Макеты уголовных дел", "title": "Макет по ст. 264 УК РФ", "file": "files/maket_264_uk.pdf"},
-  {"cat": "mvd", "group": "Макеты уголовных дел", "title": "Макет по ч. 3 ст. 264 УК РФ", "file": "files/maket_264_ch3.pdf"},
-  {"cat": "mvd", "group": "Макеты уголовных дел", "title": "Макет по ч. 1 ст. 171.3 УК РФ", "file": "files/maket_171_3_ch1.pdf"},
-  {"cat": "mvd", "group": "Инструкции и пособия", "title": "Инструкция по делопроизводству в ОВД", "file": "files/instruktsiya_po_deloproizvodstvu.pdf"},
-  {"cat": "mvd", "group": "Инструкции и пособия", "title": "Образцы процессуальных документов (МосУ МВД)", "file": "files/obraztsy_protsessualnykh_dokumentov.pdf"},
-  {"cat": "mvd", "group": "Инструкции и пособия", "title": "Расследование преступлений против личности и собственности", "file": "files/prestupleniya_protiv_lichnosti_i_sobstvennosti.pdf"},
-  {"cat": "general", "group": "Экспертизы и криминалистика", "title": "Криминалистическая техника: лекция", "file": "files/krim_tekhnika.pdf"},
-  {"cat": "sk", "group": "Методички", "title": "Методичка для следователей СК РФ (Кремлёв)", "file": "files/spravochnik_kremlev_sk.docx"},
-  {"cat": "general", "group": "Образцы", "title": "Образцы протоколов ОМП", "file": "files/obraztsy_protokolov_omp.pdf"},
-  {"cat": "general", "group": "Образцы", "title": "Учебное уголовное дело (Вениаминов)", "file": "files/uchebnoe_ugolovnoe_delo.pdf"},
-  {"cat": "general", "group": "Справочники", "title": "Справочник следователя", "file": "files/spravochnik_sledovatelya.pdf"},
-  {"cat": "general", "group": "Справочники", "title": "Руководство для следователя и его помощника", "file": "files/rukovodstvo_dlya_sledovatelya.pdf"},
-  {"cat": ["general", "dozn"], "group": "Справочники", "title": "Настольная книга следователя и дознавателя", "file": "files/nastolnaya_kniga_sledovatelya_i_doznavatelya.pdf"},
-  {"cat": "general", "group": "Уголовный процесс", "title": "Досудебное производство по уголовным делам", "file": "files/dosudebnoe_proizvodstvo_po_ud.pdf"},
-  {"cat": "general", "group": "Уголовный процесс", "title": "Конспект по уголовному процессу", "file": "files/konspekt_upp.pdf"},
-  {"cat": "general", "group": "Квалификация и методика расследования", "title": "Составы статей УК РФ", "file": "files/sostavy_statey_uk.pdf"},
-  {"cat": "general", "group": "Квалификация и методика расследования", "title": "Методика расследования отдельных видов преступлений", "file": "files/metodika_otdelnykh_vidov_prestupleniy.pdf"},
-  {"cat": "general", "group": "Квалификация и методика расследования", "title": "Расследование преступлений несовершеннолетних", "file": "files/prestupleniya_nesovershennoletnikh.pdf"},
-  {"cat": "general", "group": "Квалификация и методика расследования", "title": "Квалификация экологических преступлений", "file": "files/kvalifikatsiya_ekologicheskikh_prestupleniy.pdf"},
-  {"cat": "general", "group": "Экспертизы", "title": "Справочник по судебным экспертизам для следователей (Академия СК)", "file": "files/vidy_ekspertiz.docx"},
-  {"cat": "general", "group": "Экспертизы", "title": "Судебно-медицинская экспертиза живых лиц", "file": "files/sme_zhivykh_lits.pdf"},
-  {"cat": "general", "group": "Оформление документов", "title": "Типографика и орфография для юристов", "file": "files/tipografika_dlya_yuristov.pdf"},
-  {"cat": "general", "group": "Оформление документов", "title": "Как правильно подписывать документы (методичка)", "file": "files/metodichka_po_podpisyam.docx"}
+  {cat:"dozn", group:"Макеты уголовных дел", title:"Макет по ч. 1 ст. 119 УК РФ", file:"files/maket_119_uk.pdf"},
+  {cat:"mvd", group:"Макеты уголовных дел", title:"Макет по ст. 264 УК РФ", file:"files/maket_264_uk.pdf"},
+  {cat:"mvd", group:"Макеты уголовных дел", title:"Макет по ч. 3 ст. 264 УК РФ", file:"files/maket_264_ch3.pdf"},
+  {cat:"mvd", group:"Макеты уголовных дел", title:"Макет по ч. 1 ст. 171.3 УК РФ", file:"files/maket_171_3_ch1.pdf"},
+  {cat:"mvd", group:"Инструкции и пособия", title:"Инструкция по делопроизводству в ОВД", file:"files/instruktsiya_po_deloproizvodstvu.pdf"},
+  {cat:"mvd", group:"Инструкции и пособия", title:"Образцы процессуальных документов (МосУ МВД)", file:"files/obraztsy_protsessualnykh_dokumentov.pdf"},
+  {cat:"mvd", group:"Инструкции и пособия", title:"Расследование преступлений против личности и собственности", file:"files/prestupleniya_protiv_lichnosti_i_sobstvennosti.pdf"},
+  {cat:"general", group:"Экспертизы и криминалистика", title:"Криминалистическая техника: лекция", file:"files/krim_tekhnika.pdf"},
+  {cat:"sk", group:"Методички", title:"Методичка для следователей СК РФ (Кремлёв)", file:"files/spravochnik_kremlev_sk.docx"},
+  {cat:"general", group:"Образцы", title:"Образцы протоколов ОМП", file:"files/obraztsy_protokolov_omp.pdf"},
+  {cat:"general", group:"Образцы", title:"Учебное уголовное дело (Вениаминов)", file:"files/uchebnoe_ugolovnoe_delo.pdf"},
+  {cat:"general", group:"Справочники", title:"Справочник следователя", file:"files/spravochnik_sledovatelya.pdf"},
+  {cat:"general", group:"Справочники", title:"Руководство для следователя и его помощника", file:"files/rukovodstvo_dlya_sledovatelya.pdf"},
+  {cat:["general","dozn"], group:"Справочники", title:"Настольная книга следователя и дознавателя", file:"files/nastolnaya_kniga_sledovatelya_i_doznavatelya.pdf"},
+  {cat:"general", group:"Уголовный процесс", title:"Досудебное производство по уголовным делам", file:"files/dosudebnoe_proizvodstvo_po_ud.pdf"},
+  {cat:"general", group:"Уголовный процесс", title:"Конспект по уголовному процессу", file:"files/konspekt_upp.pdf"},
+  {cat:"general", group:"Квалификация и методика расследования", title:"Составы статей УК РФ", file:"files/sostavy_statey_uk.pdf"},
+  {cat:"general", group:"Квалификация и методика расследования", title:"Методика расследования отдельных видов преступлений", file:"files/metodika_otdelnykh_vidov_prestupleniy.pdf"},
+  {cat:"general", group:"Квалификация и методика расследования", title:"Расследование преступлений несовершеннолетних", file:"files/prestupleniya_nesovershennoletnikh.pdf"},
+  {cat:"general", group:"Квалификация и методика расследования", title:"Квалификация экологических преступлений", file:"files/kvalifikatsiya_ekologicheskikh_prestupleniy.pdf"},
+  {cat:"general", group:"Экспертизы", title:"Справочник по судебным экспертизам для следователей (Академия СК)", file:"files/vidy_ekspertiz.docx"},
+  {cat:"general", group:"Экспертизы", title:"Судебно-медицинская экспертиза живых лиц", file:"files/sme_zhivykh_lits.pdf"},
+  {cat:"general", group:"Оформление документов", title:"Типографика и орфография для юристов", file:"files/tipografika_dlya_yuristov.pdf"},
+  {cat:"general", group:"Оформление документов", title:"Как правильно подписывать документы (методичка)", file:"files/metodichka_po_podpisyam.docx"}
 ];
-document.querySelectorAll('.matbox').forEach(box => {
-  const items = MATERIALS.filter(m => [].concat(m.cat).includes(box.dataset.cat));
+document.querySelectorAll('.matbox').forEach(function(box){
+  const items = MATERIALS.filter(function(m){ return [].concat(m.cat).indexOf(box.dataset.cat) !== -1; });
   if(!items.length){
     box.innerHTML = '<p class="sub">Пока нет материалов в этой категории.</p>'; return;
   }
   const groups = {};
-  items.forEach(m => (groups[m.group||'Файлы'] = groups[m.group||'Файлы'] || []).push(m));
-  box.innerHTML = Object.keys(groups).map(g =>
-    '<h4>'+esc(g)+'</h4><div class="filegrid">' + groups[g].map(it => {
+  items.forEach(function(m){ (groups[m.group||'Файлы'] = groups[m.group||'Файлы'] || []).push(m); });
+  box.innerHTML = Object.keys(groups).map(function(g){
+    return '<h4>' + esc(g) + '</h4><div class="filegrid">' + groups[g].map(function(it){
       const ext = (it.file.split('.').pop()||'').toLowerCase();
-      return '<a class="file" href="'+esc(it.file)+'" target="_blank" rel="noopener">'
-        + '<div class="fi '+esc(ext)+'">'+esc(ext.toUpperCase())+'</div>'
-        + '<div><div class="ft">'+esc(it.title)+'</div>'
-        + (it.desc ? '<div class="fd">'+esc(it.desc)+'</div>' : '') + '</div></a>';
-    }).join('') + '</div>').join('');
+      return '<a class="file" href="' + esc(it.file) + '" target="_blank" rel="noopener"><div class="fi ' + esc(ext) + '">' + esc(ext.toUpperCase()) + '</div><div><div class="ft">' + esc(it.title) + '</div>' + (it.desc ? '<div class="fd">' + esc(it.desc) + '</div>' : '') + '</div></a>';
+    }).join('') + '</div>';
+  }).join('');
 });
 
 /* ============================================================
-   4. ЗАКОНОДАТЕЛЬСТВО
+   ЗАКОНОДАТЕЛЬСТВО
    ============================================================ */
 const LAWS = [["Основные кодексы", [["Конституция РФ", "принята 12.12.1993", "Основа прав и свобод; приоритет при коллизиях", "https://www.consultant.ru/document/cons_doc_LAW_28399/"], ["Уголовный кодекс РФ", "№ 63-ФЗ от 13.06.1996", "Преступления и наказания", "https://www.consultant.ru/document/cons_doc_LAW_10699/"], ["Уголовно-процессуальный кодекс РФ", "№ 174-ФЗ от 18.12.2001", "Порядок досудебного и судебного производства", "https://www.consultant.ru/document/cons_doc_LAW_34481/"], ["Кодекс РФ об административных правонарушениях", "№ 195-ФЗ от 30.12.2001", "Граница между проступком и преступлением", "https://www.consultant.ru/document/cons_doc_LAW_34661/"], ["Уголовно-исполнительный кодекс РФ", "№ 1-ФЗ от 08.01.1997", "Исполнение наказаний", "https://www.consultant.ru/document/cons_doc_LAW_12940/"]]], ["Органы и участники процесса", [["ФЗ «О полиции»", "№ 3-ФЗ от 07.02.2011", "Полномочия полиции, органов дознания", "https://www.consultant.ru/document/cons_doc_LAW_110165/"], ["ФЗ «О Следственном комитете РФ»", "№ 403-ФЗ от 28.12.2010", "Статус и полномочия следователей СК", "https://www.consultant.ru/document/cons_doc_LAW_108565/"], ["ФЗ «О прокуратуре РФ»", "№ 2202-1 от 17.01.1992", "Надзор за предварительным расследованием", "https://www.consultant.ru/document/cons_doc_LAW_262/"], ["ФЗ «О федеральной службе безопасности»", "№ 40-ФЗ от 03.04.1995", "Полномочия органов ФСБ", "https://www.consultant.ru/document/cons_doc_LAW_6300/"], ["ФЗ «Об адвокатской деятельности и адвокатуре в РФ»", "№ 63-ФЗ от 31.05.2002", "Статус защитника", "https://www.consultant.ru/document/cons_doc_LAW_36945/"], ["ФЗ «О государственной защите потерпевших, свидетелей и иных участников уголовного судопроизводства»", "№ 119-ФЗ от 20.08.2004", "Меры безопасности", "https://legalacts.ru/doc/federalnyi-zakon-ot-20082004-n-119-fz-o/"]]], ["Следственные и оперативные действия", [["ФЗ «Об оперативно-розыскной деятельности»", "№ 144-ФЗ от 12.08.1995", "Результаты ОРД как основа доказательств", "https://www.consultant.ru/document/cons_doc_LAW_7519/"], ["ФЗ «О государственной судебно-экспертной деятельности в РФ»", "№ 73-ФЗ от 31.05.2001", "Назначение и производство экспертиз", "https://www.consultant.ru/document/cons_doc_LAW_31871/"], ["ФЗ «О содержании под стражей подозреваемых и обвиняемых в совершении преступлений»", "№ 103-ФЗ от 15.07.1995", "Режим содержания, свидания, переписка", "https://legalacts.ru/doc/federalnyi-zakon-ot-15071995-n-103-fz-o/"]]], ["Часто применяемые при квалификации", [["ФЗ «О безопасности дорожного движения»", "№ 196-ФЗ от 10.12.1995", "Ст. 264 УК РФ и смежные составы", "https://legalacts.ru/doc/federalnyi-zakon-ot-10121995-n-196-fz-o/"], ["ФЗ «О наркотических средствах и психотропных веществах»", "№ 3-ФЗ от 08.01.1998", "Ст. 228–233 УК РФ", "https://legalacts.ru/doc/federalnyi-zakon-ot-08011998-n-3-fz-o/"], ["ФЗ «Об оружии»", "№ 150-ФЗ от 13.12.1996", "Ст. 222–226 УК РФ", "https://www.consultant.ru/document/cons_doc_LAW_12679/"], ["ФЗ «О противодействии терроризму»", "№ 35-ФЗ от 06.03.2006", "Ст. 205–205.6 УК РФ", "https://www.consultant.ru/document/cons_doc_LAW_58840/"], ["ФЗ «О противодействии коррупции»", "№ 273-ФЗ от 25.12.2008", "Должностные преступления", "https://www.consultant.ru/document/cons_doc_LAW_82959/"]]]];
-document.getElementById('lawBox').innerHTML = LAWS.map(g =>
-  '<h4>'+esc(g[0])+'</h4><div class="filegrid">' + g[1].map(l => {
-    const u = l[3] || 'https://yandex.ru/search/?text='+encodeURIComponent(l[0].replace(/[«»]/g,'')+' '+l[1]+' consultant.ru');
-    return '<a class="file" href="'+esc(u)+'" target="_blank" rel="noopener"><div class="fi" style="background:var(--navy-2)">§</div>'
-      + '<div><div class="ft">'+esc(l[0])+'</div><div class="fd">'+esc(l[1])+' · '+esc(l[2])+'</div></div></a>';
-  }).join('') + '</div>').join('');
+document.getElementById('lawBox').innerHTML = LAWS.map(function(g){
+  return '<h4>' + esc(g[0]) + '</h4><div class="filegrid">' + g[1].map(function(l){
+    const u = l[3] || 'https://yandex.ru/search/?text=' + encodeURIComponent(l[0].replace(/[«»]/g,'') + ' ' + l[1] + ' consultant.ru');
+    return '<a class="file" href="' + esc(u) + '" target="_blank" rel="noopener"><div class="fi" style="background:var(--navy-2)">§</div><div><div class="ft">' + esc(l[0]) + '</div><div class="fd">' + esc(l[1]) + ' · ' + esc(l[2]) + '</div></div></a>';
+  }).join('') + '</div>';
+}).join('');
 
 /* ============================================================
-   5. НАВИГАЦИЯ
+   НАВИГАЦИЯ
    ============================================================ */
 const links = document.querySelectorAll('nav a[data-target]');
 function goTo(id, updateHash){
   const sec = document.getElementById(id);
   if(!sec || sec.tagName !== 'SECTION') return;
-  document.querySelectorAll('section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('section').forEach(function(s){ s.classList.remove('visible'); });
   sec.classList.add('visible');
-  links.forEach(l => l.classList.toggle('active', l.dataset.target === id));
-  if(updateHash !== false){ try{ history.replaceState(null,'','#'+id); }catch(e){} }
+  links.forEach(function(l){ l.classList.toggle('active', l.dataset.target === id); });
+  if(updateHash !== false){ try{ history.replaceState(null,'','#' + id); }catch(e){} }
   window.scrollTo({top:0, behavior:'smooth'});
 }
-links.forEach(l => {
-  l.addEventListener('click', e => { e.preventDefault(); goTo(l.dataset.target); });
+links.forEach(function(l){
+  l.addEventListener('click', function(e){ e.preventDefault(); goTo(l.dataset.target); });
 });
-document.querySelectorAll('[data-goto]').forEach(c => {
-  c.addEventListener('click', () => goTo(c.dataset.goto));
+document.querySelectorAll('[data-goto]').forEach(function(c){
+  c.addEventListener('click', function(){ goTo(c.dataset.goto); });
 });
 
 /* ============================================================
-   6. АККОРДЕОНЫ
+   АККОРДЕОНЫ
    ============================================================ */
-document.querySelectorAll('.acc-h').forEach(h => {
-  h.addEventListener('click', () => h.parentElement.classList.toggle('open'));
+document.querySelectorAll('.acc-h').forEach(function(h){
+  h.addEventListener('click', function(){ h.parentElement.classList.toggle('open'); });
 });
 
 /* ============================================================
-   7. КАЛЬКУЛЯТОР СРОКОВ
+   КАЛЬКУЛЯТОР
    ============================================================ */
 function fmtShort(d){ return d.toLocaleDateString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric'}); }
 function addMonths(date, m){
-  const d = new Date(date);
-  const day = d.getDate();
+  const d = new Date(date); const day = d.getDate();
   d.setMonth(d.getMonth() + m);
   if(d.getDate() < day) d.setDate(0);
   return d;
@@ -1524,99 +1427,69 @@ function addDays(date, n){ const d = new Date(date); d.setDate(d.getDate()+n); r
 function addHours(date, n){ const d = new Date(date); d.setHours(d.getHours()+n); return d; }
 
 const CALC = {
-  check: {
-    title: 'Проверка сообщения о преступлении (ст. 144 УПК РФ)',
-    items: [
-      {l:'Основной срок — 3 суток', d:d=>addDays(d,3), r:'ч. 1 ст. 144'},
-      {l:'Продление до 10 суток (руководитель СО / начальник ОД)', d:d=>addDays(d,10), r:'ч. 3 ст. 144'},
-      {l:'Продление до 30 суток (ревизии, экспертизы, ОРМ)', d:d=>addDays(d,30), r:'ч. 3 ст. 144'},
-      {l:'Уведомление о принятом решении', d:d=>addDays(d,3), r:'ст. 145'}
-    ]
-  },
-  detention: {
-    title: 'Задержание подозреваемого (ст. 92, 94, 96, 108 УПК РФ)',
-    items: [
-      {l:'Составление протокола задержания — 3 часа', d:d=>addHours(d,3), r:'ч. 1 ст. 92', u:true},
-      {l:'Телефонный разговор — 3 часа', d:d=>addHours(d,3), r:'ч. 1 ст. 96', u:true},
-      {l:'Уведомление прокурора — 12 часов', d:d=>addHours(d,12), r:'ч. 3 ст. 92', u:true},
-      {l:'Допрос подозреваемого — 24 часа', d:d=>addHours(d,24), r:'ч. 2 ст. 46', u:true},
-      {l:'Освобождение — 48 часов', d:d=>addHours(d,48), r:'ч. 2 ст. 94', u:true},
-      {l:'Ходатайство о страже — не позднее чем за 8 ч до истечения срока', d:d=>addHours(d,40), r:'ч. 3 ст. 108', u:true},
-      {l:'Продление срока задержания судом — 72 часа', d:d=>addHours(d,72), r:'п. 3 ч. 7 ст. 108', u:true}
-    ]
-  },
-  investigation: {
-    title: 'Предварительное следствие (ст. 162 УПК РФ)',
-    items: [
-      {l:'Основной срок — 2 месяца', d:d=>addMonths(d,2), r:'ч. 1 ст. 162'},
-      {l:'Продление руководителем СО — до 3 месяцев', d:d=>addMonths(d,3), r:'ч. 4 ст. 162'},
-      {l:'Продление руководителем СО по субъекту РФ — до 12 месяцев', d:d=>addMonths(d,12), r:'ч. 5 ст. 162'},
-      {l:'Предельный срок — 30 суток до окончания — предъявление материалов', d:d=>addMonths(d,11), r:'ч. 5 ст. 109'}
-    ]
-  },
-  custody: {
-    title: 'Содержание под стражей (ст. 109 УПК РФ)',
-    items: [
-      {l:'Основной срок — 2 месяца', d:d=>addMonths(d,2), r:'ч. 1 ст. 109'},
-      {l:'Продление судьёй районного суда — до 6 месяцев', d:d=>addMonths(d,6), r:'ч. 2 ст. 109'},
-      {l:'Продление — до 12 месяцев (тяжкие, особо тяжкие)', d:d=>addMonths(d,12), r:'ч. 2 ст. 109'},
-      {l:'Продление — до 18 месяцев (исключительные случаи)', d:d=>addMonths(d,18), r:'ч. 3 ст. 109'},
-      {l:'Предъявление материалов не позднее чем за 30 суток до предельного срока', d:d=>addDays(addMonths(d,12),-30), r:'ч. 5 ст. 109'},
-      {l:'Ходатайство о продлении — не позднее чем за 7 суток', d:d=>addDays(addMonths(d,2),-7), r:'ч. 8 ст. 109', u:true}
-    ]
-  },
-  inquiry: {
-    title: 'Дознание (ст. 223 УПК РФ)',
-    items: [
-      {l:'Основной срок — 30 суток', d:d=>addDays(d,30), r:'ч. 3 ст. 223'},
-      {l:'Продление прокурором — до 30 суток (итого до 60)', d:d=>addDays(d,60), r:'ч. 3 ст. 223'},
-      {l:'Продление прокурорами района, города — до 6 месяцев', d:d=>addMonths(d,6), r:'ч. 4 ст. 223'},
-      {l:'Продление прокурором субъекта РФ — до 12 месяцев', d:d=>addMonths(d,12), r:'ч. 5 ст. 223'},
-      {l:'Обвинительный акт при заключении под стражу — 10 суток', d:d=>addDays(d,10), r:'ч. 2 ст. 224', u:true}
-    ]
-  },
-  inquiryShort: {
-    title: 'Дознание в сокращённой форме (ст. 226.6 УПК РФ)',
-    items: [
-      {l:'Основной срок — 15 суток', d:d=>addDays(d,15), r:'ч. 1 ст. 226.6'},
-      {l:'Продление прокурором — до 20 суток', d:d=>addDays(d,20), r:'ч. 2 ст. 226.6'},
-      {l:'Составление обвинительного постановления — не позднее 10 суток', d:d=>addDays(d,10), r:'ч. 3 ст. 226.7'},
-      {l:'Ознакомление с обвинительным постановлением — не позднее 3 суток', d:d=>addDays(d,13), r:'ч. 4 ст. 226.7'}
-    ]
-  }
+  check: { title:'Проверка сообщения о преступлении (ст. 144 УПК РФ)', items:[
+    {l:'Основной срок — 3 суток', d:d=>addDays(d,3), r:'ч. 1 ст. 144'},
+    {l:'Продление до 10 суток (руководитель СО / начальник ОД)', d:d=>addDays(d,10), r:'ч. 3 ст. 144'},
+    {l:'Продление до 30 суток (ревизии, экспертизы, ОРМ)', d:d=>addDays(d,30), r:'ч. 3 ст. 144'},
+    {l:'Уведомление о принятом решении', d:d=>addDays(d,3), r:'ст. 145'}
+  ]},
+  detention: { title:'Задержание подозреваемого (ст. 92, 94, 96, 108 УПК РФ)', items:[
+    {l:'Составление протокола задержания — 3 часа', d:d=>addHours(d,3), r:'ч. 1 ст. 92', u:true},
+    {l:'Телефонный разговор — 3 часа', d:d=>addHours(d,3), r:'ч. 1 ст. 96', u:true},
+    {l:'Уведомление прокурора — 12 часов', d:d=>addHours(d,12), r:'ч. 3 ст. 92', u:true},
+    {l:'Допрос подозреваемого — 24 часа', d:d=>addHours(d,24), r:'ч. 2 ст. 46', u:true},
+    {l:'Освобождение — 48 часов', d:d=>addHours(d,48), r:'ч. 2 ст. 94', u:true},
+    {l:'Ходатайство о страже — не позднее чем за 8 ч до истечения срока', d:d=>addHours(d,40), r:'ч. 3 ст. 108', u:true},
+    {l:'Продление срока задержания судом — 72 часа', d:d=>addHours(d,72), r:'п. 3 ч. 7 ст. 108', u:true}
+  ]},
+  investigation: { title:'Предварительное следствие (ст. 162 УПК РФ)', items:[
+    {l:'Основной срок — 2 месяца', d:d=>addMonths(d,2), r:'ч. 1 ст. 162'},
+    {l:'Продление руководителем СО — до 3 месяцев', d:d=>addMonths(d,3), r:'ч. 4 ст. 162'},
+    {l:'Продление руководителем СО по субъекту РФ — до 12 месяцев', d:d=>addMonths(d,12), r:'ч. 5 ст. 162'},
+    {l:'Предельный срок — 30 суток до окончания — предъявление материалов', d:d=>addMonths(d,11), r:'ч. 5 ст. 109'}
+  ]},
+  custody: { title:'Содержание под стражей (ст. 109 УПК РФ)', items:[
+    {l:'Основной срок — 2 месяца', d:d=>addMonths(d,2), r:'ч. 1 ст. 109'},
+    {l:'Продление судьёй районного суда — до 6 месяцев', d:d=>addMonths(d,6), r:'ч. 2 ст. 109'},
+    {l:'Продление — до 12 месяцев (тяжкие, особо тяжкие)', d:d=>addMonths(d,12), r:'ч. 2 ст. 109'},
+    {l:'Продление — до 18 месяцев (исключительные случаи)', d:d=>addMonths(d,18), r:'ч. 3 ст. 109'},
+    {l:'Предъявление материалов не позднее чем за 30 суток до предельного срока', d:d=>addDays(addMonths(d,12),-30), r:'ч. 5 ст. 109'},
+    {l:'Ходатайство о продлении — не позднее чем за 7 суток', d:d=>addDays(addMonths(d,2),-7), r:'ч. 8 ст. 109', u:true}
+  ]},
+  inquiry: { title:'Дознание (ст. 223 УПК РФ)', items:[
+    {l:'Основной срок — 30 суток', d:d=>addDays(d,30), r:'ч. 3 ст. 223'},
+    {l:'Продление прокурором — до 30 суток (итого до 60)', d:d=>addDays(d,60), r:'ч. 3 ст. 223'},
+    {l:'Продление прокурорами района, города — до 6 месяцев', d:d=>addMonths(d,6), r:'ч. 4 ст. 223'},
+    {l:'Продление прокурором субъекта РФ — до 12 месяцев', d:d=>addMonths(d,12), r:'ч. 5 ст. 223'},
+    {l:'Обвинительный акт при заключении под стражу — 10 суток', d:d=>addDays(d,10), r:'ч. 2 ст. 224', u:true}
+  ]},
+  inquiryShort: { title:'Дознание в сокращённой форме (ст. 226.6 УПК РФ)', items:[
+    {l:'Основной срок — 15 суток', d:d=>addDays(d,15), r:'ч. 1 ст. 226.6'},
+    {l:'Продление прокурором — до 20 суток', d:d=>addDays(d,20), r:'ч. 2 ст. 226.6'},
+    {l:'Составление обвинительного постановления — не позднее 10 суток', d:d=>addDays(d,10), r:'ч. 3 ст. 226.7'},
+    {l:'Ознакомление с обвинительным постановлением — не позднее 3 суток', d:d=>addDays(d,13), r:'ч. 4 ст. 226.7'}
+  ]}
 };
-
 const calcDate = document.getElementById('calcDate');
 const calcType = document.getElementById('calcType');
 const calcResult = document.getElementById('calcResult');
-
 (function initDate(){
   const t = new Date();
-  const iso = t.toISOString().slice(0,10);
-  calcDate.value = iso;
+  calcDate.value = t.toISOString().slice(0,10);
   calcType.value = 'check';
   runCalc();
 })();
-
 function runCalc(){
   const val = calcDate.value;
-  if(!val){
-    calcResult.innerHTML = '<div class="empty">Выберите исходную дату</div>';
-    return;
-  }
+  if(!val){ calcResult.innerHTML = '<div class="empty">Выберите исходную дату</div>'; return; }
   const base = new Date(val + 'T09:00:00');
   const cfg = CALC[calcType.value];
   if(!cfg) return;
-
   const now = new Date();
-  calcResult.innerHTML = cfg.items.map(it => {
+  calcResult.innerHTML = cfg.items.map(function(it){
     const target = it.d(base);
     const urgent = it.u || ((target - now) < 1000*60*60*48 && target > now);
-    return `<div class="cr ${urgent?'urgent':''}">
-      <div class="lbl">${esc(it.l)}</div>
-      <div class="val">${fmtShort(target)}</div>
-      <div class="ref">${esc(it.r)}${it.u?' · критично':''}</div>
-    </div>`;
+    return '<div class="cr ' + (urgent?'urgent':'') + '"><div class="lbl">' + esc(it.l) + '</div><div class="val">' + fmtShort(target) + '</div><div class="ref">' + esc(it.r) + (it.u?' · критично':'') + '</div></div>';
   }).join('');
 }
 document.getElementById('calcBtn').addEventListener('click', runCalc);
@@ -1624,22 +1497,22 @@ calcDate.addEventListener('change', runCalc);
 calcType.addEventListener('change', runCalc);
 
 /* ============================================================
-   8. ГЛОБАЛЬНЫЙ ПОИСК (Ctrl+K)
+   ПОИСК Ctrl+K
    ============================================================ */
 const gsInput = document.getElementById('globalSearch');
-gsInput.addEventListener('keydown', e => {
+gsInput.addEventListener('keydown', function(e){
   if(e.key === 'Enter'){
     const q = gsInput.value.trim().toLowerCase();
     if(!q) return;
     let found = false;
-    ALGOS.forEach(a => {
+    ALGOS.forEach(function(a){
       if(found) return;
-      if(a.title.toLowerCase().includes(q) || a.steps.some(s => s.t.toLowerCase().includes(q))){
+      if(a.title.toLowerCase().indexOf(q) !== -1 || a.steps.some(function(s){ return s.t.toLowerCase().indexOf(q) !== -1; })){
         goTo('algos');
-        const el = document.querySelector(`.algo[data-id="${a.id}"]`);
+        const el = document.querySelector('.algo[data-id="' + a.id + '"]');
         if(el){
           el.classList.add('open'); saveOpen();
-          setTimeout(()=> el.scrollIntoView({behavior:'smooth', block:'start'}), 120);
+          setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'start'}); }, 120);
         }
         found = true;
       }
@@ -1648,26 +1521,25 @@ gsInput.addEventListener('keydown', e => {
     goTo('articles');
   }
 });
-document.addEventListener('keydown', e => {
+document.addEventListener('keydown', function(e){
   if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
     e.preventDefault(); gsInput.focus();
   }
 });
-
-document.querySelectorAll('nav a[data-target="articles"]').forEach(l => {
-  l.addEventListener('click', () => {
-    setTimeout(() => {
-      document.querySelector('#articles .acc')?.classList.add('open');
+document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
+  l.addEventListener('click', function(){
+    setTimeout(function(){
+      const a = document.querySelector('#articles .acc');
+      if(a) a.classList.add('open');
     }, 50);
   });
 });
 
 /* ============================================================
-   10. ТЕМА / ССЫЛКИ / ПОИСК / ТАЙМЕР / «НАВЕРХ»
+   ТЕМА / ТАЙМЕР / «НАВЕРХ» / ПОИСК
    ============================================================ */
 (function(){
-  const themeBtn = document.getElementById('themeBtn');
-  themeBtn.addEventListener('click', () => {
+  document.getElementById('themeBtn').addEventListener('click', function(){
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     const next = isDark ? 'light' : 'dark';
     if(next === 'dark') document.documentElement.setAttribute('data-theme','dark');
@@ -1681,52 +1553,54 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(l => {
   }
 
   const top = document.getElementById('toTop');
-  addEventListener('scroll', () => top.style.display = scrollY>500 ? 'block' : 'none');
-  top.addEventListener('click', () => scrollTo({top:0,behavior:'smooth'}));
+  window.addEventListener('scroll', function(){ top.style.display = window.scrollY>500 ? 'block' : 'none'; });
+  top.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
 
   const box = document.getElementById('searchRes');
   const label = {};
-  links.forEach(l => label[l.dataset.target] = l.textContent.trim());
+  links.forEach(function(l){ label[l.dataset.target] = l.textContent.trim(); });
 
   function search(q){
     const out = [], seen = new Set();
-    document.querySelectorAll('section').forEach(sec => {
-      sec.querySelectorAll('p,li,tr,h3,h4,.note,.acc-h,.algo-head,.file,.quick').forEach(el => {
+    document.querySelectorAll('section').forEach(function(sec){
+      sec.querySelectorAll('p,li,tr,h3,h4,.note,.acc-h,.algo-head,.file,.quick').forEach(function(el){
         if(out.length>=15) return;
         const t = el.textContent.replace(/\s+/g,' ').trim();
-        if(t.length<8 || seen.has(t) || !t.toLowerCase().includes(q)) return;
+        if(t.length<8 || seen.has(t) || t.toLowerCase().indexOf(q) === -1) return;
         if(el.querySelector('li,tr,p') && !el.matches('.note')) return;
-        seen.add(t); out.push({sec:sec.id, el, t});
+        seen.add(t); out.push({sec:sec.id, el:el, t:t});
       });
     });
     return out;
   }
 
-  gsInput.addEventListener('input', () => {
+  gsInput.addEventListener('input', function(){
     const q = gsInput.value.trim().toLowerCase();
     if(q.length<2){ box.classList.remove('on'); return; }
     const r = search(q);
-    box.innerHTML = r.length ? r.map((x,i) => {
+    box.innerHTML = r.length ? r.map(function(x,i){
       const k = x.t.toLowerCase().indexOf(q), a = Math.max(0,k-40);
       const snippet = esc(x.t.slice(a,a+160));
       const safe = q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-      const sn = snippet.replace(new RegExp(safe,'gi'), m=>'<mark>'+m+'</mark>');
-      return '<div class="sr" data-i="'+i+'"><b>'+esc(label[x.sec]||x.sec)+'</b>'+(a?'…':'')+sn+'</div>';
+      const sn = snippet.replace(new RegExp(safe,'gi'), function(m){ return '<mark>' + m + '</mark>'; });
+      return '<div class="sr" data-i="' + i + '"><b>' + esc(label[x.sec]||x.sec) + '</b>' + (a?'…':'') + sn + '</div>';
     }).join('') : '<div class="sr">Ничего не найдено</div>';
     box.classList.add('on');
-    box.querySelectorAll('.sr[data-i]').forEach(d => d.addEventListener('click', () => {
-      const x = r[+d.dataset.i]; box.classList.remove('on');
-      goTo(x.sec);
-      const acc = x.el.closest('.acc,.algo'); if(acc) acc.classList.add('open');
-      setTimeout(() => {
-        x.el.scrollIntoView({behavior:'smooth',block:'center'});
-        x.el.classList.add('flash');
-        setTimeout(()=>x.el.classList.remove('flash'),2000);
-      }, 150);
-    }));
+    box.querySelectorAll('.sr[data-i]').forEach(function(d){
+      d.addEventListener('click', function(){
+        const x = r[+d.dataset.i]; box.classList.remove('on');
+        goTo(x.sec);
+        const acc = x.el.closest('.acc,.algo'); if(acc) acc.classList.add('open');
+        setTimeout(function(){
+          x.el.scrollIntoView({behavior:'smooth',block:'center'});
+          x.el.classList.add('flash');
+          setTimeout(function(){ x.el.classList.remove('flash'); }, 2000);
+        }, 150);
+      });
+    });
   });
-  document.addEventListener('click', e => { if(!box.contains(e.target) && e.target!==gsInput) box.classList.remove('on'); });
-  addEventListener('keydown', e => { if(e.key==='Escape') box.classList.remove('on'); });
+  document.addEventListener('click', function(e){ if(!box.contains(e.target) && e.target!==gsInput) box.classList.remove('on'); });
+  window.addEventListener('keydown', function(e){ if(e.key==='Escape') box.classList.remove('on'); });
 
   const tm = document.getElementById('tmStart'), out = document.getElementById('tmOut');
   const rows = [
@@ -1736,11 +1610,13 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(l => {
     [40,'Последний срок: ходатайство об аресте в суд (за 8 ч)','ч. 3 ст. 108'],
     [48,'Освободить или арест / продление','ч. 2 ст. 94']
   ];
-  const f = d => d.toLocaleString('ru-RU',{day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit'});
-  tm.addEventListener('input', () => {
+  const f = function(d){ return d.toLocaleString('ru-RU',{day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit'}); };
+  tm.addEventListener('input', function(){
     if(!tm.value){ out.innerHTML=''; return; }
     const t0 = new Date(tm.value);
-    out.innerHTML = rows.map(r => '<div class="timer-row"><span>+'+r[0]+' ч · '+r[1]+' <small style="color:var(--muted)">('+r[2]+')</small></span><b>'+f(new Date(t0.getTime()+r[0]*3600000))+'</b></div>').join('');
+    out.innerHTML = rows.map(function(r){
+      return '<div class="timer-row"><span>+' + r[0] + ' ч · ' + r[1] + ' <small style="color:var(--muted)">(' + r[2] + ')</small></span><b>' + f(new Date(t0.getTime()+r[0]*3600000)) + '</b></div>';
+    }).join('');
   });
 })();
 </script>
