@@ -260,30 +260,25 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 #toTop{display:none;position:fixed;right:20px;bottom:20px;width:44px;height:44px;
   border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:20px;
   cursor:pointer;box-shadow:var(--shadow);z-index:60;}
-
-/* ---------- РОПП и формы ---------- */
+.sync-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);
+  padding:4px 10px;border-radius:20px;background:var(--chip-bg2);margin-left:8px;vertical-align:middle}
+.sync-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:#bbb}
+.sync-badge.on::before{background:#3fbf85;box-shadow:0 0 0 3px rgba(63,191,133,.2)}
+.sync-badge.err::before{background:#e57366}
 .rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 18px;margin-bottom:14px}
 .rgrid .field.w{grid-column:1/-1}
 .rgrid input,.rgrid textarea,.rgrid select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font:inherit;font-size:15px;background:var(--card);color:var(--text);transition:.15s}
 .rgrid input:focus,.rgrid textarea:focus,.rgrid select:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(47,111,208,.12);outline:none}
 .rgrid textarea{min-height:100px;resize:vertical;line-height:1.5}
-.rprev{border:1px solid var(--border);border-radius:10px;padding:18px 22px;font-family:"Times New Roman",serif;font-size:15px;line-height:1.55;background:var(--card);margin:12px 0}
-.rprev .r{text-align:right;margin-left:45%}.rprev p{margin:0 0 10px;text-indent:1.2em}.rprev .c{text-align:center;font-weight:700;text-indent:0}
-.rt{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:12px}.rt td,.rt th{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
-.late{color:#d32f2f;font-weight:700}.soon{color:#e68a00;font-weight:700}
-.rform .card{padding:26px 28px}
+.rform .field label{font-weight:600;font-size:13px;display:block;margin-bottom:6px;color:var(--head)}
 .rform h3{margin:28px 0 12px;padding-top:18px;border-top:1px solid var(--border);font-size:16px;color:var(--head);letter-spacing:.2px}
 .rform h3:first-of-type{margin-top:6px;padding-top:0;border-top:none}
-.rform .field label{font-weight:600;font-size:13px;display:block;margin-bottom:6px;color:var(--head)}
-.rform .rgrid input,.rform .rgrid textarea,.rform .rgrid select{padding:14px 16px;font-size:16px}
-.rform .rgrid textarea{min-height:120px}
 .rform .hint{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.4}
-.rform .steps .pill{padding:13px 22px;font-size:15px;font-weight:600}
-.steps{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}.steps .pill{padding:11px 18px;font-size:14px}
+.steps{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.steps .pill{padding:13px 22px;font-size:15px;font-weight:600}
 .paper{background:#fff;color:#000;font-family:"Times New Roman",serif;font-size:15px;line-height:1.25;padding:32px 38px;border:1px solid #ccc;box-shadow:0 4px 18px rgba(0,0,0,.15);max-width:794px;margin:14px auto}
 .paper .pa{margin-left:48%;text-align:justify}.paper .pb{height:1.25em}.paper .pt{text-align:center;font-weight:700}
 .paper .pcd{display:flex;justify-content:space-between;gap:16px}.paper .pp{text-indent:2.2em;text-align:justify}
-
 @media print{header,aside,#toTop,#searchRes{display:none!important}section{display:block!important}.layout{display:block}}
 @media(max-width:960px){
   .layout{flex-direction:column;padding:14px}
@@ -367,7 +362,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
           <div class="quick" data-goto="algos"><div class="qi">📋</div><div class="qt">Алгоритмы действий</div><div class="qd">10 пошаговых чек-листов: от проверки сообщения до направления дела прокурору</div></div>
           <div class="quick" data-goto="deadlines"><div class="qi">⏱</div><div class="qt">Сроки и калькулятор</div><div class="qd">Полная таблица сроков + расчёт контрольных дат от исходной даты</div></div>
           <div class="quick" data-goto="ropp"><div class="qi">📄</div><div class="qt">Рапорт (РОПП)</div><div class="qd">Конструктор рапорта об обнаружении признаков преступления · Word · отправка в реестр</div></div>
-          <div class="quick" data-goto="addrecord"><div class="qi">➕</div><div class="qt">Добавить запись</div><div class="qd">Учёт уголовных дел и материалов проверки</div></div>
+          <div class="quick" data-goto="addrecord"><div class="qi">➕</div><div class="qt">Добавить запись</div><div class="qd">Общий учёт уголовных дел и материалов проверки (синхронизируется у всех)</div></div>
           <div class="quick" data-goto="articles"><div class="qi">📖</div><div class="qt">Ключевые статьи</div><div class="qd">Что требует судебного решения, основания задержания, меры пресечения, прекращение</div></div>
           <div class="quick" data-goto="memo"><div class="qi">💡</div><div class="qt">Памятки</div><div class="qd">Типичные ошибки, запреты, правила составления протокола</div></div>
           <div class="quick" data-goto="materials"><div class="qi">📁</div><div class="qt">Общие материалы</div><div class="qd">Образцы протоколов, справочные документы для всех категорий</div></div>
@@ -424,8 +419,8 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 
     <section id="addrecord">
       <div class="card rform">
-        <h2>Добавить запись <span class="badge">учёт дел и материалов</span></h2>
-        <p class="sub">Выберите тип записи, заполните поля — она появится в общем списке ниже.</p>
+        <h2>Добавить запись <span class="badge">общий учёт</span></h2>
+        <p class="sub">Выберите тип записи, заполните поля — она появится в общем списке у всех сотрудников.</p>
 
         <h3>Тип записи</h3>
         <div class="rgrid">
@@ -449,7 +444,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <div class="rgrid">
           <div class="field w"><label>Где (место происшествия)</label><input id="arWhere" placeholder="г. Левобережный, ул. …, д. …"></div>
           <div class="field w"><label>Кем возбуждено</label><input id="arBy" placeholder="следователь СО по г. Левобережный Сидоров С.С."></div>
-          <div class="field w"><label>Фабула (необязательно — можно оставить без фабулы)</label><textarea id="arFabula" rows="3" placeholder="Краткое изложение без подробностей"></textarea></div>
+          <div class="field w"><label>Фабула (необязательно — можно без фабулы)</label><textarea id="arFabula" rows="3" placeholder="Краткое изложение"></textarea></div>
           <div class="field w"><label>Кому поручено</label><input id="arTo" placeholder="следователь Иванов И.И."></div>
         </div>
 
@@ -501,7 +496,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
           <div class="field w"><label>От кого поступило (родительный падеж)</label><input id="rSrc" placeholder="должностного лица, прапорщика полиции Петрова П.П."></div>
           <div class="field w"><label>Суть — продолжение фразы «о том, что …»</label><textarea id="rText" rows="8" placeholder="по адресу: г. …, ул. …, неизвестным лицом был(о) …"></textarea><div class="hint">Точку в конце ставить не нужно.</div></div>
           <div class="field w"><label>В действиях кого (родительный падеж)</label><input id="rWho" value="неустановленного лица"></div>
-          <div class="field w"><label>Статьи УК РФ</label><input id="rArt" placeholder="105, 111, 112"><div class="hint">Только номера через запятую. «ст.», «ст.ст.» и «УК РФ» добавятся сами; для одной статьи — единственное число.</div></div>
+          <div class="field w"><label>Статьи УК РФ</label><input id="rArt" placeholder="105, 111, 112"><div class="hint">Только номера через запятую. «ст.», «ст.ст.» и «УК РФ» добавятся сами.</div></div>
         </div>
 
         <h3>Подпись</h3>
@@ -1021,6 +1016,8 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
 const AUTH_USERS = [
   {surname:"Котов",       full:"Котов Андрей Анатольевич",        pos:"Руководитель отдела",          zvan:"Майор юстиции",             unit:"Отдел криминалистики", passHex:"6b6f746f7632303235"},
@@ -1788,22 +1785,46 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
 })();
 
 /* ============================================================
-   ДОБАВЛЕНИЕ ЗАПИСЕЙ: уголовные дела и материалы проверки
+   ДОБАВЛЕНИЕ ЗАПИСЕЙ: Firebase Realtime Database (общий список)
    ============================================================ */
 (function(){
-  const STORAGE = 'upk_records_v1';
   const g = id => document.getElementById(id);
   const v = id => g(id).value.trim();
 
-  function load(){ try{ return JSON.parse(localStorage.getItem(STORAGE) || '[]'); }catch(e){ return []; } }
-  function save(arr){ try{ localStorage.setItem(STORAGE, JSON.stringify(arr)); }catch(e){} }
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyA0no1h1Sz5PjFcAzDTFzFawSwommpNpXU",
+    authDomain: "sk-kirov.firebaseapp.com",
+    databaseURL: "https://sk-kirov-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "sk-kirov",
+    storageBucket: "sk-kirov.firebasestorage.app",
+    messagingSenderId: "385562080905",
+    appId: "1:385562080905:web:b78511334b920e8b0d3858"
+  };
 
-  let records = load();
+  let db = null, syncBadge = null;
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+  }catch(e){ console.error('Firebase init failed', e); }
+
+  (function addSyncBadge(){
+    const sel = g('arType');
+    if(!sel) return;
+    syncBadge = document.createElement('span');
+    syncBadge.className = 'sync-badge';
+    syncBadge.textContent = db ? 'Подключение…' : 'Оффлайн';
+    sel.parentElement.appendChild(syncBadge);
+  })();
+
+  const CACHE = 'upk_records_cache_v1';
+  let records = [];
+  try{ records = JSON.parse(localStorage.getItem(CACHE) || '[]'); }catch(e){ records = []; }
+  function cacheSave(){ try{ localStorage.setItem(CACHE, JSON.stringify(records)); }catch(e){} }
 
   function fmtDate(d){
     if(!d) return '—';
-    const parts = d.split('-');
-    return parts[2] + '.' + parts[1] + '.' + parts[0];
+    const p = d.split('-');
+    return p[2] + '.' + p[1] + '.' + p[0];
   }
 
   function render(){
@@ -1819,9 +1840,9 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
         return;
       }
       box.innerHTML = '<table><thead><tr>' +
-          '<th>№</th><th>Дата</th><th>Статья</th><th>Где / фабула</th><th>Кем возбуждено</th><th>Кому поручено</th><th></th>' +
+          '<th>№</th><th>Дата</th><th>Статья</th><th>Где / фабула</th><th>Кем возбуждено</th><th>Кому поручено</th><th>Кто добавил</th><th></th>' +
         '</tr></thead><tbody>' +
-        arr.map(r =>
+        arr.sort((a,b) => (b.ts||0) - (a.ts||0)).map(r =>
           '<tr>' +
             '<td class="term">' + esc(r.num || '—') + '</td>' +
             '<td>' + esc(fmtDate(r.date)) + '</td>' +
@@ -1829,6 +1850,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
             '<td>' + esc(r.where || '—') + (r.fabula ? '<div class="hint" style="margin-top:4px">' + esc(r.fabula) + '</div>' : '') + '</td>' +
             '<td>' + esc(r.by || '—') + '</td>' +
             '<td>' + esc(r.to || '—') + '</td>' +
+            '<td>' + esc(r.author || '—') + '</td>' +
             '<td><button class="btn" data-del="' + r.id + '" title="Удалить">✕</button></td>' +
           '</tr>'
         ).join('') +
@@ -1840,19 +1862,44 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
 
     document.querySelectorAll('[data-del]').forEach(b => {
       b.addEventListener('click', () => {
-        if(!confirm('Удалить запись?')) return;
-        records = records.filter(r => r.id !== b.dataset.del);
-        save(records); render();
+        if(!confirm('Удалить запись? Она исчезнет у всех.')) return;
+        if(!db) return;
+        db.ref('records/' + b.dataset.del).remove();
       });
     });
+  }
+
+  if(db){
+    db.ref('records').on('value', snap => {
+      const val = snap.val() || {};
+      records = Object.keys(val).map(k => Object.assign({id: k}, val[k]));
+      cacheSave();
+      render();
+      if(syncBadge){
+        syncBadge.className = 'sync-badge on';
+        syncBadge.textContent = 'Онлайн · ' + records.length + ' зап.';
+      }
+    }, err => {
+      if(syncBadge){ syncBadge.className = 'sync-badge err'; syncBadge.textContent = 'Ошибка синхронизации'; }
+      console.error('Firebase read error:', err);
+      render();
+    });
+  } else {
+    render();
   }
 
   g('arAdd').addEventListener('click', () => {
     if(!v('arNum')){ g('arSt').textContent = 'Укажите номер.'; return; }
     if(!v('arBy')){ g('arSt').textContent = 'Укажите, кем возбуждено.'; return; }
+    if(!db){ g('arSt').textContent = 'Нет соединения с базой.'; return; }
 
-    records.push({
-      id: 'r_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+    let author = '';
+    try{
+      const u = JSON.parse(localStorage.getItem('upk_user') || 'null');
+      author = u && u.name ? u.name : '';
+    }catch(e){}
+
+    const rec = {
       type: g('arType').value,
       num: v('arNum'),
       date: v('arDate'),
@@ -1860,24 +1907,28 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       where: v('arWhere'),
       by: v('arBy'),
       fabula: v('arFabula'),
-      to: v('arTo')
-    });
-    save(records);
+      to: v('arTo'),
+      author: author,
+      ts: Date.now()
+    };
 
-    ['arNum', 'arArt', 'arWhere', 'arBy', 'arFabula', 'arTo'].forEach(i => g(i).value = '');
-    g('arDate').value = '';
-    g('arSt').textContent = '✓ Запись добавлена';
-    render();
-    setTimeout(() => { g('arSt').textContent = ''; }, 2000);
+    db.ref('records').push(rec)
+      .then(() => {
+        ['arNum','arArt','arWhere','arBy','arFabula','arTo'].forEach(i => g(i).value = '');
+        g('arDate').value = '';
+        g('arSt').textContent = '✓ Запись добавлена (видна всем)';
+        setTimeout(() => { g('arSt').textContent = ''; }, 2500);
+      })
+      .catch(err => {
+        g('arSt').textContent = 'Ошибка записи: ' + (err.message || err);
+      });
   });
 
   g('arClear').addEventListener('click', () => {
-    ['arNum', 'arArt', 'arWhere', 'arBy', 'arFabula', 'arTo'].forEach(i => g(i).value = '');
+    ['arNum','arArt','arWhere','arBy','arFabula','arTo'].forEach(i => g(i).value = '');
     g('arDate').value = '';
     g('arSt').textContent = '';
   });
-
-  render();
 })();
 </script>
 </body>
