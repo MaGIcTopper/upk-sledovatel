@@ -89,7 +89,6 @@ header .spacer{flex:1}
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);white-space:nowrap;}
 .user-badge b{color:#fff;font-weight:600}
 
-/* ---- Онлайн-бейдж с выпадающим списком ---- */
 .online-badge{position:relative;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;
   color:#c8d6ea;padding:6px 12px;border-radius:20px;background:rgba(255,255,255,.08);
   border:1px solid rgba(255,255,255,.15);white-space:nowrap;cursor:pointer;user-select:none;
@@ -214,6 +213,7 @@ td.term{font-weight:600;color:var(--head);white-space:nowrap}
 td.law{color:var(--accent);font-size:12.5px;white-space:nowrap}
 td.suspect{font-weight:500}
 td.suspect.unknown{color:var(--muted);font-style:italic;font-weight:400}
+td.decision{max-width:280px;font-size:13px;color:var(--text-2)}
 .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
 .tag.red{background:var(--tag-red-bg);color:var(--red)}
 .tag.green{background:var(--tag-green-bg);color:var(--green)}
@@ -312,7 +312,30 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 .paper{background:#fff;color:#000;font-family:"Times New Roman",serif;font-size:15px;line-height:1.25;padding:32px 38px;border:1px solid #ccc;box-shadow:0 4px 18px rgba(0,0,0,.15);max-width:794px;margin:14px auto}
 .paper .pa{margin-left:48%;text-align:justify}.paper .pb{height:1.25em}.paper .pt{text-align:center;font-weight:700}
 .paper .pcd{display:flex;justify-content:space-between;gap:16px}.paper .pp{text-indent:2.2em;text-align:justify}
-@media print{header,aside,#toTop,#searchRes{display:none!important}section{display:block!important}.layout{display:block}}
+/* ---- Модальное окно редактирования ---- */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,36,64,.55);
+  z-index:200;place-items:center;padding:20px;backdrop-filter:blur(3px);}
+.modal-overlay.on{display:grid}
+.modal{background:var(--card);border-radius:14px;padding:26px 28px;max-width:580px;width:100%;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);max-height:90vh;overflow-y:auto;
+  border:1px solid var(--border);animation:mfade .2s ease;}
+@keyframes mfade{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.modal h3{margin:0 0 4px;font-size:18px;color:var(--head);border:none;padding:0;font-weight:600}
+.modal .msub{color:var(--muted);font-size:13px;margin-bottom:20px}
+.modal .mf{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.modal .mf label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.modal .mf input,.modal .mf textarea{padding:10px 12px;border:1px solid var(--border);border-radius:8px;
+  font:inherit;font-size:14.5px;background:var(--card);color:var(--text);outline:none;transition:.15s;width:100%;}
+.modal .mf input:focus,.modal .mf textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,208,.12)}
+.modal .mf textarea{min-height:80px;resize:vertical;line-height:1.5;font-family:inherit}
+.modal .mactions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+.modal .mactions .btn{padding:10px 20px;font-size:14px;font-weight:600}
+.modal .mactions .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.modal .mactions .btn.primary:hover{background:var(--accent-h)}
+.row-actions{display:flex;gap:6px;flex-wrap:nowrap}
+.row-actions .btn{padding:5px 9px;font-size:13px;line-height:1}
+.row-actions .btn.edit:hover{border-color:var(--green);color:var(--green)}
+@media print{header,aside,#toTop,#searchRes,.modal-overlay{display:none!important}section{display:block!important}.layout{display:block}}
 @media(max-width:960px){
   .layout{flex-direction:column;padding:14px}
   aside{width:100%;flex:none;position:static;max-height:none}
@@ -461,7 +484,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
     <section id="addrecord">
       <div class="card rform">
         <h2>Добавить запись <span class="badge">общий учёт</span></h2>
-        <p class="sub">Выберите тип записи, заполните поля — она появится в общем списке у всех сотрудников.</p>
+        <p class="sub">Выберите тип записи, заполните поля — она появится в общем списке у всех сотрудников. Редактировать и удалять записи могут только администратор, руководитель СО и его заместитель.</p>
 
         <h3>Тип записи</h3>
         <div class="rgrid">
@@ -1055,6 +1078,39 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
   Справочник составлен на основе УПК РФ (ФЗ № 174-ФЗ от 18.12.2001), УК РФ (ФЗ № 63-ФЗ от 13.06.1996).<br>
   Материал носит информационно-справочный характер. Перед принятием процессуального решения сверяйтесь с действующей редакцией нормативных актов.
 </footer>
+
+<!-- Модальное окно редактирования записи -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <h3 id="editModalTitle">Редактировать запись</h3>
+    <p class="msub" id="editModalSub">Изменения сразу отобразятся у всех сотрудников.</p>
+
+    <div class="mf">
+      <label for="edArt">Квалификация (статья УК РФ)</label>
+      <input id="edArt" placeholder="158 ч. 2">
+    </div>
+
+    <div class="mf">
+      <label for="edSuspect">ФИО подозреваемого (жулика)</label>
+      <input id="edSuspect" placeholder="Иванов Иван Иванович">
+    </div>
+
+    <div class="mf">
+      <label for="edTo">Кому поручено</label>
+      <input id="edTo" placeholder="следователь СО по г. Левобережный Сидоров С.С.">
+    </div>
+
+    <div class="mf">
+      <label for="edDecision">Принятое решение</label>
+      <textarea id="edDecision" placeholder="Возбуждено УД / отказано / передано по подследственности / приостановлено и т.п."></textarea>
+    </div>
+
+    <div class="mactions">
+      <button class="btn" id="edCancel" type="button">Отмена</button>
+      <button class="btn primary" id="edSave" type="button">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -1826,7 +1882,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
 })();
 
 /* ============================================================
-   ДОБАВЛЕНИЕ ЗАПИСЕЙ + PRESENCE (Firebase Realtime Database)
+   ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ ЗАПИСЕЙ + PRESENCE
    ============================================================ */
 (function(){
   const g = id => document.getElementById(id);
@@ -1848,11 +1904,11 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     db = firebase.database();
   }catch(e){ console.error('Firebase init failed', e); }
 
-  /* ---- Текущий пользователь ---- */
   function currentUser(){
     try{ return JSON.parse(localStorage.getItem('upk_user') || 'null'); }catch(e){ return null; }
   }
-  function canDelete(){
+  /* Кто может редактировать/удалять: admin, руководитель СО, зам. руководителя СО */
+  function canManage(){
     const u = currentUser();
     if(!u) return false;
     if(u.name === 'Администратор') return true;
@@ -1874,7 +1930,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   const onlineBadge = g('onlineBadge');
   const onlineCount = g('onlineCount');
   const onlineList  = g('onlineList');
-  let lastOnline = []; // {name, pos, ts}
+  let lastOnline = [];
 
   function renderOnline(list, connected){
     lastOnline = list;
@@ -1890,7 +1946,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       onlineList.innerHTML = '<div class="oi empty">Пока никого…</div>';
       return;
     }
-    // Сортируем: администратор первый, потом по алфавиту
     const sorted = list.slice().sort((a,b) => {
       const aA = a.name === 'Администратор' ? 0 : 1;
       const bA = b.name === 'Администратор' ? 0 : 1;
@@ -1905,12 +1960,8 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     ).join('');
   }
 
-  function setOnline(n, connected){ renderOnline(lastOnline, connected); }
-
-  // Открытие/закрытие попапа по клику на бейдж
   if(onlineBadge){
     onlineBadge.addEventListener('click', function(e){
-      // не закрываем сразу после открытия
       e.stopPropagation();
       onlineBadge.classList.toggle('open');
     });
@@ -1980,7 +2031,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     g('arUdCount').textContent = ud.length;
     g('arMpCount').textContent = mp.length;
 
-    const allowDel = canDelete();
+    const allowManage = canManage();
     const UNKNOWN = 'неустановленное лицо';
 
     function drawList(arr, boxId){
@@ -1992,7 +2043,8 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       const head = '<tr>' +
           '<th>№</th><th>Дата</th><th>Статья</th><th>ФИО подозреваемого</th>' +
           '<th>Город</th><th>Кем возбуждено</th><th>Кому поручено</th><th>Кто добавил</th>' +
-          (allowDel ? '<th></th>' : '') +
+          '<th>Принятое решение</th>' +
+          (allowManage ? '<th></th>' : '') +
         '</tr>';
       const rows = arr.sort((a,b) => (b.ts||0) - (a.ts||0)).map(r => {
         const suspect = (r.suspect && r.suspect.trim()) ? r.suspect.trim() : UNKNOWN;
@@ -2006,12 +2058,16 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
           '<td>' + esc(r.by || '—') + '</td>' +
           '<td>' + esc(r.to || r.by || '—') + '</td>' +
           '<td>' + esc(r.author || '—') + '</td>' +
-          (allowDel ? '<td><button class="btn" data-del="' + r.id + '" title="Удалить">✕</button></td>' : '') +
+          '<td class="decision">' + esc(r.decision || '—') + '</td>' +
+          (allowManage ? '<td><div class="row-actions">' +
+            '<button class="btn edit" data-edit="' + r.id + '" title="Редактировать">✏️</button>' +
+            '<button class="btn" data-del="' + r.id + '" title="Удалить">✕</button>' +
+          '</div></td>' : '') +
         '</tr>';
       }).join('');
       box.innerHTML = '<table><thead>' + head + '</thead><tbody>' + rows + '</tbody></table>';
 
-      if(allowDel){
+      if(allowManage){
         box.querySelectorAll('[data-del]').forEach(b => {
           b.addEventListener('click', () => {
             if(!confirm('Удалить запись? Она исчезнет у всех.')) return;
@@ -2019,11 +2075,57 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
             db.ref('records/' + b.dataset.del).remove();
           });
         });
+        box.querySelectorAll('[data-edit]').forEach(b => {
+          b.addEventListener('click', () => {
+            const rec = records.find(x => x.id === b.dataset.edit);
+            if(rec) openEditModal(rec);
+          });
+        });
       }
     }
 
     drawList(ud, 'arUdList');
     drawList(mp, 'arMpList');
+  }
+
+  /* ---- Модалка редактирования ---- */
+  let editingId = null;
+  const editModal = g('editModal');
+
+  function openEditModal(rec){
+    if(!canManage()) return;
+    editingId = rec.id;
+    g('edArt').value = rec.art || '';
+    g('edSuspect').value = (rec.suspect && rec.suspect !== 'неустановленное лицо') ? rec.suspect : '';
+    g('edTo').value = rec.to || rec.by || '';
+    g('edDecision').value = rec.decision || '';
+    editModal.classList.add('on');
+    setTimeout(() => { g('edArt').focus(); }, 60);
+  }
+  function closeEditModal(){
+    editingId = null;
+    editModal.classList.remove('on');
+  }
+  if(editModal){
+    g('edCancel').addEventListener('click', closeEditModal);
+    editModal.addEventListener('click', e => { if(e.target === editModal) closeEditModal(); });
+    window.addEventListener('keydown', e => { if(e.key === 'Escape' && editModal.classList.contains('on')) closeEditModal(); });
+
+    g('edSave').addEventListener('click', () => {
+      if(!editingId || !db){ closeEditModal(); return; }
+      const upd = {
+        art: v('edArt') || '',
+        suspect: v('edSuspect') || 'неустановленное лицо',
+        to: v('edTo') || '',
+        decision: v('edDecision') || ''
+      };
+      const btn = g('edSave');
+      btn.disabled = true;
+      db.ref('records/' + editingId).update(upd)
+        .then(() => { closeEditModal(); })
+        .catch(err => { alert('Ошибка сохранения: ' + (err.message || err)); })
+        .then(() => { btn.disabled = false; });
+    });
   }
 
   if(db){
@@ -2069,6 +2171,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       where: v('arWhere'),
       by: v('arBy'),
       to: v('arTo') || v('arBy'),
+      decision: '',
       author: author,
       ts: Date.now()
     };
