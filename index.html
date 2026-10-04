@@ -2290,6 +2290,24 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     return String(pos).replace(/\s+следственного отдела.*$/i, '').trim();
   }
 
+  /* Собирает резолюцию как массив строк с выравниванием */
+  function makeResolParts(days, untilShort, apPos, apRank, apFioIOF, apDate){
+    if(!apPos && !apRank && !apFioIOF) return [];
+    return [
+      {t:'Срок проверки сообщения о преступлении', a:'center'},
+      {t:'ПРОДЛЕВАЮ до ' + days + ' суток',        a:'center'},
+      {t:'т.е. до ' + untilShort,                  a:'center'},
+      {t:'', a:'blank'},
+      {t: apPos || '',                              a:'justify'},
+      {t:'', a:'blank'},
+      {t: apRank || '',                             a:'left'},
+      {t:'', a:'blank'},
+      {t: '________________________ ' + (apFioIOF || '[ФИО]'), a:'left'},
+      {t:'', a:'blank'},
+      {t: apDate || '',                             a:'left'}
+    ];
+  }
+
   /* --- Автоподсчёт даты «до какой продлить» --- */
   function recalcUntil(){
     const days = +g('prDays').value;
@@ -2328,13 +2346,11 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const apFioRaw = v('prApFio') || '';
     const apDate = v('prApDate');
 
-    const resol = (apFioRaw || apRank)
-      ? ('Срок проверки сообщения о преступлении ПРОДЛЕВАЮ до ' + days + ' суток т.е. до ' + untilShort + '\n\n'
-         + apPos + '\n\n'
-         + apRank + '\n\n'
-         + '_____ ' + fioIOF(apFioRaw || '[ФИО]') + '\n\n'
-         + dQuoteLong(apDate || docDate))
-      : '';
+    const resolParts = makeResolParts(
+      days, untilShort, apPos, apRank,
+      fioIOF(apFioRaw || '[ФИО]'),
+      dQuoteLong(apDate || docDate)
+    );
 
     const sigFioFIO = fioFIO(sigFioRaw);
     const sigFioIOF = fioIOF(sigFioRaw);
@@ -2352,7 +2368,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const pBase = 'На основании изложенного, руководствуясь ч. 3 ст. 144 УПК РФ,';
     const pPostText = 'Ходатайствовать перед руководителем следственного органа о продлении сроков проверки сообщения о преступлении до ' + days + ' суток, то есть до ' + untilShort + '.';
 
-    return { resol, days, untilShort, num, numDate, subj, org,
+    return { resolParts, days, untilShort, num, numDate, subj, org,
              sigPos, sigRank, sigFio: sigFioIOF, sigFioFIO: sigFioFIO,
              city, docDate, pFact, pWhy, pBase, pPostText, header1 };
   }
@@ -2364,10 +2380,13 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const d = buildDoc();
     const blocks = [];
 
-    if(d.resol){
-      d.resol.split('\n\n').forEach(line => {
-        blocks.push('<div>' + esc2(line) + '</div>');
-        blocks.push('<div class="pb">&nbsp;</div>');
+    if(d.resolParts && d.resolParts.length){
+      d.resolParts.forEach(p => {
+        if(p.a === 'blank'){ blocks.push('<div class="pb">&nbsp;</div>'); return; }
+        const style = p.a === 'center'  ? 'text-align:center'
+                    : p.a === 'justify' ? 'text-align:justify'
+                    : '';
+        blocks.push('<div style="' + style + '">' + esc2(p.t) + '</div>');
       });
     }
 
@@ -2420,13 +2439,13 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const apRank = r.approveRank || '';
     const apPos = r.approvePos || '';
     const apDate = r.approveDate || r.docDate;
-    const resol = (apFioIOF || apRank)
-      ? ('Срок проверки сообщения о преступлении ПРОДЛЕВАЮ до ' + days + ' суток т.е. до ' + untilShort + '\n\n'
-         + (apPos || '') + '\n\n'
-         + (apRank ? apRank + '\n\n' : '')
-         + '_____ ' + (apFioIOF || '[ФИО]') + '\n\n'
-         + dQuoteLong(apDate))
-      : '';
+
+    const resolParts = makeResolParts(
+      days, untilShort, apPos || '', apRank || '',
+      apFioIOF || '[ФИО]',
+      dQuoteLong(apDate)
+    );
+
     const sigFioFIO = fioFIO(r.sigFio || '');
     const sigFioIOF = fioIOF(r.sigFio || '');
     const header1 = r.sigPos + ' ' + r.sigRank + ' ' + sigFioFIO
@@ -2434,7 +2453,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       + org + ' за №' + (r.num || '[№]') + ' от ' + dShort(r.numDate) + ',';
     const subj = (r.subject || '').replace(/[.\s]+$/, '');
     return {
-      resol, days, untilShort,
+      resolParts, days, untilShort,
       city: r.city || 'г. Левобережный',
       docDate: r.docDate,
       header1,
@@ -2451,10 +2470,11 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const d = recForApproval ? buildDocFromRec(recForApproval) : buildDoc();
     const body = [];
 
-    if(d.resol){
-      d.resol.split('\n\n').forEach(line => {
-        body.push(P(run(line)));
-        body.push(P(''));
+    if(d.resolParts && d.resolParts.length){
+      d.resolParts.forEach(p => {
+        if(p.a === 'blank'){ body.push(P('')); return; }
+        const jc = p.a === 'center' ? 'center' : p.a === 'justify' ? 'both' : 'left';
+        body.push(P(run(p.t), {jc: jc}));
       });
     }
 
@@ -2509,8 +2529,9 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   };
   g('prCopy').onclick = () => {
     const d = buildDoc();
+    const resolTxt = (d.resolParts || []).map(p => p.t).join('\n');
     const txt = [
-      d.resol, '',
+      resolTxt, '',
       'ПОСТАНОВЛЕНИЕ',
       'о возбуждении перед руководителем следственного органа',
       'ходатайства о продлении сроков проверки сообщения о преступлении',
