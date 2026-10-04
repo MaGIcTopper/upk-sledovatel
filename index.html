@@ -500,16 +500,16 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <h3>Основные сведения</h3>
         <div class="rgrid">
           <div class="field"><label>Номер</label><input id="arNum" placeholder="123456"></div>
-          <div class="field"><label>Дата возбуждения</label><input type="date" id="arDate"></div>
+          <div class="field"><label>Дата</label><input type="date" id="arDate"></div>
           <div class="field"><label>Статья УК РФ</label><input id="arArt" placeholder="158 ч. 2"></div>
-          <div class="field w"><label>ФИО подозреваемого (жулика)</label><input id="arSuspect" placeholder="Иванов Иван Иванович"><div class="hint">Если оставить пустым — в таблице отобразится «неустановленное лицо».</div></div>
+          <div class="field w"><label>ФИО заподозренного</label><input id="arSuspect" placeholder="Иванов Иван Иванович"><div class="hint">Если оставить пустым — в таблице отобразится «неустановленное лицо».</div></div>
         </div>
 
-        <h3>Где, кем, кому поручено</h3>
+        <h3>Где, кто сообщил, кому поручено</h3>
         <div class="rgrid">
           <div class="field w"><label>Город</label><input id="arWhere" placeholder="г. Левобережный"></div>
-          <div class="field w"><label>Кем возбуждено</label><input id="arBy" placeholder="следователь СО по г. Левобережный Сидоров С.С."></div>
-          <div class="field w"><label>Кому поручено</label><input id="arTo" readonly placeholder="заполняется автоматически из поля «Кем возбуждено»"><div class="hint">Автоматически повторяет значение из поля «Кем возбуждено».</div></div>
+          <div class="field w"><label>Кто сообщил</label><input id="arBy" placeholder="следователь СО по г. Левобережный Сидоров С.С."></div>
+          <div class="field w"><label>Кому поручено</label><input id="arTo" readonly placeholder="для уголовного дела заполняется автоматически из поля «Кто сообщил»"><div class="hint">Для уголовного дела — автоматически повторяет «Кто сообщил». Для материала проверки остаётся пустым.</div></div>
         </div>
 
         <div class="steps">
@@ -1091,7 +1091,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
     </div>
 
     <div class="mf">
-      <label for="edSuspect">ФИО подозреваемого (жулика)</label>
+      <label for="edSuspect">ФИО заподозренного</label>
       <input id="edSuspect" placeholder="Иванов Иван Иванович">
     </div>
 
@@ -1108,6 +1108,45 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
     <div class="mactions">
       <button class="btn" id="edCancel" type="button">Отмена</button>
       <button class="btn primary" id="edSave" type="button">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модальное окно отметок личного состава -->
+<div class="modal-overlay" id="staffModal">
+  <div class="modal" style="max-width:640px" role="dialog" aria-modal="true" aria-labelledby="staffModalTitle">
+    <h3 id="staffModalTitle">Отметки</h3>
+    <p class="msub" id="staffModalSub">Выговоры и отпуска сотрудника</p>
+
+    <h4 style="margin-top:0;font-size:14px">Добавить отметку</h4>
+    <div class="mf">
+      <label for="smType">Тип</label>
+      <select id="smType" style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:14.5px;width:100%">
+        <option value="reprimand">🚫 Выговор</option>
+        <option value="vacation">🏖 Отпуск</option>
+      </select>
+    </div>
+    <div class="mf">
+      <label for="smReason">Основание / комментарий</label>
+      <input id="smReason" placeholder="Например: нарушение сроков проверки">
+    </div>
+    <div class="mf">
+      <label for="smDate">Дата</label>
+      <input type="date" id="smDate">
+    </div>
+    <div class="mf" id="smEndWrap" style="display:none">
+      <label for="smEnd">По (дата окончания отпуска)</label>
+      <input type="date" id="smEnd">
+    </div>
+    <div class="mactions" style="margin-top:0;justify-content:flex-start">
+      <button class="btn primary" id="smAdd" type="button">➕ Добавить</button>
+    </div>
+
+    <h4>Список отметок</h4>
+    <div id="smList"></div>
+
+    <div class="mactions">
+      <button class="btn" id="smClose" type="button">Закрыть</button>
     </div>
   </div>
 </div>
@@ -1245,28 +1284,69 @@ function applyAuth(){
 }
 applyAuth();
 
-(function renderStaff(){
-  const box = document.getElementById('staffBox');
-  const cnt = document.getElementById('staffCount');
-  if(!box) return;
-  if(cnt) cnt.textContent = AUTH_USERS.length + ' чел.';
-  const units = {};
-  AUTH_USERS.forEach(function(u){
-    (units[u.unit] = units[u.unit] || []).push(u);
-  });
-  box.innerHTML = Object.keys(units).map(function(unit){
-    const rows = units[unit].map(function(u){
-      return '<tr><td class="term">' + esc(u.full) + '</td><td>' + esc(u.pos) + '</td><td>' + esc(u.zvan) + '</td></tr>';
-    }).join('');
-    return '<h3>' + esc(unit) + '</h3><table><thead><tr><th>ФИО</th><th>Должность</th><th>Звание</th></tr></thead><tbody>' + rows + '</tbody></table>';
-  }).join('');
-})();
-
 function esc(s){
   return String(s).replace(/[&<>"]/g, function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
   });
 }
+
+/* ---- Личный состав: выговоры и отпуска ---- */
+let staffMarks = {};
+
+function canManageStaff(){
+  try{
+    const u = JSON.parse(localStorage.getItem('upk_user') || 'null');
+    if(!u) return false;
+    if(u.name === 'Администратор') return true;
+    const pos = (u.pos || '').toLowerCase();
+    return pos.indexOf('руководител') !== -1;
+  }catch(e){ return false; }
+}
+
+function fmtDateShort(d){
+  if(!d) return '—';
+  const p = String(d).split('-');
+  if(p.length !== 3) return d;
+  return p[2] + '.' + p[1] + '.' + p[0];
+}
+
+function renderStaff(){
+  const box = document.getElementById('staffBox');
+  const cnt = document.getElementById('staffCount');
+  if(!box) return;
+  if(cnt) cnt.textContent = AUTH_USERS.length + ' чел.';
+
+  const units = {};
+  AUTH_USERS.forEach(function(u){ (units[u.unit] = units[u.unit] || []).push(u); });
+
+  const manage = canManageStaff();
+
+  box.innerHTML = Object.keys(units).map(function(unit){
+    const rows = units[unit].map(function(u){
+      const marks = staffMarks[u.surname] || {};
+      const reps = Object.keys(marks).filter(function(k){ return marks[k].type === 'reprimand'; }).length;
+      const vacs = Object.keys(marks).filter(function(k){ return marks[k].type === 'vacation'; }).length;
+      return '<tr>' +
+        '<td class="term">' + esc(u.full) + '</td>' +
+        '<td>' + esc(u.pos) + '</td>' +
+        '<td>' + esc(u.zvan) + '</td>' +
+        '<td><span class="tag red">' + reps + '</span></td>' +
+        '<td><span class="tag green">' + vacs + '</span></td>' +
+        (manage ? '<td><button class="btn edit" data-staff="' + esc(u.surname) + '">📋 Управление</button></td>' : '') +
+      '</tr>';
+    }).join('');
+    return '<h3>' + esc(unit) + '</h3><table><thead><tr><th>ФИО</th><th>Должность</th><th>Звание</th><th>Выговоры</th><th>Отпуска</th>' + (manage ? '<th>Действия</th>' : '') + '</tr></thead><tbody>' + rows + '</tbody></table>';
+  }).join('');
+
+  if(manage){
+    box.querySelectorAll('[data-staff]').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(window.openStaffModal) window.openStaffModal(b.dataset.staff);
+      });
+    });
+  }
+}
+renderStaff();
 
 const ALGOS = [
 {id:'a1', title:'Проверка сообщения о преступлении', law:'ст. 140–145 УПК РФ', steps:[
@@ -1882,7 +1962,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
 })();
 
 /* ============================================================
-   ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ ЗАПИСЕЙ + PRESENCE
+   ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ ЗАПИСЕЙ + PRESENCE + ОТМЕТКИ
    ============================================================ */
 (function(){
   const g = id => document.getElementById(id);
@@ -1907,7 +1987,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   function currentUser(){
     try{ return JSON.parse(localStorage.getItem('upk_user') || 'null'); }catch(e){ return null; }
   }
-  /* Кто может редактировать/удалять: admin, руководитель СО, зам. руководителя СО */
+  /* Кто может редактировать/удалять записи: admin, руководитель СО, зам. руководителя СО */
   function canManage(){
     const u = currentUser();
     if(!u) return false;
@@ -1930,10 +2010,8 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   const onlineBadge = g('onlineBadge');
   const onlineCount = g('onlineCount');
   const onlineList  = g('onlineList');
-  let lastOnline = [];
 
   function renderOnline(list, connected){
-    lastOnline = list;
     if(onlineBadge) onlineBadge.classList.toggle('off', !connected);
     if(onlineCount) onlineCount.textContent = connected ? list.length : '—';
 
@@ -2034,15 +2112,15 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const allowManage = canManage();
     const UNKNOWN = 'неустановленное лицо';
 
-    function drawList(arr, boxId){
+    function drawList(arr, boxId, isUd){
       const box = g(boxId);
       if(!arr.length){
         box.innerHTML = '<p class="sub">Пока нет записей.</p>';
         return;
       }
       const head = '<tr>' +
-          '<th>№</th><th>Дата</th><th>Статья</th><th>ФИО подозреваемого</th>' +
-          '<th>Город</th><th>Кем возбуждено</th><th>Кому поручено</th><th>Кто добавил</th>' +
+          '<th>№</th><th>Дата</th><th>Статья</th><th>ФИО заподозренного</th>' +
+          '<th>Город</th><th>Кто сообщил</th><th>Кому поручено</th><th>Кто добавил</th>' +
           '<th>Принятое решение</th>' +
           (allowManage ? '<th></th>' : '') +
         '</tr>';
@@ -2056,7 +2134,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
           '<td class="suspect' + (isUnknown ? ' unknown' : '') + '">' + esc(suspect) + '</td>' +
           '<td>' + esc(r.where || '—') + '</td>' +
           '<td>' + esc(r.by || '—') + '</td>' +
-          '<td>' + esc(r.to || r.by || '—') + '</td>' +
+          '<td>' + (isUd ? esc(r.to || r.by || '—') : '') + '</td>' +
           '<td>' + esc(r.author || '—') + '</td>' +
           '<td class="decision">' + esc(r.decision || '—') + '</td>' +
           (allowManage ? '<td><div class="row-actions">' +
@@ -2084,8 +2162,8 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       }
     }
 
-    drawList(ud, 'arUdList');
-    drawList(mp, 'arMpList');
+    drawList(ud, 'arUdList', true);
+    drawList(mp, 'arMpList', false);
   }
 
   /* ---- Модалка редактирования ---- */
@@ -2147,13 +2225,18 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     render();
   }
 
-  /* ---- Автозаполнение «Кому поручено» ---- */
-  g('arBy').addEventListener('input', () => { g('arTo').value = g('arBy').value; });
+  /* ---- Автозаполнение «Кому поручено» (только для уголовных дел) ---- */
+  function updateArTo(){
+    if(g('arType').value === 'ud') g('arTo').value = g('arBy').value;
+    else g('arTo').value = '';
+  }
+  g('arBy').addEventListener('input', updateArTo);
+  g('arType').addEventListener('change', updateArTo);
 
   /* ---- Добавление записи ---- */
   g('arAdd').addEventListener('click', () => {
     if(!v('arNum')){ g('arSt').textContent = 'Укажите номер.'; return; }
-    if(!v('arBy')){ g('arSt').textContent = 'Укажите, кем возбуждено.'; return; }
+    if(!v('arBy')){ g('arSt').textContent = 'Укажите, кто сообщил.'; return; }
     if(!db){ g('arSt').textContent = 'Нет соединения с базой.'; return; }
 
     let author = '';
@@ -2162,15 +2245,16 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       author = u && u.name ? u.name : '';
     }catch(e){}
 
+    const type = g('arType').value;
     const rec = {
-      type: g('arType').value,
+      type: type,
       num: v('arNum'),
       date: v('arDate'),
       art: v('arArt'),
       suspect: v('arSuspect') || 'неустановленное лицо',
       where: v('arWhere'),
       by: v('arBy'),
-      to: v('arTo') || v('arBy'),
+      to: type === 'ud' ? (v('arTo') || v('arBy')) : '',
       decision: '',
       author: author,
       ts: Date.now()
@@ -2193,6 +2277,100 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     g('arDate').value = '';
     g('arSt').textContent = '';
   });
+
+  /* ============================================================
+     ОТМЕТКИ ЛИЧНОГО СОСТАВА (выговоры / отпуска)
+     ============================================================ */
+  const staffModal = g('staffModal');
+  let currentStaffSurname = null;
+
+  function renderStaffMarksModal(){
+    if(!currentStaffSurname) return;
+    const marks = staffMarks[currentStaffSurname] || {};
+    const list = Object.keys(marks).map(k => Object.assign({id:k}, marks[k]))
+                                 .sort((a,b) => (b.ts||0) - (a.ts||0));
+    const box = g('smList');
+    if(!list.length){ box.innerHTML = '<p class="sub">Пока нет отметок.</p>'; return; }
+    box.innerHTML = list.map(m => {
+      const typeLabel = m.type === 'reprimand' ? 'Выговор' : 'Отпуск';
+      const typeCls   = m.type === 'reprimand' ? 'red' : 'green';
+      const dateStr   = fmtDateShort(m.date) + (m.end ? ' — ' + fmtDateShort(m.end) : '');
+      return '<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--td-line)">' +
+        '<span class="tag ' + typeCls + '">' + typeLabel + '</span>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-weight:600;font-size:13.5px">' + esc(dateStr) + '</div>' +
+          (m.reason ? '<div style="font-size:13px;color:var(--muted)">' + esc(m.reason) + '</div>' : '') +
+          (m.by ? '<div style="font-size:12px;color:var(--muted)">Выдал: ' + esc(m.by) + '</div>' : '') +
+        '</div>' +
+        '<button class="btn" data-delmark="' + m.id + '" title="Удалить">✕</button>' +
+      '</div>';
+    }).join('');
+    box.querySelectorAll('[data-delmark]').forEach(b => {
+      b.addEventListener('click', () => {
+        if(!confirm('Удалить отметку?')) return;
+        if(!db) return;
+        db.ref('staff_marks/' + currentStaffSurname + '/' + b.dataset.delmark).remove();
+      });
+    });
+  }
+
+  function openStaffModal(surname){
+    if(!canManageStaff()) return;
+    currentStaffSurname = surname;
+    const user = AUTH_USERS.find(u => u.surname === surname);
+    g('staffModalTitle').textContent = 'Отметки: ' + (user ? user.full : surname);
+    g('staffModalSub').textContent = user ? (user.pos + ' · ' + user.zvan) : '';
+    g('smDate').value = new Date().toISOString().slice(0,10);
+    g('smReason').value = '';
+    g('smEnd').value = '';
+    g('smType').value = 'reprimand';
+    g('smEndWrap').style.display = 'none';
+    renderStaffMarksModal();
+    staffModal.classList.add('on');
+  }
+  window.openStaffModal = openStaffModal;
+
+  if(staffModal){
+    g('smType').addEventListener('change', () => {
+      g('smEndWrap').style.display = g('smType').value === 'vacation' ? '' : 'none';
+    });
+    g('smClose').addEventListener('click', () => {
+      staffModal.classList.remove('on'); currentStaffSurname = null;
+    });
+    staffModal.addEventListener('click', e => {
+      if(e.target === staffModal){ staffModal.classList.remove('on'); currentStaffSurname = null; }
+    });
+    window.addEventListener('keydown', e => {
+      if(e.key === 'Escape' && staffModal.classList.contains('on')){
+        staffModal.classList.remove('on'); currentStaffSurname = null;
+      }
+    });
+    g('smAdd').addEventListener('click', () => {
+      if(!currentStaffSurname || !db) return;
+      const type   = g('smType').value;
+      const reason = g('smReason').value.trim();
+      const date   = g('smDate').value;
+      const end    = g('smEnd').value;
+      if(!date){ alert('Укажите дату'); return; }
+      const u = currentUser();
+      const by = u && u.name ? u.name : '';
+      const mark = {type: type, reason: reason, date: date, end: type === 'vacation' ? end : '', by: by, ts: Date.now()};
+      db.ref('staff_marks/' + currentStaffSurname).push(mark).then(() => {
+        g('smReason').value = '';
+        g('smEnd').value = '';
+      });
+    });
+  }
+
+  if(db){
+    db.ref('staff_marks').on('value', snap => {
+      staffMarks = snap.val() || {};
+      renderStaff();
+      if(staffModal && staffModal.classList.contains('on')) renderStaffMarksModal();
+    }, err => {
+      console.warn('staff_marks read error', err);
+    });
+  }
 })();
 </script>
 </body>
