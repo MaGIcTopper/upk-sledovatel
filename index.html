@@ -271,6 +271,15 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
   border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:20px;
   cursor:pointer;box-shadow:var(--shadow);z-index:60;}
 @media print{header,aside,#toTop,#searchRes{display:none!important}section{display:block!important}.layout{display:block}}
+/* ---------- РОПП ---------- */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:10px}
+.rgrid .field.w{grid-column:1/-1}
+.rgrid input,.rgrid textarea,.rgrid select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font:inherit;font-size:14px;background:var(--card);color:var(--text)}
+.rgrid textarea{min-height:70px;resize:vertical}
+.rprev{border:1px solid var(--border);border-radius:10px;padding:18px 22px;font-family:"Times New Roman",serif;font-size:15px;line-height:1.55;background:var(--card);margin:12px 0}
+.rprev .r{text-align:right;margin-left:45%}.rprev p{margin:0 0 10px;text-indent:1.2em}.rprev .c{text-align:center;font-weight:700;text-indent:0}
+.rt{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:12px}.rt td,.rt th{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+.late{color:#d32f2f;font-weight:700}.soon{color:#e68a00;font-weight:700}
 @media(max-width:960px){
   .layout{flex-direction:column;padding:14px}
   aside{width:100%;flex:none;position:static;max-height:none}
@@ -321,6 +330,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <div class="navgroup">Общее</div>
         <li><a href="#" data-target="algos">📋 Алгоритмы действий</a></li>
         <li><a href="#" data-target="deadlines">⏱ Сроки и калькулятор</a></li>
+        <li><a href="#" data-target="ropp">📄 Рапорт (РОПП)</a></li>
         <li><a href="#" data-target="articles">📖 Ключевые статьи</a></li>
         <li><a href="#" data-target="laws">⚖️ Законодательство</a></li>
         <li><a href="#" data-target="memo">💡 Памятки</a></li>
@@ -401,6 +411,44 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <h2>Личный состав <span class="badge" id="staffCount"></span></h2>
         <p class="sub">Сотрудники отдела криминалистики и следственного отдела по городу Левобережный СУ СК России по Кировской области.</p>
         <div id="staffBox"></div>
+      </div>
+    </section>
+
+
+    <section id="ropp">
+      <div class="card">
+        <h2>Рапорт об обнаружении признаков преступления <span class="badge">ст. 143 УПК РФ</span></h2>
+        <p class="sub">Заполните поля — рапорт соберётся сам. Его можно скопировать, скачать для Word и сохранить в реестр проверок ниже.</p>
+        <div class="rgrid">
+          <div class="field w"><label>Кому (в дательном падеже: должность, подразделение, звание, ФИО)</label><textarea id="rBoss" placeholder="Руководителю следственного отдела по г. … майору юстиции Иванову И.И."></textarea></div>
+          <div class="field w"><label>Орган (как в «поступило в …»)</label><input id="rOrg" value="следственный отдел по г. Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области"></div>
+          <div class="field w"><label>Орган (родительный: «в КРСоП …»)</label><input id="rOrgG" value="следственного отдела по г. Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области"></div>
+          <div class="field"><label>Город</label><input id="rCity" value="г. Левобережный"></div>
+          <div class="field"><label>Дата поступления</label><input type="date" id="rWhen"></div>
+          <div class="field"><label>Время</label><input type="time" id="rTime"></div>
+          <div class="field w"><label>Источник сообщения (от кого)</label><input id="rSrc" placeholder="должностного лица, прапорщика полиции Петрова П.П."></div>
+          <div class="field w"><label>Суть сообщения («о том, что …»)</label><textarea id="rText" placeholder="по адресу: …, произошло …"></textarea></div>
+          <div class="field"><label>Лицо(а) («в действиях …»)</label><input id="rWho" placeholder="неустановленного лица"></div>
+          <div class="field"><label>Статьи УК РФ</label><input id="rArt" placeholder="105, 111, 112"></div>
+          <div class="field"><label>Следователь (звание, ФИО)</label><input id="rSig" placeholder="лейтенант юстиции Сидоров С.С."></div>
+        </div>
+        <div class="rprev" id="rPrev"></div>
+        <div class="pill-row">
+          <button class="pill" id="rCopy">Скопировать текст</button>
+          <button class="pill" id="rDoc">Скачать для Word</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Реестр проверок <span class="badge" id="rCnt"></span></h2>
+        <p class="sub">Срок проверки — 3 суток со дня поступления сообщения, может быть продлён до 10 и до 30 суток (ст. 144 УПК РФ). Расчёт ориентировочный.</p>
+        <div class="rgrid">
+          <div class="field"><label>№ в КРСоП (необязательно)</label><input id="rNum"></div>
+          <div class="field"><label>Срок проверки</label><select id="rDays"><option value="3">3 суток</option><option value="10">10 суток</option><option value="30">30 суток</option></select></div>
+        </div>
+        <button class="pill" id="rSave">➕ Сохранить рапорт в реестр</button>
+        <h3>Активные</h3><div id="rAct"></div>
+        <h3>Завершённые</h3><div id="rDone"></div>
+        <div class="note blue">Реестр хранится только в вашем браузере на этом устройстве и не передаётся на сервер. Не вносите персональные данные заявителей и подозреваемых.</div>
       </div>
     </section>
 
@@ -1618,6 +1666,60 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       return '<div class="timer-row"><span>+' + r[0] + ' ч · ' + r[1] + ' <small style="color:var(--muted)">(' + r[2] + ')</small></span><b>' + f(new Date(t0.getTime()+r[0]*3600000)) + '</b></div>';
     }).join('');
   });
+})();
+
+/* ============================================================
+   РОПП: конструктор рапорта и реестр проверок (хранится в браузере)
+   ============================================================ */
+(function(){
+  const g = id => document.getElementById(id), KEY = 'ropp_reg', v = id => g(id).value.trim();
+  let reg = []; try{ reg = JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){}
+  const store = () => { try{ localStorage.setItem(KEY, JSON.stringify(reg)); }catch(e){} };
+  g('rWhen').value = new Date().toISOString().slice(0,10);
+  const dfmt = d => d ? new Date(d+'T00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'}).replace(' г.',' года') : '[дата]';
+  function paras(){
+    const p1 = 'Докладываю в соответствии со ст. 143 УПК РФ о том, что '+dfmt(v('rWhen'))+(v('rTime')?' в '+v('rTime').replace(':',' ч. ')+' мин.':'')
+      +' в '+(v('rOrg')||'[орган]')+' поступило сообщение от '+(v('rSrc')||'[источник]')+' о том, что '+(v('rText')||'[суть сообщения]')+'.';
+    const p2 = 'На основании вышеизложенного считаю необходимым зарегистрировать данное сообщение в КРСоП '+(v('rOrgG')||'[орган]')
+      +' с целью проведения процессуальной проверки в порядке ст.ст. 144-145 УПК РФ, так как в действиях '+(v('rWho')||'неустановленного лица')
+      +' могут усматриваться признаки составов преступлений, предусмотренных ст.ст. '+(v('rArt')||'[статьи]')+' УК РФ.';
+    return [p1,p2];
+  }
+  function draw(){
+    const [a,b] = paras();
+    g('rPrev').innerHTML = '<div class="r">'+esc(v('rBoss')||'[Кому]')+'</div><p class="c">Р А П О Р Т</p><p class="c">Об обнаружении признаков преступления</p>'
+      +'<p style="text-indent:0">'+esc(v('rCity'))+' — «'+esc(dfmt(v('rWhen')))+'»</p><p>'+esc(a)+'</p><p>'+esc(b)+'</p><p style="text-indent:0">Следователь<br>'+esc(v('rSig')||'[звание, ФИО]')+'</p>';
+  }
+  document.querySelectorAll('#ropp .rgrid input,#ropp .rgrid textarea').forEach(i => i.addEventListener('input', draw)); draw();
+  const plain = () => (v('rBoss')||'[Кому]')+'\n\nР А П О Р Т\nОб обнаружении признаков преступления\n\n'+v('rCity')+' — «'+dfmt(v('rWhen'))+'»\n\n'+paras().join('\n\n')+'\n\nСледователь\n'+(v('rSig')||'[звание, ФИО]');
+  g('rCopy').onclick = () => { navigator.clipboard.writeText(plain()).then(()=>{ g('rCopy').textContent='Скопировано ✓'; setTimeout(()=>g('rCopy').textContent='Скопировать текст',1500); }); };
+  g('rDoc').onclick = () => {
+    const html = '<html><head><meta charset="utf-8"></head><body style="font-family:Times New Roman;font-size:14pt">'+g('rPrev').innerHTML+'</body></html>';
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff'+html],{type:'application/msword'}));
+    a.download = 'rapport_ropp.doc'; a.click();
+  };
+  function render(){
+    const today = new Date(new Date().toISOString().slice(0,10)+'T00:00'), row = (r,act) => {
+      const dl = new Date(r.date+'T00:00'); dl.setDate(dl.getDate()+r.days); const left = Math.round((dl-today)/864e5);
+      const cls = left<=1?'late':left<=3?'soon':'';
+      return '<tr><td>'+esc(r.num||'—')+'</td><td>'+esc(dfmt(r.date))+'</td><td>'+esc(r.sum)+'</td><td>ст. '+esc(r.art||'—')+'</td>'
+        +(act?'<td class="'+cls+'">до '+dl.toLocaleDateString('ru-RU')+' ('+(left<0?'просрочено '+(-left)+' дн.':'осталось '+left+' дн.')+')</td>':'')
+        +'<td><button class="pill" data-id="'+r.id+'" data-a="'+(act?'done':'back')+'">'+(act?'Решение принято':'Вернуть')+'</button> <button class="pill" data-id="'+r.id+'" data-a="del">✕</button></td></tr>';
+    };
+    const tbl = (list,act) => list.length ? '<div style="overflow-x:auto"><table class="rt"><tr><th>№</th><th>Дата</th><th>Суть</th><th>Статьи</th>'+(act?'<th>Срок</th>':'')+'<th></th></tr>'+list.map(r=>row(r,act)).join('')+'</table></div>' : '<p class="sub">Пусто</p>';
+    const act = reg.filter(r=>!r.closed).sort((a,b)=>(a.date>b.date)-(a.date<b.date));
+    g('rAct').innerHTML = tbl(act,true); g('rDone').innerHTML = tbl(reg.filter(r=>r.closed),false); g('rCnt').textContent = act.length+' активных';
+  }
+  g('rSave').onclick = () => {
+    reg.push({id:Date.now(), num:v('rNum'), date:v('rWhen'), sum:(v('rText')||'без описания').slice(0,90), art:v('rArt'), days:+g('rDays').value, closed:false});
+    store(); render();
+  };
+  g('ropp').addEventListener('click', e => {
+    const b = e.target.closest('button[data-id]'); if(!b) return; const id = +b.dataset.id;
+    if(b.dataset.a==='del') reg = reg.filter(r=>r.id!==id); else reg.forEach(r => { if(r.id===id) r.closed = b.dataset.a==='done'; });
+    store(); render();
+  });
+  render();
 })();
 </script>
 </body>
