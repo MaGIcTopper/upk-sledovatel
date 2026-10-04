@@ -1323,16 +1323,33 @@ applyState();
    2) впишите строку ниже. cat = general | mvd | sk | fsb | dozn
    ============================================================ */
 const MATERIALS = [
-  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ч. 1 ст. 119 УК РФ', file:'files/maket_119_uk.pdf'},
-  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ст. 264 УК РФ', file:'files/maket_264_uk.pdf'},
-  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ч. 3 ст. 264 УК РФ', file:'files/maket_264_ch3.pdf'},
-  {cat:'mvd', group:'Макеты уголовных дел', title:'Макет по ч. 1 ст. 171.3 УК РФ', file:'files/maket_171_3_ch1.pdf'},
-  {cat:'mvd', group:'Инструкции', title:'Инструкция по делопроизводству в ОВД', file:'files/instruktsiya_po_deloproizvodstvu.pdf'},
-  {cat:'general', group:'Образцы', title:'Образцы протоколов ОМП', file:'files/obraztsy_protokolov_omp.pdf'},
-  {cat:'general', group:'Справочные', title:'Виды экспертиз', file:'files/vidy_ekspertiz.docx'},
+  {"cat": "mvd", "group": "Макеты уголовных дел", "title": "Макет по ч. 1 ст. 119 УК РФ", "file": "files/maket_119_uk.pdf"},
+  {"cat": "mvd", "group": "Макеты уголовных дел", "title": "Макет по ст. 264 УК РФ", "file": "files/maket_264_uk.pdf"},
+  {"cat": "mvd", "group": "Макеты уголовных дел", "title": "Макет по ч. 3 ст. 264 УК РФ", "file": "files/maket_264_ch3.pdf"},
+  {"cat": "mvd", "group": "Макеты уголовных дел", "title": "Макет по ч. 1 ст. 171.3 УК РФ", "file": "files/maket_171_3_ch1.pdf"},
+  {"cat": "mvd", "group": "Инструкции и пособия", "title": "Инструкция по делопроизводству в ОВД", "file": "files/instruktsiya_po_deloproizvodstvu.pdf"},
+  {"cat": "mvd", "group": "Инструкции и пособия", "title": "Образцы процессуальных документов (МосУ МВД)", "file": "files/obraztsy_protsessualnykh_dokumentov.pdf"},
+  {"cat": "mvd", "group": "Инструкции и пособия", "title": "Расследование преступлений против личности и собственности", "file": "files/prestupleniya_protiv_lichnosti_i_sobstvennosti.pdf"},
+  {"cat": "mvd", "group": "Инструкции и пособия", "title": "Криминалистическая техника: лекция", "file": "files/krim_tekhnika.pdf"},
+  {"cat": "sk", "group": "Методички", "title": "Методичка для следователей СК РФ (Кремлёв)", "file": "files/spravochnik_kremlev_sk.docx"},
+  {"cat": "general", "group": "Образцы", "title": "Образцы протоколов ОМП", "file": "files/obraztsy_protokolov_omp.pdf"},
+  {"cat": "general", "group": "Образцы", "title": "Учебное уголовное дело (Вениаминов)", "file": "files/uchebnoe_ugolovnoe_delo.pdf"},
+  {"cat": "general", "group": "Справочники", "title": "Справочник следователя", "file": "files/spravochnik_sledovatelya.pdf"},
+  {"cat": "general", "group": "Справочники", "title": "Руководство для следователя и его помощника", "file": "files/rukovodstvo_dlya_sledovatelya.pdf"},
+  {"cat": ["general", "dozn"], "group": "Справочники", "title": "Настольная книга следователя и дознавателя", "file": "files/nastolnaya_kniga_sledovatelya_i_doznavatelya.pdf"},
+  {"cat": "general", "group": "Уголовный процесс", "title": "Досудебное производство по уголовным делам", "file": "files/dosudebnoe_proizvodstvo_po_ud.pdf"},
+  {"cat": "general", "group": "Уголовный процесс", "title": "Конспект по уголовному процессу", "file": "files/konspekt_upp.pdf"},
+  {"cat": "general", "group": "Квалификация и методика расследования", "title": "Составы статей УК РФ", "file": "files/sostavy_statey_uk.pdf"},
+  {"cat": "general", "group": "Квалификация и методика расследования", "title": "Методика расследования отдельных видов преступлений", "file": "files/metodika_otdelnykh_vidov_prestupleniy.pdf"},
+  {"cat": "general", "group": "Квалификация и методика расследования", "title": "Расследование преступлений несовершеннолетних", "file": "files/prestupleniya_nesovershennoletnikh.pdf"},
+  {"cat": "general", "group": "Квалификация и методика расследования", "title": "Квалификация экологических преступлений", "file": "files/kvalifikatsiya_ekologicheskikh_prestupleniy.pdf"},
+  {"cat": "general", "group": "Экспертизы", "title": "Справочник по судебным экспертизам для следователей (Академия СК)", "file": "files/vidy_ekspertiz.docx"},
+  {"cat": "general", "group": "Экспертизы", "title": "Судебно-медицинская экспертиза живых лиц", "file": "files/sme_zhivykh_lits.pdf"},
+  {"cat": "general", "group": "Оформление документов", "title": "Типографика и орфография для юристов", "file": "files/tipografika_dlya_yuristov.pdf"},
+  {"cat": "general", "group": "Оформление документов", "title": "Как правильно подписывать документы (методичка)", "file": "files/metodichka_po_podpisyam.docx"}
 ];
 document.querySelectorAll('.matbox').forEach(box => {
-  const items = MATERIALS.filter(m => m.cat === box.dataset.cat);
+  const items = MATERIALS.filter(m => [].concat(m.cat).includes(box.dataset.cat));
   if(!items.length){
     box.innerHTML = '<p class="sub">Пока нет материалов в этой категории.</p>'; return;
   }
