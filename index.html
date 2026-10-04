@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Кабинет следователя — рабочий справочник</title>
 <script>
-/* Инициализация темы ДО отрисовки — убирает «мигание» и гарантирует работу */
+/* Проверка пароля до отрисовки — чтобы не мигало */
+(function(){
+  try{
+    if(localStorage.getItem("upk_auth") !== "ok") document.documentElement.classList.add("locked");
+  }catch(e){ document.documentElement.classList.add("locked"); }
+})();
+/* Инициализация темы */
 (function(){
   try{
     var t = localStorage.getItem('theme');
@@ -107,6 +113,46 @@ body{
   background:var(--bg);color:var(--text);line-height:1.55;font-size:15px;
   transition:background .2s ease,color .2s ease;
 }
+
+/* ---------- ЭКРАН ЛОГИНА ---------- */
+#lockScreen{
+  display:none;
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);
+  place-items:center;padding:20px;
+}
+html.locked #lockScreen{display:grid}
+html.locked body > header,
+html.locked body > .layout,
+html.locked body > footer,
+html.locked body > #searchRes,
+html.locked body > #toTop{display:none!important}
+
+#lockForm{
+  background:var(--card);border-radius:14px;padding:34px 30px;width:100%;max-width:390px;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);position:relative;overflow:hidden;
+}
+#lockForm::after{
+  content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;
+  border-radius:50%;background:radial-gradient(circle,rgba(200,162,74,.2),transparent 70%);pointer-events:none;
+}
+#lockForm h1{font-size:20px;font-weight:600;color:var(--head);margin-bottom:6px;display:flex;align-items:center;gap:10px}
+#lockForm .lg{font-size:24px}
+#lockForm .lead{color:var(--muted);font-size:13.5px;margin-bottom:22px}
+#lockForm input[type=password]{
+  width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:9px;
+  font-size:15px;font-family:inherit;outline:none;transition:.15s;
+  background:var(--card);color:var(--text);
+}
+#lockForm input[type=password]:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(47,111,208,.15)}
+#lockForm button{
+  width:100%;background:var(--accent);color:#fff;border:none;border-radius:9px;
+  padding:12px 16px;font-size:15px;font-weight:600;cursor:pointer;margin-top:18px;
+  font-family:inherit;transition:.15s;
+}
+#lockForm button:hover{background:var(--accent-h)}
+#lockErr{color:var(--red);font-size:13.5px;margin-top:12px;min-height:18px;text-align:center;font-weight:500}
+
 /* ---------- HEADER ---------- */
 header{
   position:sticky;top:0;z-index:50;
@@ -358,6 +404,17 @@ footer{
 </head>
 <body>
 
+<!-- ==================== ЭКРАН ЛОГИНА ==================== -->
+<div id="lockScreen">
+  <form id="lockForm" autocomplete="off">
+    <h1><span class="lg">⚖️</span> Кабинет следователя</h1>
+    <p class="lead">Доступ только для своих. Введите пароль.</p>
+    <input type="password" id="lockPwd" placeholder="Пароль" autocomplete="current-password" autofocus>
+    <button type="submit">Войти</button>
+    <div id="lockErr"></div>
+  </form>
+</div>
+
 <header>
   <div class="logo">⚖️</div>
   <div>
@@ -366,6 +423,7 @@ footer{
   </div>
   <div class="spacer"></div>
   <button class="hbtn" id="themeBtn" title="Тёмная / светлая тема">🌓</button>
+  <button class="hbtn" id="logoutBtn" title="Выйти">🚪</button>
   <input type="search" id="globalSearch" placeholder="Поиск по справочнику… (Ctrl+K)">
 </header>
 <div id="searchRes"></div>
@@ -994,6 +1052,56 @@ footer{
 
 <script>
 /* ============================================================
+   АВТОРИЗАЦИЯ — поменяй пароль ниже на свой
+   ============================================================ */
+const AUTH_PASSWORD = "sled2025";   // <-- ПОМЕНЯЙ НА СВОЙ ПАРОЛЬ
+const AUTH_KEY = "upk_auth";
+
+function applyAuth(){
+  const lock = document.getElementById('lockScreen');
+  const pwd = document.getElementById('lockPwd');
+  const err = document.getElementById('lockErr');
+  const form = document.getElementById('lockForm');
+  const logout = document.getElementById('logoutBtn');
+
+  function unlock(){
+    document.documentElement.classList.remove('locked');
+  }
+  function lock(){
+    document.documentElement.classList.add('locked');
+    pwd.value = '';
+    try{ pwd.focus(); }catch(e){}
+  }
+
+  /* Проверка при загрузке */
+  try{
+    if(localStorage.getItem(AUTH_KEY) === "ok") unlock();
+    else lock();
+  }catch(e){ lock(); }
+
+  /* Отправка формы */
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if(pwd.value === AUTH_PASSWORD){
+      try{ localStorage.setItem(AUTH_KEY, "ok"); }catch(e){}
+      err.textContent = '';
+      unlock();
+    } else {
+      err.textContent = 'Неверный пароль';
+      pwd.value = '';
+      pwd.focus();
+    }
+  });
+
+  /* Кнопка «Выйти» */
+  logout.addEventListener('click', () => {
+    try{ localStorage.removeItem(AUTH_KEY); }catch(e){}
+    location.reload();
+  });
+}
+applyAuth();
+
+/* ============================================================
    0. УТИЛИТЫ
    ============================================================ */
 function esc(s){
@@ -1235,13 +1343,11 @@ ALGOS.forEach((a, idx) => {
   algoBox.appendChild(el);
 });
 
-/* --- открытие/закрытие --- */
 algoBox.addEventListener('click', e => {
   const head = e.target.closest('.algo-head');
   if(head){ head.parentElement.classList.toggle('open'); saveOpen(); }
 });
 
-/* --- состояние чекбоксов --- */
 const STORE_KEY = 'upk_checklist_v1';
 function loadState(){
   try{ return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }catch(e){ return {}; }
@@ -1318,9 +1424,7 @@ function saveOpen(){
 applyState();
 
 /* ============================================================
-   3. МАТЕРИАЛЫ — чтобы добавить файл:
-   1) положите файл в папку files/ в репозитории
-   2) впишите строку ниже. cat = general | mvd | sk | fsb | dozn
+   3. МАТЕРИАЛЫ
    ============================================================ */
 const MATERIALS = [
   {"cat": "dozn", "group": "Макеты уголовных дел", "title": "Макет по ч. 1 ст. 119 УК РФ", "file": "files/maket_119_uk.pdf"},
@@ -1406,7 +1510,6 @@ document.querySelectorAll('.acc-h').forEach(h => {
 /* ============================================================
    7. КАЛЬКУЛЯТОР СРОКОВ
    ============================================================ */
-function fmt(d){ return d.toLocaleDateString('ru-RU', {day:'2-digit', month:'long', year:'numeric'}); }
 function fmtShort(d){ return d.toLocaleDateString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric'}); }
 function addMonths(date, m){
   const d = new Date(date);
@@ -1549,9 +1652,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ============================================================
-   9. КАТЕГОРИЯ «СТАТЬИ» — открыть первый при клике по разделу
-   ============================================================ */
 document.querySelectorAll('nav a[data-target="articles"]').forEach(l => {
   l.addEventListener('click', () => {
     setTimeout(() => {
@@ -1561,10 +1661,9 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(l => {
 });
 
 /* ============================================================
-   10. ТЕМА / ССЫЛКИ НА РАЗДЕЛЫ / ПОИСК / ТАЙМЕР / «НАВЕРХ»
+   10. ТЕМА / ССЫЛКИ / ПОИСК / ТАЙМЕР / «НАВЕРХ»
    ============================================================ */
 (function(){
-  /* --- переключатель темы --- */
   const themeBtn = document.getElementById('themeBtn');
   themeBtn.addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -1574,18 +1673,15 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(l => {
     try{ localStorage.setItem('theme', next); }catch(e){}
   });
 
-  /* --- открытие раздела по hash --- */
   const h = decodeURIComponent(location.hash.slice(1));
   if(h && document.getElementById(h) && document.getElementById(h).tagName === 'SECTION'){
     goTo(h, false);
   }
 
-  /* --- кнопка «наверх» --- */
   const top = document.getElementById('toTop');
   addEventListener('scroll', () => top.style.display = scrollY>500 ? 'block' : 'none');
   top.addEventListener('click', () => scrollTo({top:0,behavior:'smooth'}));
 
-  /* --- быстрый поиск по всему справочнику --- */
   const box = document.getElementById('searchRes');
   const label = {};
   links.forEach(l => label[l.dataset.target] = l.textContent.trim());
@@ -1630,7 +1726,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(l => {
   document.addEventListener('click', e => { if(!box.contains(e.target) && e.target!==gsInput) box.classList.remove('on'); });
   addEventListener('keydown', e => { if(e.key==='Escape') box.classList.remove('on'); });
 
-  /* --- таймер задержания --- */
   const tm = document.getElementById('tmStart'), out = document.getElementById('tmOut');
   const rows = [
     [3,'Протокол задержания','ч. 1 ст. 92'],
