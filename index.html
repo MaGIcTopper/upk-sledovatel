@@ -425,8 +425,8 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <div class="quickgrid">
           <div class="quick" data-goto="algos"><div class="qi">📋</div><div class="qt">Алгоритмы действий</div><div class="qd">10 пошаговых чек-листов: от проверки сообщения до направления дела прокурору</div></div>
           <div class="quick" data-goto="deadlines"><div class="qi">⏱</div><div class="qt">Сроки и калькулятор</div><div class="qd">Полная таблица сроков + расчёт контрольных дат от исходной даты</div></div>
-          <div class="quick" data-goto="ropp"><div class="qi">📄</div><div class="qt">Рапорт (РОПП)</div><div class="qd">Конструктор рапорта об обнаружении признаков преступления · Word · отправка в реестр</div></div>
-          <div class="quick" data-goto="allropp"><div class="qi">🗂</div><div class="qt">Все РОПП</div><div class="qd">Реестр отправленных рапортов · создание материалов проверки</div></div>
+          <div class="quick" data-goto="ropp"><div class="qi">📄</div><div class="qt">Рапорт (РОПП)</div><div class="qd">Конструктор рапорта об обнаружении признаков преступления · Word · сохранение в реестр</div></div>
+          <div class="quick" data-goto="allropp"><div class="qi">🗂</div><div class="qt">Все РОПП</div><div class="qd">Реестр сохранённых рапортов · создание материалов проверки</div></div>
           <div class="quick" data-goto="addrecord"><div class="qi">➕</div><div class="qt">Добавить запись</div><div class="qd">Общий учёт уголовных дел и материалов проверки (синхронизируется у всех)</div></div>
           <div class="quick" data-goto="articles"><div class="qi">📖</div><div class="qt">Ключевые статьи</div><div class="qd">Что требует судебного решения, основания задержания, меры пресечения, прекращение</div></div>
           <div class="quick" data-goto="memo"><div class="qi">💡</div><div class="qt">Памятки</div><div class="qd">Типичные ошибки, запреты, правила составления протокола</div></div>
@@ -485,7 +485,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
     <section id="allropp">
       <div class="card">
         <h2>Все РОПП <span class="badge" id="roppCount">0</span></h2>
-        <p class="sub">Реестр отправленных рапортов об обнаружении признаков преступления. Отсюда можно в один клик создать материал проверки по рапорту.</p>
+        <p class="sub">Реестр сохранённых рапортов об обнаружении признаков преступления. Отсюда можно в один клик создать материал проверки по рапорту.</p>
         <div id="roppList"></div>
       </div>
     </section>
@@ -517,7 +517,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <h3>Где, кто сообщил, кому поручено</h3>
         <div class="rgrid">
           <div class="field w"><label>Город</label><input id="arWhere" placeholder="г. Левобережный"></div>
-          <div class="field w"><label>Кто сообщил</label><input id="arBy" placeholder="следователь СО по г. Левобережный Сидоров С.С."></div>
+          <div class="field w"><label>Кто сообщил</label><input id="arBy" placeholder="следователь СО по городу Левобережный Сидоров С.С."></div>
           <div class="field w"><label>Кому поручено</label><input id="arTo" readonly placeholder="для уголовного дела заполняется автоматически из поля «Кто сообщил»"><div class="hint">Для уголовного дела — автоматически повторяет «Кто сообщил». Для материала проверки остаётся пустым.</div></div>
         </div>
 
@@ -553,11 +553,11 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
     <section id="ropp">
       <div class="card rform">
         <h2>Рапорт об обнаружении признаков преступления <span class="badge">ст. 143 УПК РФ</span></h2>
-        <p class="sub">1) Заполните форму · 2) Скачайте Word · 3) Отправьте в реестр — рапорт уйдёт руководителю и появится в разделе «Все РОПП».</p>
+        <p class="sub">1) Заполните форму · 2) Скачайте Word · 3) Сохраните в реестр — рапорт появится в разделе «Все РОПП».</p>
 
         <h3>Адресат</h3>
         <div class="rgrid">
-          <div class="field w"><label>Должность и подразделение (дательный падеж)</label><textarea id="rBoss" rows="2">Руководителю следственного отдела по г. Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области</textarea></div>
+          <div class="field w"><label>Должность и подразделение (дательный падеж)</label><textarea id="rBoss" rows="2">Руководителю следственного отдела по городу Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области</textarea></div>
           <div class="field"><label>Звание</label><input id="rRank" placeholder="майору юстиции"></div>
           <div class="field"><label>ФИО</label><input id="rFio" placeholder="Иванову И.И."></div>
         </div>
@@ -571,8 +571,8 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 
         <h3>Подразделение</h3>
         <div class="rgrid">
-          <div class="field w"><label>Куда поступило сообщение (винительный: «поступило в …»)</label><textarea id="rOrg" rows="2">следственный отдел по г. Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области</textarea></div>
-          <div class="field w"><label>Где регистрируется (родительный: «в КРСоП …»)</label><textarea id="rOrgG" rows="2">следственного отдела по г. Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области</textarea></div>
+          <div class="field w"><label>Куда поступило сообщение (винительный: «поступило в …»)</label><textarea id="rOrg" rows="2">следственный отдел по городу Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области</textarea></div>
+          <div class="field w"><label>Где регистрируется (родительный: «в КРСоП …»)</label><textarea id="rOrgG" rows="2">следственного отдела по городу Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области</textarea></div>
         </div>
 
         <h3>Сообщение</h3>
@@ -599,7 +599,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <div class="paper" id="rPrev"></div>
         <div class="steps">
           <button class="pill" id="rDoc">⬇ 2. Скачать Word (.docx)</button>
-          <button class="pill" id="rSend">📤 3. Отправить в реестр</button>
+          <button class="pill" id="rSend">💾 3. Сохранить в реестр</button>
           <button class="pill" id="rCopy">Скопировать текст</button>
         </div>
         <p class="sub" id="rSt"></p>
@@ -1117,7 +1117,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 
     <div class="mf">
       <label for="edTo">Кому поручено</label>
-      <input id="edTo" placeholder="следователь СО по г. Левобережный Сидоров С.С.">
+      <input id="edTo" placeholder="следователь СО по городу Левобережный Сидоров С.С.">
     </div>
 
     <div class="mf">
@@ -1964,11 +1964,10 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
 })();
 
 /* ============================================================
-   РОПП: конструктор + отправка в Discord + сохранение в Firebase
+   РОПП: конструктор + сохранение в Firebase
    ============================================================ */
 (function(){
   const g = id => document.getElementById(id), v = id => g(id).value.trim();
-  const URL_HOOK = 'https://discord.com/api/webhooks/1556276379002212383/w6zda8nxiRq4dnnVZ3arWIdNB3Y1CC9Oy9LD9OV1ujG0tVo524U4Vb4ysjWlyZfdOKbS';
   const MON = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   g('rWhen').value = new Date().toISOString().slice(0,10);
   const parts = () => { const d = v('rWhen'); if(!d) return null; const [y,m,dd] = d.split('-').map(Number); return {y, m:MON[m-1], d:dd}; };
@@ -1989,8 +1988,8 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       +' могут усматриваться '+(one ? 'признаки преступления, предусмотренного ст. ' : 'признаки преступлений, предусмотренных ст.ст. ')+list+' УК РФ.';
     const B = [{k:'a',t:v('rBoss')||'[Должность и подразделение адресата]'},{k:'a',t:''}];
     if(v('rRank')) B.push({k:'a',t:v('rRank')});
-    B.push({k:'a',t:v('rFio')||'[ФИО адресата]'},{k:'b'},{k:'b'},{k:'t',t:'Р А П О Р Т'},{k:'t',t:'Об обнаружении признаков преступления'},
-      {k:'cd',l:v('rCity'),r:dQuote()},{k:'b'},{k:'p',t:p1},{k:'p',t:p2},{k:'b'},{k:'s',t:'Следователь'},{k:'b'},
+    B.push({k:'a',t:v('rFio')||'[ФИО адресата]'},{k:'b'},{k:'b'},{k:'t',t:'Р А П О Р Т'},{k:'t',t:'об обнаружении признаков преступления'},
+      {k:'cd',l:v('rCity'),r:dQuote()},{k:'b'},{k:'p',t:p1},{k:'p',t:p2},{k:'b'},{k:'b'},{k:'s',t:'Следователь'},{k:'b'},
       {k:'cd',l:v('rSigRank')||'[звание]',r:v('rSigFio')||'[ФИО]'});
     return B;
   }
@@ -2025,18 +2024,17 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   }
   const fname = () => 'ROPP_'+(v('rWhen')||'bez_daty')+'.docx', st = g('rSt');
   g('rDoc').onclick = async () => {
-    try{ const a = document.createElement('a'); a.href = URL.createObjectURL(await makeDocx()); a.download = fname(); a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); st.textContent = 'Файл скачан. Теперь отправьте рапорт в реестр.'; }
+    try{ const a = document.createElement('a'); a.href = URL.createObjectURL(await makeDocx()); a.download = fname(); a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); st.textContent = 'Файл скачан. Теперь сохраните рапорт в реестр.'; }
     catch(e){ st.textContent = 'Не удалось собрать .docx (не загрузилась библиотека — проверьте интернет). Можно скопировать текст.'; }
   };
   g('rCopy').onclick = () => navigator.clipboard.writeText(blocks().map(b => b.k==='cd' ? b.l+'\t'+b.r : b.t||'').join('\n')).then(() => { st.textContent = 'Текст скопирован ✓'; });
 
   g('rSend').onclick = async () => {
-    if(!confirm('Отправить рапорт в реестр руководителю?\n\nРапорт уйдёт в Discord и появится в разделе «Все РОПП».')) return;
-    const btn = g('rSend'); btn.disabled = true; st.textContent = 'Отправка…';
-    const A = arts(), days = +g('rDays').value, f = (n,val) => ({name:n, value:(String(val||'').slice(0,1000)||'—'), inline:false});
+    if(!confirm('Сохранить рапорт в реестр?\n\nРапорт появится в разделе «Все РОПП».')) return;
+    const btn = g('rSend'); btn.disabled = true; st.textContent = 'Сохранение…';
+    const A = arts(), days = +g('rDays').value;
     let until = '—'; if(v('rWhen')){ const d = new Date(v('rWhen')+'T00:00'); d.setDate(d.getDate()+days); until = d.toLocaleDateString('ru-RU')+' ('+days+' сут.)'; }
 
-    /* ---- Сохранение в Firebase (видно в «Все РОПП») ---- */
     const rec = {
       num: v('rNum'),
       city: v('rCity'),
@@ -2058,32 +2056,13 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       author: (currentUser() && currentUser().name) || '',
       ts: Date.now()
     };
-    let fbOk = false;
     try{
-      if(window.__db){
-        await window.__db.ref('ropp').push(rec);
-        fbOk = true;
-      }
-    }catch(e){ console.warn('ropp save failed', e); }
-
-    /* ---- Discord ---- */
-    const emb = {title:'📄 Рапорт об обнаружении признаков преступления', color:3447003, timestamp:new Date().toISOString(), fields:[
-      f('Кому',[v('rBoss'),v('rRank'),v('rFio')].filter(Boolean).join(' ')), f('Поступило',dLong()+timeTxt()), f('От кого',v('rSrc')), f('Суть',v('rText')),
-      f('В действиях',v('rWho')||'неустановленного лица'), f('Статьи УК РФ',A.length?(A.length>1?'ст.ст. ':'ст. ')+A.join(', '):''),
-      f('Следователь',[v('rSigRank'),v('rSigFio')].filter(Boolean).join(' ')), f('№ в КРСоП',v('rNum')), f('Срок проверки до',until)]};
-    const fd = new FormData(); fd.append('payload_json', JSON.stringify({embeds:[emb], allowed_mentions:{parse:[]}}));
-    let withFile = false;
-    try{ fd.append('files[0]', await makeDocx(), fname()); withFile = true; }catch(e){}
-    let ok = false;
-    try{
-      const r = await fetch(URL_HOOK, {method:'POST', body:fd});
-      ok = r.ok;
-    }catch(e){}
-
-    if(ok && fbOk) st.textContent = '✓ Отправлено в реестр' + (withFile?' (с файлом Word)':'');
-    else if(ok && !fbOk) st.textContent = '✓ Отправлено в Discord (сохранение в реестр не удалось)';
-    else if(!ok && fbOk) st.textContent = '⚠ Сохранено в реестре, но Discord недоступен';
-    else st.textContent = 'Ошибка отправки';
+      if(!window.__db) throw new Error('нет соединения с базой');
+      await window.__db.ref('ropp').push(rec);
+      st.textContent = '✓ Сохранено в реестре';
+    }catch(e){
+      st.textContent = 'Ошибка: ' + (e && e.message ? e.message : e);
+    }
     setTimeout(() => btn.disabled = false, 3000);
   };
 })();
@@ -2102,7 +2081,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
                                 .sort((a,b) => (b.ts||0) - (a.ts||0));
     if(cnt) cnt.textContent = list.length;
     if(!list.length){
-      box.innerHTML = '<p class="sub">Пока нет отправленных рапортов. Отправьте первый во вкладке «Рапорт (РОПП)».</p>';
+      box.innerHTML = '<p class="sub">Пока нет сохранённых рапортов. Заполните первый во вкладке «Рапорт (РОПП)».</p>';
       return;
     }
     const manage = canManage();
@@ -2192,7 +2171,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
 
   let syncBadge = null;
 
-  /* ---- Бейдж синхронизации ---- */
   (function addSyncBadge(){
     const sel = g('arType');
     if(!sel) return;
@@ -2202,7 +2180,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     sel.parentElement.appendChild(syncBadge);
   })();
 
-  /* ---- Онлайн: список сотрудников в сети ---- */
   const onlineBadge = g('onlineBadge');
   const onlineCount = g('onlineCount');
   const onlineList  = g('onlineList');
@@ -2287,7 +2264,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     });
   })();
 
-  /* ---- Кэш записей ---- */
   const CACHE = 'upk_records_cache_v1';
   let records = [];
   try{ records = JSON.parse(localStorage.getItem(CACHE) || '[]'); }catch(e){ records = []; }
@@ -2325,7 +2301,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
         const suspect = (r.suspect && r.suspect.trim()) ? r.suspect.trim() : UNKNOWN;
         const isUnknown = suspect === UNKNOWN;
 
-        /* ---- ячейка файла ---- */
         const f = r.file;
         let fileCell;
         if(f && f.data){
@@ -2357,7 +2332,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       }).join('');
       box.innerHTML = '<table><thead>' + head + '</thead><tbody>' + rows + '</tbody></table>';
 
-      /* ---- обработчики ---- */
       if(allowManage){
         box.querySelectorAll('[data-del]').forEach(b => {
           b.addEventListener('click', () => {
@@ -2409,7 +2383,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     drawList(mp, 'arMpList', false);
   }
 
-  /* ---- Модалка редактирования ---- */
   let editingId = null;
   const editModal = g('editModal');
 
@@ -2468,7 +2441,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     render();
   }
 
-  /* ---- Автозаполнение «Кому поручено» + показ поля файла ---- */
   function updateArTo(){
     const isUd = g('arType').value === 'ud';
     g('arTo').value = isUd ? g('arBy').value : '';
@@ -2478,7 +2450,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   g('arType').addEventListener('change', updateArTo);
   updateArTo();
 
-  /* ---- Добавление записи ---- */
   g('arAdd').addEventListener('click', () => {
     if(!v('arNum')){ g('arSt').textContent = 'Укажите номер.'; return; }
     if(!v('arBy')){ g('arSt').textContent = 'Укажите, кто сообщил.'; return; }
