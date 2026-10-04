@@ -49,7 +49,6 @@ body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica N
   background:var(--bg);color:var(--text);line-height:1.55;font-size:15px;
   transition:background .2s ease,color .2s ease;}
 
-/* ЛОГИН */
 #lockScreen{display:none;position:fixed;inset:0;z-index:9999;
   background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);
   place-items:center;padding:20px;}
@@ -76,7 +75,6 @@ html.locked body > #toTop{display:none!important}
 #lockForm button:hover{background:var(--accent-h)}
 #lockErr{color:var(--red);font-size:13.5px;margin-top:12px;min-height:18px;text-align:center;font-weight:500;}
 
-/* HEADER */
 header{position:sticky;top:0;z-index:50;
   background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);
   color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;
@@ -94,7 +92,6 @@ header .spacer{flex:1}
   color:#fff;padding:9px 14px;border-radius:8px;width:280px;font-size:14px;outline:none;}
 #globalSearch::placeholder{color:#8ea6c4}
 #globalSearch:focus{background:rgba(255,255,255,.14);border-color:var(--gold)}
-/* LAYOUT */
 .layout{display:flex;max-width:1500px;margin:0 auto;gap:22px;padding:22px}
 aside{width:250px;flex:0 0 250px;position:sticky;top:88px;align-self:flex-start;
   max-height:calc(100vh - 110px);overflow-y:auto;}
@@ -111,7 +108,6 @@ main{flex:1;min-width:0}
 section{display:none;animation:fade .25s ease}
 section.visible{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-/* CARD */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
   padding:20px 22px;margin-bottom:18px;box-shadow:var(--shadow);}
 .card > h2{font-size:19px;font-weight:600;margin-bottom:4px;color:var(--head);
@@ -124,7 +120,6 @@ h4{font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--head)}
 p{margin-bottom:10px}
 ul.plain,ol.plain{margin:0 0 12px 20px}
 ul.plain li,ol.plain li{margin-bottom:5px}
-/* DASHBOARD */
 .hero{background:linear-gradient(135deg,var(--navy) 0%,#1d4272 100%);
   color:#fff;border-radius:var(--radius);padding:28px 30px;margin-bottom:20px;
   box-shadow:0 6px 24px rgba(15,36,64,.2);position:relative;overflow:hidden;}
@@ -140,7 +135,6 @@ ul.plain li,ol.plain li{margin-bottom:5px}
 .quick .qi{font-size:22px}
 .quick .qt{font-weight:600;font-size:14.5px;color:var(--head)}
 .quick .qd{font-size:12.5px;color:var(--muted)}
-/* ALGO */
 .algo{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
   margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);}
 .algo-head{padding:15px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;
@@ -178,7 +172,6 @@ ul.plain li,ol.plain li{margin-bottom:5px}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
 .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn.primary:hover{background:var(--accent-h)}
-/* TABLE */
 table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0 16px}
 th{text-align:left;padding:10px 12px;background:var(--th-bg);color:var(--head);
   font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;
@@ -194,7 +187,6 @@ td.law{color:var(--accent);font-size:12.5px;white-space:nowrap}
 .tag.green{background:var(--tag-green-bg);color:var(--green)}
 .tag.amber{background:var(--tag-amber-bg);color:var(--amber)}
 .tag.blue{background:var(--tag-blue-bg);color:var(--accent)}
-/* CALC */
 .calc-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
@@ -211,7 +203,6 @@ td.law{color:var(--accent);font-size:12.5px;white-space:nowrap}
 .cr .lbl{font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:600}
 .cr .val{font-size:16px;font-weight:700;color:var(--head)}
 .cr .ref{font-size:11.5px;color:var(--accent);margin-top:3px}
-/* ACC */
 .acc{border:1px solid var(--border);border-radius:9px;margin-bottom:9px;overflow:hidden;background:var(--card)}
 .acc-h{padding:13px 17px;cursor:pointer;font-weight:600;font-size:14px;color:var(--head);
   display:flex;align-items:center;gap:10px;transition:.15s;user-select:none;}
@@ -223,7 +214,6 @@ td.law{color:var(--accent);font-size:12.5px;white-space:nowrap}
 .acc-b ul{margin:10px 0 10px 20px}
 .acc-b li{margin-bottom:6px}
 .acc-b .cite{color:var(--accent);font-size:12.5px;font-weight:600}
-/* MISC */
 .note{border-left:4px solid var(--gold);background:var(--note-bg);padding:13px 17px;
   border-radius:0 8px 8px 0;font-size:13.5px;margin:14px 0;}
 .note.red{border-left-color:var(--red);background:var(--note-red)}
@@ -270,16 +260,31 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 #toTop{display:none;position:fixed;right:20px;bottom:20px;width:44px;height:44px;
   border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:20px;
   cursor:pointer;box-shadow:var(--shadow);z-index:60;}
-@media print{header,aside,#toTop,#searchRes{display:none!important}section{display:block!important}.layout{display:block}}
+
 /* ---------- РОПП ---------- */
-.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:10px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 18px;margin-bottom:14px}
 .rgrid .field.w{grid-column:1/-1}
-.rgrid input,.rgrid textarea,.rgrid select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font:inherit;font-size:14px;background:var(--card);color:var(--text)}
-.rgrid textarea{min-height:70px;resize:vertical}
+.rgrid input,.rgrid textarea,.rgrid select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font:inherit;font-size:15px;background:var(--card);color:var(--text);transition:.15s}
+.rgrid input:focus,.rgrid textarea:focus,.rgrid select:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(47,111,208,.12);outline:none}
+.rgrid textarea{min-height:100px;resize:vertical;line-height:1.5}
 .rprev{border:1px solid var(--border);border-radius:10px;padding:18px 22px;font-family:"Times New Roman",serif;font-size:15px;line-height:1.55;background:var(--card);margin:12px 0}
 .rprev .r{text-align:right;margin-left:45%}.rprev p{margin:0 0 10px;text-indent:1.2em}.rprev .c{text-align:center;font-weight:700;text-indent:0}
 .rt{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:12px}.rt td,.rt th{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
 .late{color:#d32f2f;font-weight:700}.soon{color:#e68a00;font-weight:700}
+.rform .card{padding:26px 28px}
+.rform h3{margin:28px 0 12px;padding-top:18px;border-top:1px solid var(--border);font-size:16px;color:var(--head);letter-spacing:.2px}
+.rform h3:first-of-type{margin-top:6px;padding-top:0;border-top:none}
+.rform .field label{font-weight:600;font-size:13px;display:block;margin-bottom:6px;color:var(--head)}
+.rform .rgrid input,.rform .rgrid textarea,.rform .rgrid select{padding:14px 16px;font-size:16px}
+.rform .rgrid textarea{min-height:120px}
+.rform .hint{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.4}
+.rform .steps .pill{padding:13px 22px;font-size:15px;font-weight:600}
+.steps{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}.steps .pill{padding:11px 18px;font-size:14px}
+.paper{background:#fff;color:#000;font-family:"Times New Roman",serif;font-size:15px;line-height:1.25;padding:32px 38px;border:1px solid #ccc;box-shadow:0 4px 18px rgba(0,0,0,.15);max-width:794px;margin:14px auto}
+.paper .pa{margin-left:48%;text-align:justify}.paper .pb{height:1.25em}.paper .pt{text-align:center;font-weight:700}
+.paper .pcd{display:flex;justify-content:space-between;gap:16px}.paper .pp{text-indent:2.2em;text-align:justify}
+
+@media print{header,aside,#toTop,#searchRes{display:none!important}section{display:block!important}.layout{display:block}}
 @media(max-width:960px){
   .layout{flex-direction:column;padding:14px}
   aside{width:100%;flex:none;position:static;max-height:none}
@@ -360,6 +365,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <div class="quickgrid">
           <div class="quick" data-goto="algos"><div class="qi">📋</div><div class="qt">Алгоритмы действий</div><div class="qd">10 пошаговых чек-листов: от проверки сообщения до направления дела прокурору</div></div>
           <div class="quick" data-goto="deadlines"><div class="qi">⏱</div><div class="qt">Сроки и калькулятор</div><div class="qd">Полная таблица сроков + расчёт контрольных дат от исходной даты</div></div>
+          <div class="quick" data-goto="ropp"><div class="qi">📄</div><div class="qt">Рапорт (РОПП)</div><div class="qd">Конструктор рапорта об обнаружении признаков преступления · Word · отправка в реестр</div></div>
           <div class="quick" data-goto="articles"><div class="qi">📖</div><div class="qt">Ключевые статьи</div><div class="qd">Что требует судебного решения, основания задержания, меры пресечения, прекращение</div></div>
           <div class="quick" data-goto="memo"><div class="qi">💡</div><div class="qt">Памятки</div><div class="qd">Типичные ошибки, запреты, правила составления протокола</div></div>
           <div class="quick" data-goto="materials"><div class="qi">📁</div><div class="qt">Общие материалы</div><div class="qd">Образцы протоколов, справочные документы для всех категорий</div></div>
@@ -414,39 +420,59 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
       </div>
     </section>
 
-
     <section id="ropp">
-      <div class="card">
+      <div class="card rform">
         <h2>Рапорт об обнаружении признаков преступления <span class="badge">ст. 143 УПК РФ</span></h2>
-        <p class="sub">Заполните поля — рапорт соберётся сам. Его можно скопировать, скачать для Word и сохранить в реестр проверок ниже.</p>
+        <p class="sub">1) Заполните форму · 2) Скачайте Word · 3) Отправьте в реестр — рапорт с файлом уйдёт руководителю.</p>
+
+        <h3>Адресат</h3>
         <div class="rgrid">
-          <div class="field w"><label>Кому (в дательном падеже: должность, подразделение, звание, ФИО)</label><textarea id="rBoss" placeholder="Руководителю следственного отдела по г. … майору юстиции Иванову И.И."></textarea></div>
-          <div class="field w"><label>Орган (как в «поступило в …»)</label><input id="rOrg" value="следственный отдел по г. Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области"></div>
-          <div class="field w"><label>Орган (родительный: «в КРСоП …»)</label><input id="rOrgG" value="следственного отдела по г. Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области"></div>
+          <div class="field w"><label>Должность и подразделение (дательный падеж)</label><textarea id="rBoss" rows="2">Руководителю следственного отдела по г. Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области</textarea></div>
+          <div class="field"><label>Звание</label><input id="rRank" placeholder="майору юстиции"></div>
+          <div class="field"><label>ФИО</label><input id="rFio" placeholder="Иванову И.И."></div>
+        </div>
+
+        <h3>Место, дата и время поступления сообщения</h3>
+        <div class="rgrid">
           <div class="field"><label>Город</label><input id="rCity" value="г. Левобережный"></div>
-          <div class="field"><label>Дата поступления</label><input type="date" id="rWhen"></div>
+          <div class="field"><label>Дата</label><input type="date" id="rWhen"></div>
           <div class="field"><label>Время</label><input type="time" id="rTime"></div>
-          <div class="field w"><label>Источник сообщения (от кого)</label><input id="rSrc" placeholder="должностного лица, прапорщика полиции Петрова П.П."></div>
-          <div class="field w"><label>Суть сообщения («о том, что …»)</label><textarea id="rText" placeholder="по адресу: …, произошло …"></textarea></div>
-          <div class="field"><label>Лицо(а) («в действиях …»)</label><input id="rWho" placeholder="неустановленного лица"></div>
-          <div class="field"><label>Статьи УК РФ</label><input id="rArt" placeholder="105, 111, 112"></div>
-          <div class="field"><label>Следователь (звание, ФИО)</label><input id="rSig" placeholder="лейтенант юстиции Сидоров С.С."></div>
         </div>
-        <div class="rprev" id="rPrev"></div>
-        <div class="pill-row">
-          <button class="pill" id="rCopy">Скопировать текст</button>
-          <button class="pill" id="rDoc">Скачать для Word</button>
-        </div>
-      </div>
-      <div class="card">
-        <h2>Отправка в Discord</h2>
-        <p class="sub">Рапорт нигде не сохраняется на сайте — в канал уходят только номер, дата, срок проверки (ст. 144 УПК РФ) и статьи.</p>
+
+        <h3>Подразделение</h3>
         <div class="rgrid">
-          <div class="field"><label>№ в КРСоП (необязательно)</label><input id="rNum"></div>
-          <div class="field"><label>Срок проверки</label><select id="rDays"><option value="3">3 суток</option><option value="10">10 суток</option><option value="30">30 суток</option></select></div>
+          <div class="field w"><label>Куда поступило сообщение (винительный: «поступило в …»)</label><textarea id="rOrg" rows="2">следственный отдел по г. Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области</textarea></div>
+          <div class="field w"><label>Где регистрируется (родительный: «в КРСоП …»)</label><textarea id="rOrgG" rows="2">следственного отдела по г. Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области</textarea></div>
         </div>
-        <button class="pill" id="rSave">📤 Отправить в Discord</button>
-        <p class="sub" id="rHookSt"></p>
+
+        <h3>Сообщение</h3>
+        <div class="rgrid">
+          <div class="field w"><label>От кого поступило (родительный падеж)</label><input id="rSrc" placeholder="должностного лица, прапорщика полиции Петрова П.П."></div>
+          <div class="field w"><label>Суть — продолжение фразы «о том, что …»</label><textarea id="rText" rows="8" placeholder="по адресу: г. …, ул. …, неизвестным лицом был(о) …"></textarea><div class="hint">Точку в конце ставить не нужно.</div></div>
+          <div class="field w"><label>В действиях кого (родительный падеж)</label><input id="rWho" value="неустановленного лица"></div>
+          <div class="field w"><label>Статьи УК РФ</label><input id="rArt" placeholder="105, 111, 112"><div class="hint">Только номера через запятую. «ст.», «ст.ст.» и «УК РФ» добавятся сами; для одной статьи — единственное число.</div></div>
+        </div>
+
+        <h3>Подпись</h3>
+        <div class="rgrid">
+          <div class="field"><label>Звание следователя</label><input id="rSigRank" placeholder="лейтенант юстиции"></div>
+          <div class="field"><label>ФИО (как в подписи)</label><input id="rSigFio" placeholder="Сидоров С.С."></div>
+        </div>
+
+        <h3>Для реестра (необязательно)</h3>
+        <div class="rgrid">
+          <div class="field"><label>№ в КРСоП</label><input id="rNum"></div>
+          <div class="field"><label>Срок проверки (ст. 144 УПК РФ)</label><select id="rDays"><option value="3">3 суток</option><option value="10">10 суток</option><option value="30">30 суток</option></select></div>
+        </div>
+
+        <h3>Предпросмотр</h3>
+        <div class="paper" id="rPrev"></div>
+        <div class="steps">
+          <button class="pill" id="rDoc">⬇ 2. Скачать Word (.docx)</button>
+          <button class="pill" id="rSend">📤 3. Отправить в реестр</button>
+          <button class="pill" id="rCopy">Скопировать текст</button>
+        </div>
+        <p class="sub" id="rSt"></p>
       </div>
     </section>
 
@@ -943,6 +969,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
   Материал носит информационно-справочный характер. Перед принятием процессуального решения сверяйтесь с действующей редакцией нормативных актов.
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 /* ============================================================
    АВТОРИЗАЦИЯ: логин (фамилия) + пароль. Пароли в hex.
@@ -1022,7 +1049,6 @@ function applyAuth(){
       err.textContent = 'Введите логин и пароль';
       return;
     }
-    // Мастер-доступ
     if(norm(L) === norm(MASTER_LOGIN) && P === decodeHex(MASTER_PASS_HEX)){
       try{
         localStorage.setItem(AUTH_KEY, "ok");
@@ -1033,7 +1059,6 @@ function applyAuth(){
       unlock();
       return;
     }
-    // Пользователь по фамилии
     const u = findUser(L);
     if(!u || P !== decodeHex(u.passHex)){
       err.textContent = 'Неверный логин или пароль';
@@ -1053,7 +1078,6 @@ function applyAuth(){
     unlock();
   }
 
-  // Восстановление сессии
   try{
     if(localStorage.getItem(AUTH_KEY) === "ok"){
       let ud = null;
@@ -1282,9 +1306,6 @@ const ALGOS = [
 ]}
 ];
 
-/* ============================================================
-   РЕНДЕР АЛГОРИТМОВ
-   ============================================================ */
 const algoBox = document.getElementById('algoContainer');
 ALGOS.forEach(function(a, idx){
   const el = document.createElement('div');
@@ -1377,9 +1398,6 @@ function saveOpen(){
 })();
 applyState();
 
-/* ============================================================
-   МАТЕРИАЛЫ
-   ============================================================ */
 const MATERIALS = [
   {cat:"dozn", group:"Макеты уголовных дел", title:"Макет по ч. 1 ст. 119 УК РФ", file:"files/maket_119_uk.pdf"},
   {cat:"mvd", group:"Макеты уголовных дел", title:"Макет по ст. 264 УК РФ", file:"files/maket_264_uk.pdf"},
@@ -1421,9 +1439,6 @@ document.querySelectorAll('.matbox').forEach(function(box){
   }).join('');
 });
 
-/* ============================================================
-   ЗАКОНОДАТЕЛЬСТВО
-   ============================================================ */
 const LAWS = [["Основные кодексы", [["Конституция РФ", "принята 12.12.1993", "Основа прав и свобод; приоритет при коллизиях", "https://www.consultant.ru/document/cons_doc_LAW_28399/"], ["Уголовный кодекс РФ", "№ 63-ФЗ от 13.06.1996", "Преступления и наказания", "https://www.consultant.ru/document/cons_doc_LAW_10699/"], ["Уголовно-процессуальный кодекс РФ", "№ 174-ФЗ от 18.12.2001", "Порядок досудебного и судебного производства", "https://www.consultant.ru/document/cons_doc_LAW_34481/"], ["Кодекс РФ об административных правонарушениях", "№ 195-ФЗ от 30.12.2001", "Граница между проступком и преступлением", "https://www.consultant.ru/document/cons_doc_LAW_34661/"], ["Уголовно-исполнительный кодекс РФ", "№ 1-ФЗ от 08.01.1997", "Исполнение наказаний", "https://www.consultant.ru/document/cons_doc_LAW_12940/"]]], ["Органы и участники процесса", [["ФЗ «О полиции»", "№ 3-ФЗ от 07.02.2011", "Полномочия полиции, органов дознания", "https://www.consultant.ru/document/cons_doc_LAW_110165/"], ["ФЗ «О Следственном комитете РФ»", "№ 403-ФЗ от 28.12.2010", "Статус и полномочия следователей СК", "https://www.consultant.ru/document/cons_doc_LAW_108565/"], ["ФЗ «О прокуратуре РФ»", "№ 2202-1 от 17.01.1992", "Надзор за предварительным расследованием", "https://www.consultant.ru/document/cons_doc_LAW_262/"], ["ФЗ «О федеральной службе безопасности»", "№ 40-ФЗ от 03.04.1995", "Полномочия органов ФСБ", "https://www.consultant.ru/document/cons_doc_LAW_6300/"], ["ФЗ «Об адвокатской деятельности и адвокатуре в РФ»", "№ 63-ФЗ от 31.05.2002", "Статус защитника", "https://www.consultant.ru/document/cons_doc_LAW_36945/"], ["ФЗ «О государственной защите потерпевших, свидетелей и иных участников уголовного судопроизводства»", "№ 119-ФЗ от 20.08.2004", "Меры безопасности", "https://legalacts.ru/doc/federalnyi-zakon-ot-20082004-n-119-fz-o/"]]], ["Следственные и оперативные действия", [["ФЗ «Об оперативно-розыскной деятельности»", "№ 144-ФЗ от 12.08.1995", "Результаты ОРД как основа доказательств", "https://www.consultant.ru/document/cons_doc_LAW_7519/"], ["ФЗ «О государственной судебно-экспертной деятельности в РФ»", "№ 73-ФЗ от 31.05.2001", "Назначение и производство экспертиз", "https://www.consultant.ru/document/cons_doc_LAW_31871/"], ["ФЗ «О содержании под стражей подозреваемых и обвиняемых в совершении преступлений»", "№ 103-ФЗ от 15.07.1995", "Режим содержания, свидания, переписка", "https://legalacts.ru/doc/federalnyi-zakon-ot-15071995-n-103-fz-o/"]]], ["Часто применяемые при квалификации", [["ФЗ «О безопасности дорожного движения»", "№ 196-ФЗ от 10.12.1995", "Ст. 264 УК РФ и смежные составы", "https://legalacts.ru/doc/federalnyi-zakon-ot-10121995-n-196-fz-o/"], ["ФЗ «О наркотических средствах и психотропных веществах»", "№ 3-ФЗ от 08.01.1998", "Ст. 228–233 УК РФ", "https://legalacts.ru/doc/federalnyi-zakon-ot-08011998-n-3-fz-o/"], ["ФЗ «Об оружии»", "№ 150-ФЗ от 13.12.1996", "Ст. 222–226 УК РФ", "https://www.consultant.ru/document/cons_doc_LAW_12679/"], ["ФЗ «О противодействии терроризму»", "№ 35-ФЗ от 06.03.2006", "Ст. 205–205.6 УК РФ", "https://www.consultant.ru/document/cons_doc_LAW_58840/"], ["ФЗ «О противодействии коррупции»", "№ 273-ФЗ от 25.12.2008", "Должностные преступления", "https://www.consultant.ru/document/cons_doc_LAW_82959/"]]]];
 document.getElementById('lawBox').innerHTML = LAWS.map(function(g){
   return '<h4>' + esc(g[0]) + '</h4><div class="filegrid">' + g[1].map(function(l){
@@ -1432,9 +1447,6 @@ document.getElementById('lawBox').innerHTML = LAWS.map(function(g){
   }).join('') + '</div>';
 }).join('');
 
-/* ============================================================
-   НАВИГАЦИЯ
-   ============================================================ */
 const links = document.querySelectorAll('nav a[data-target]');
 function goTo(id, updateHash){
   const sec = document.getElementById(id);
@@ -1452,16 +1464,10 @@ document.querySelectorAll('[data-goto]').forEach(function(c){
   c.addEventListener('click', function(){ goTo(c.dataset.goto); });
 });
 
-/* ============================================================
-   АККОРДЕОНЫ
-   ============================================================ */
 document.querySelectorAll('.acc-h').forEach(function(h){
   h.addEventListener('click', function(){ h.parentElement.classList.toggle('open'); });
 });
 
-/* ============================================================
-   КАЛЬКУЛЯТОР
-   ============================================================ */
 function fmtShort(d){ return d.toLocaleDateString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric'}); }
 function addMonths(date, m){
   const d = new Date(date); const day = d.getDate();
@@ -1542,9 +1548,6 @@ document.getElementById('calcBtn').addEventListener('click', runCalc);
 calcDate.addEventListener('change', runCalc);
 calcType.addEventListener('change', runCalc);
 
-/* ============================================================
-   ПОИСК Ctrl+K
-   ============================================================ */
 const gsInput = document.getElementById('globalSearch');
 gsInput.addEventListener('keydown', function(e){
   if(e.key === 'Enter'){
@@ -1581,9 +1584,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   });
 });
 
-/* ============================================================
-   ТЕМА / ТАЙМЕР / «НАВЕРХ» / ПОИСК
-   ============================================================ */
 (function(){
   document.getElementById('themeBtn').addEventListener('click', function(){
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -1667,45 +1667,88 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
 })();
 
 /* ============================================================
-   РОПП: конструктор рапорта и реестр проверок (хранится в браузере)
+   РОПП: конструктор рапорта, Word (.docx) и отправка в реестр (Discord)
    ============================================================ */
 (function(){
-  const g = id => document.getElementById(id), KEY = 'ropp_reg', v = id => g(id).value.trim();
-  let reg = []; try{ reg = JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){}
-  try{ localStorage.removeItem('ropp_reg'); }catch(e){}
+  const g = id => document.getElementById(id), v = id => g(id).value.trim();
+  const URL_HOOK = 'https://discord.com/api/webhooks/1556276379002212383/w6zda8nxiRq4dnnVZ3arWIdNB3Y1CC9Oy9LD9OV1ujG0tVo524U4Vb4ysjWlyZfdOKbS';
+  const MON = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   g('rWhen').value = new Date().toISOString().slice(0,10);
-  const dfmt = d => d ? new Date(d+'T00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'}).replace(' г.',' года') : '[дата]';
-  function paras(){
-    const p1 = 'Докладываю в соответствии со ст. 143 УПК РФ о том, что '+dfmt(v('rWhen'))+(v('rTime')?' в '+v('rTime').replace(':',' ч. ')+' мин.':'')
-      +' в '+(v('rOrg')||'[орган]')+' поступило сообщение от '+(v('rSrc')||'[источник]')+' о том, что '+(v('rText')||'[суть сообщения]')+'.';
-    const p2 = 'На основании вышеизложенного считаю необходимым зарегистрировать данное сообщение в КРСоП '+(v('rOrgG')||'[орган]')
-      +' с целью проведения процессуальной проверки в порядке ст.ст. 144-145 УПК РФ, так как в действиях '+(v('rWho')||'неустановленного лица')
-      +' могут усматриваться признаки составов преступлений, предусмотренных ст.ст. '+(v('rArt')||'[статьи]')+' УК РФ.';
-    return [p1,p2];
+  const parts = () => { const d = v('rWhen'); if(!d) return null; const [y,m,dd] = d.split('-').map(Number); return {y, m:MON[m-1], d:dd}; };
+  const dLong = () => { const p = parts(); return p ? p.d+' '+p.m+' '+p.y+' года' : '[дата]'; };
+  const dQuote = () => { const p = parts(); return p ? '«'+String(p.d).padStart(2,'0')+'» '+p.m+' '+p.y+' г.' : '«__» ________ 20__ г.'; };
+  const pl = (n,f) => { const a = n%100, b = n%10; return (a>10&&a<20) ? f[2] : b===1 ? f[0] : (b>1&&b<5) ? f[1] : f[2]; };
+  const timeTxt = () => { const t = v('rTime'); if(!t) return ''; const [h,m] = t.split(':').map(Number);
+    return ' в '+h+' '+pl(h,['час','часа','часов'])+' '+m+' '+pl(m,['минуту','минуты','минут']); };
+  const arts = () => v('rArt').replace(/\s*УК\s*РФ\.?\s*$/i,'').split(/\s*[,;]\s*/)
+    .map(p => p.replace(/^\s*(статьи|статья|ст\.?\s*ст\.?|ст\.?)\s*/i,'').trim()).filter(Boolean);
+  const fin = t => t.replace(/[.\s]+$/,'') + '.';
+  function blocks(){
+    const A = arts(), one = A.length <= 1, list = A.length ? A.join(', ') : '[статьи]';
+    const p1 = 'Докладываю в соответствии со ст. 143 УПК РФ о том, что '+dLong()+timeTxt()+' в '+(v('rOrg')||'[подразделение]')
+      +' поступило сообщение от '+(v('rSrc')||'[источник сообщения]')+' о том, что '+fin(v('rText')||'[суть сообщения]');
+    const p2 = 'На основании вышеизложенного считаю необходимым зарегистрировать данное сообщение в КРСоП '+(v('rOrgG')||'[подразделение]')
+      +' с целью проведения процессуальной проверки в порядке ст. 144-145 УПК РФ, так как в действиях '+(v('rWho')||'неустановленного лица')
+      +' могут усматриваться '+(one ? 'признаки преступления, предусмотренного ст. ' : 'признаки преступлений, предусмотренных ст.ст. ')+list+' УК РФ.';
+    const B = [{k:'a',t:v('rBoss')||'[Должность и подразделение адресата]'},{k:'a',t:''}];
+    if(v('rRank')) B.push({k:'a',t:v('rRank')});
+    B.push({k:'a',t:v('rFio')||'[ФИО адресата]'},{k:'b'},{k:'b'},{k:'t',t:'Р А П О Р Т'},{k:'t',t:'Об обнаружении признаков преступления'},
+      {k:'cd',l:v('rCity'),r:dQuote()},{k:'b'},{k:'p',t:p1},{k:'p',t:p2},{k:'b'},{k:'s',t:'Следователь'},{k:'b'},
+      {k:'cd',l:v('rSigRank')||'[звание]',r:v('rSigFio')||'[ФИО]'});
+    return B;
   }
   function draw(){
-    const [a,b] = paras();
-    g('rPrev').innerHTML = '<div class="r">'+esc(v('rBoss')||'[Кому]')+'</div><p class="c">Р А П О Р Т</p><p class="c">Об обнаружении признаков преступления</p>'
-      +'<p style="text-indent:0">'+esc(v('rCity'))+' — «'+esc(dfmt(v('rWhen')))+'»</p><p>'+esc(a)+'</p><p>'+esc(b)+'</p><p style="text-indent:0">Следователь<br>'+esc(v('rSig')||'[звание, ФИО]')+'</p>';
+    g('rPrev').innerHTML = blocks().map(b =>
+      b.k==='a' ? '<div class="pa">'+(esc(b.t)||'&nbsp;')+'</div>' : b.k==='b' ? '<div class="pb">&nbsp;</div>' :
+      b.k==='t' ? '<div class="pt">'+esc(b.t)+'</div>' : b.k==='cd' ? '<div class="pcd"><span>'+esc(b.l)+'</span><span>'+esc(b.r)+'</span></div>' :
+      b.k==='p' ? '<div class="pp">'+esc(b.t)+'</div>' : '<div>'+esc(b.t)+'</div>').join('');
   }
-  document.querySelectorAll('#ropp .rgrid input,#ropp .rgrid textarea').forEach(i => i.addEventListener('input', draw)); draw();
-  const plain = () => (v('rBoss')||'[Кому]')+'\n\nР А П О Р Т\nОб обнаружении признаков преступления\n\n'+v('rCity')+' — «'+dfmt(v('rWhen'))+'»\n\n'+paras().join('\n\n')+'\n\nСледователь\n'+(v('rSig')||'[звание, ФИО]');
-  g('rCopy').onclick = () => { navigator.clipboard.writeText(plain()).then(()=>{ g('rCopy').textContent='Скопировано ✓'; setTimeout(()=>g('rCopy').textContent='Скопировать текст',1500); }); };
-  g('rDoc').onclick = () => {
-    const html = '<html><head><meta charset="utf-8"></head><body style="font-family:Times New Roman;font-size:14pt">'+g('rPrev').innerHTML+'</body></html>';
-    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff'+html],{type:'application/msword'}));
-    a.download = 'rapport_ropp.doc'; a.click();
+  document.querySelectorAll('#ropp input,#ropp textarea,#ropp select').forEach(i => i.addEventListener('input', draw)); draw();
+
+  const X = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const rpr = b => '<w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>'+(b?'<w:b/><w:bCs/>':'')+'<w:sz w:val="28"/><w:szCs w:val="28"/></w:rPr>';
+  const run = (t,b) => '<w:r>'+rpr(b)+'<w:t xml:space="preserve">'+X(t)+'</w:t></w:r>';
+  const TAB = '<w:r>'+rpr()+'<w:tab/></w:r>';
+  const P = (r,o) => { o = o||{}; return '<w:p><w:pPr>'+(o.tabs?'<w:tabs><w:tab w:val="right" w:pos="10466"/></w:tabs>':'')
+    +'<w:spacing w:after="0" w:line="240" w:lineRule="auto"/>'+(o.ind?'<w:ind '+o.ind+'/>':'')+(o.jc?'<w:jc w:val="'+o.jc+'"/>':'')+'</w:pPr>'+(r||'')+'</w:p>'; };
+  function docXml(){
+    const body = blocks().map(b =>
+      b.k==='a' ? P(b.t?run(b.t):'',{ind:'w:left="5386"',jc:'both'}) : b.k==='b' ? P('') : b.k==='t' ? P(run(b.t,true),{jc:'center'}) :
+      b.k==='cd' ? P(run(b.l)+TAB+run(b.r),{tabs:1}) : b.k==='p' ? P(run(b.t),{ind:'w:firstLine="709"',jc:'both'}) : P(run(b.t),{jc:'both'})).join('');
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+body
+      +'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>';
+  }
+  async function makeDocx(){
+    if(!window.JSZip) throw new Error('nozip');
+    const z = new JSZip(), H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    z.file('[Content_Types].xml', H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+    z.file('_rels/.rels', H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+    z.file('word/document.xml', docXml());
+    return z.generateAsync({type:'blob', mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  }
+  const fname = () => 'ROPP_'+(v('rWhen')||'bez_daty')+'.docx', st = g('rSt');
+  g('rDoc').onclick = async () => {
+    try{ const a = document.createElement('a'); a.href = URL.createObjectURL(await makeDocx()); a.download = fname(); a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); st.textContent = 'Файл скачан. Теперь отправьте рапорт в реестр.'; }
+    catch(e){ st.textContent = 'Не удалось собрать .docx (не загрузилась библиотека — проверьте интернет). Можно скопировать текст.'; }
   };
-  /* Discord webhook: отправка по кнопке, на сайте ничего не сохраняется */
-  const URL_HOOK = 'https://discord.com/api/webhooks/1556276379002212383/w6zda8nxiRq4dnnVZ3arWIdNB3Y1CC9Oy9LD9OV1ujG0tVo524U4Vb4ysjWlyZfdOKbS';
-  g('rSave').onclick = () => {
-    const days = +g('rDays').value, dl = new Date(v('rWhen')+'T00:00'); dl.setDate(dl.getDate()+days);
-    const msg = '📄 **Новая проверка (РОПП)**\n№ в КРСоП: '+(v('rNum')||'—')+'\nПоступило: '+dfmt(v('rWhen'))
-      +'\nСрок до: '+dl.toLocaleDateString('ru-RU')+' ('+days+' сут.)\nСт. '+(v('rArt')||'—')+' УК РФ';
-    const st = g('rHookSt'), btn = g('rSave'); btn.disabled = true; setTimeout(()=>btn.disabled=false, 3000);
-    fetch(URL_HOOK, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content:msg, allowed_mentions:{parse:[]}})})
-      .then(x => st.textContent = x.ok ? 'Отправлено в Discord ✓' : 'Discord вернул ошибку '+x.status)
-      .catch(() => st.textContent = 'Не удалось отправить (проверьте интернет)');
+  g('rCopy').onclick = () => navigator.clipboard.writeText(blocks().map(b => b.k==='cd' ? b.l+'\t'+b.r : b.t||'').join('\n')).then(() => { st.textContent = 'Текст скопирован ✓'; });
+  g('rSend').onclick = async () => {
+    if(!confirm('Отправить рапорт в реестр руководителю?\n\nОтправка мгновенная — отменить её будет невозможно.')) return;
+    const btn = g('rSend'); btn.disabled = true; st.textContent = 'Отправка…';
+    const A = arts(), days = +g('rDays').value, f = (n,val) => ({name:n, value:(String(val||'').slice(0,1000)||'—'), inline:false});
+    let until = '—'; if(v('rWhen')){ const d = new Date(v('rWhen')+'T00:00'); d.setDate(d.getDate()+days); until = d.toLocaleDateString('ru-RU')+' ('+days+' сут.)'; }
+    const emb = {title:'📄 Рапорт об обнаружении признаков преступления', color:3447003, timestamp:new Date().toISOString(), fields:[
+      f('Кому',[v('rBoss'),v('rRank'),v('rFio')].filter(Boolean).join(' ')), f('Поступило',dLong()+timeTxt()), f('От кого',v('rSrc')), f('Суть',v('rText')),
+      f('В действиях',v('rWho')||'неустановленного лица'), f('Статьи УК РФ',A.length?(A.length>1?'ст.ст. ':'ст. ')+A.join(', '):''),
+      f('Следователь',[v('rSigRank'),v('rSigFio')].filter(Boolean).join(' ')), f('№ в КРСоП',v('rNum')), f('Срок проверки до',until)]};
+    const fd = new FormData(); fd.append('payload_json', JSON.stringify({embeds:[emb], allowed_mentions:{parse:[]}}));
+    let withFile = false;
+    try{ fd.append('files[0]', await makeDocx(), fname()); withFile = true; }catch(e){}
+    try{
+      const r = await fetch(URL_HOOK, {method:'POST', body:fd});
+      st.textContent = r.ok ? '✓ Отправлено в реестр'+(withFile?' (с файлом Word)':' (без файла)') : 'Ошибка отправки: '+r.status;
+    } catch(e){ st.textContent = 'Не удалось отправить (проверьте интернет).'; }
+    setTimeout(() => btn.disabled = false, 3000);
   };
 })();
 </script>
