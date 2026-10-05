@@ -1460,10 +1460,12 @@ try{
 window.__db = db;
 
 /* ============================================================
-   УВЕДОМЛЕНИЯ В DISCORD через Cloudflare Worker (сам вебхук на сайте не хранится)
-   Вставьте адрес воркера вместо ВАШ-ВОРКЕР. Пока адрес не вписан — уведомления выключены.
+   УВЕДОМЛЕНИЯ В DISCORD (напрямую, без воркера)
    ============================================================ */
-const NOTIFY_URL = 'https://upk.magic1999ponk.workers.dev';
+const NOTIFY_URL = 'https://discord.com/api/webhooks/1556602854083399710/_dk54AUin-kgLHILNLVI4UfocRXQp9FtQKfnM9EbX7sCzzcnh2JDLwRoMi9vJEnzOBlo';
+const ROLE_MAIN   = '995945593232953394'; // Руководитель СО
+const ROLE_DEPUTY = '995945594319278130'; // Зам. руководителя СО
+
 (function(){
   if(!db) return;
   const WATCH = ['records','ropp','prolongations'];
@@ -1473,43 +1475,129 @@ const NOTIFY_URL = 'https://upk.magic1999ponk.workers.dev';
     prolongations: ['num','numDate','docDate','days','until','subject','status','author','approveFio','approvedBy']
   };
   const pick = (col, o) => { const r = {}; KEEP[col].forEach(k => { if(o && o[k] !== undefined && o[k] !== '' && o[k] !== null) r[k] = o[k]; }); return r; };
-  const who = () => { try{ const u = JSON.parse(localStorage.getItem('upk_user') || 'null'); return (u && u.name) || ''; }catch(e){ return ''; } };
-  function send(ev){
-    if(!NOTIFY_URL || NOTIFY_URL.indexOf('ВАШ') !== -1) return;
-    ev.user = who();
-    try{ fetch(NOTIFY_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(ev), keepalive:true}).catch(() => {}); }catch(e){}
+  const who = () => { try{ const u = JSON.parse(localStorage.getItem('upk_user') || 'null'); return (u && u.name) || 'Гость'; }catch(e){ return 'Гость'; } };
+  const short = (s, n) => { s = String(s == null ? '' : s); return s.length > n ? s.slice(0, n-1) + '…' : s; };
+
+  function buildEmbed(ev){
+    const col = ev.col, op = ev.op, d = ev.data || {};
+    let title = '', color = 0x2f6fd0, kind = '';
+
+    if(col === 'records'){
+      kind = d.type === 'mp' ? 'материал проверки' : 'уголовное дело';
+      if(op === 'add')            { title = '➕ Добавлено: ' + kind; color = 0x1e8e5a; }
+      else if(op === 'delete')    { title = '🗑 Удалено: ' + kind;   color = 0xc0392b; }
+      else if(op === 'update')    { title = '✏️ Изменено: ' + kind;  color = 0x2f6fd0; }
+      else if(op === 'file_add')  { title = '📎 Файл прикреплён к ' + kind; color = 0x2f6fd0; }
+      else if(op === 'file_delete'){ title = '📎 Файл удалён у ' + kind;    color = 0xb7791f; }
+    } else if(col === 'ropp'){
+      if(op === 'add')         { title = '📄 Новый РОПП';       color = 0x1e8e5a; }
+      else if(op === 'delete') { title = '🗑 РОПП удалён';       color = 0xc0392b; }
+      else if(op === 'update') { title = '✏️ РОПП изменён';      color = 0x2f6fd0; }
+    } else if(col === 'prolongations'){
+      if(op === 'add')         { title = '⏳ Продление создано (ожидает)'; color = 0xb7791f; }
+      else if(op === 'delete') { title = '🗑 Продление удалено';           color = 0xc0392b; }
+      else if(op === 'update'){
+        if(d.status === 'approved')     { title = '✅ Продление утверждено'; color = 0x1e8e5a; }
+        else if(d.status === 'rejected'){ title = '❌ Продление отклонено';  color = 0xc0392b; }
+        else                             { title = '✏️ Продление изменено';  color = 0x2f6fd0; }
+      }
+    }
+
+    const fields = [];
+    const add = (name, value) => {
+      if(value === undefined || value === null || value === '') return;
+      fields.push({ name, value: short(value, 1024), inline: true });
+    };
+
+    if(col === 'records'){
+      add('№', d.num); add('Дата', d.date); add('Статья', d.art);
+      add('ФИО', d.suspect); add('Город', d.where);
+      add('Кто сообщил', d.by); add('Кому поручено', d.to);
+      if(d.decision) add('Решение', d.decision);
+    } else if(col === 'ropp'){
+      add('№ КРСоП', d.num); add('Дата', d.when);
+      add('Статьи', Array.isArray(d.arts) ? d.arts.join(', ') : d.arts);
+      add('От кого', d.src); add('В действиях', d.who); add('Срок до', d.until);
+    } else if(col === 'prolongations'){
+      add('№ КРСоП', d.num); add('Дата пост.', d.docDate);
+      add('Срок', d.days ? d.days + ' сут.' : ''); add('До', d.until);
+      add('По факту', d.subject);
+      if(d.status) add('Статус', d.status === 'approved' ? '✓ Утверждено' : d.status === 'rejected' ? '✕ Отклонено' : 'Ожидает');
+      if(d.approveFio) add('Утвердил', d.approveFio);
+    }
+
+    if(op === 'file_add' && ev.file){
+      add('Файл', ev.file.name + ' (' + Math.round((ev.file.size || 0) / 1024) + ' КБ)');
+    }
+
+    return { title, color, fields };
   }
+
+  function send(ev){
+    if(!NOTIFY_URL) return;
+    const e = buildEmbed(ev);
+    const ping = (ev.op === 'add' || ev.op === 'delete');
+    const content = ping ? '<@&' + ROLE_MAIN + '> <@&' + ROLE_DEPUTY + '>' : '';
+
+    const body = {
+      content: content || undefined,
+      allowed_mentions: { roles: [ROLE_MAIN, ROLE_DEPUTY] },
+      embeds: [{
+        title: e.title,
+        color: e.color,
+        fields: e.fields,
+        footer: { text: '👤 ' + who() },
+        timestamp: new Date().toISOString()
+      }]
+    };
+
+    try{
+      fetch(NOTIFY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        keepalive: true
+      }).catch(() => {});
+    }catch(err){}
+  }
+
   const _ref = db.ref.bind(db);
   db.ref = function(p){
     const r = _ref(p), parts = String(p || '').split('/'), col = parts[0];
     if(WATCH.indexOf(col) === -1) return r;
     const push = r.push.bind(r), update = r.update.bind(r), remove = r.remove.bind(r), set = r.set.bind(r);
     const isFile = parts[2] === 'file';
-    const rec = () => parts.length > 1 ? _ref(col + '/' + parts[1]).once('value').then(x => x.val() || {}).catch(() => ({})) : Promise.resolve({});
+    const rec = () => parts.length > 1
+      ? _ref(col + '/' + parts[1]).once('value').then(x => x.val() || {}).catch(() => ({}))
+      : Promise.resolve({});
+
     r.push = function(v){
       const res = push.apply(null, arguments);
-      if(arguments.length) Promise.resolve(res).then(() => send({col, op:'add', data:pick(col, v)})).catch(() => {});
+      if(arguments.length) Promise.resolve(res).then(() => send({ col, op: 'add', data: pick(col, v) })).catch(() => {});
       return res;
     };
     r.update = function(v){
       return rec().then(old => update(v).then(x => {
-        send({col, op:'update', data:pick(col, Object.assign({}, old, v)), changed:Object.keys(v || {}).filter(k => KEEP[col].indexOf(k) !== -1)});
+        send({ col, op: 'update', data: pick(col, Object.assign({}, old, v)),
+               changed: Object.keys(v || {}).filter(k => KEEP[col].indexOf(k) !== -1) });
         return x;
       }));
     };
     r.set = function(v){
       return set(v).then(x => {
-        if(isFile) rec().then(o => send({col, op:'file_add', data:pick(col, o), file:{name: v && v.name, size: v && v.size}}));
+        if(isFile) rec().then(o => send({ col, op: 'file_add', data: pick(col, o), file: { name: v && v.name, size: v && v.size } }));
         return x;
       });
     };
     r.remove = function(){
-      return rec().then(old => remove().then(x => { send({col, op: isFile ? 'file_delete' : 'delete', data:pick(col, old)}); return x; }));
+      return rec().then(old => remove().then(x => {
+        send({ col, op: isFile ? 'file_delete' : 'delete', data: pick(col, old) });
+        return x;
+      }));
     };
     return r;
   };
 })();
-
 /* ---- Работа с файлами (base64 в RTDB) ---- */
 function shortName(n){
   n = String(n || '');
