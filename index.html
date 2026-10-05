@@ -335,14 +335,14 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 .row-actions .btn{padding:5px 9px;font-size:13px;line-height:1}
 .row-actions .btn.edit:hover{border-color:var(--green);color:var(--green)}
   /* Скролл внутри карточек со таблицами + компактные ячейки */
-#arUdList, #arMpList, #roppList, #prList{
+#arUdList, #arMpList, #roppList, #prList, #icList{
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;
   margin:0 -8px;
   padding:0 8px;
 }
 #arUdList table, #arMpList table{ min-width:1080px; }
-#roppList table, #prList table{ min-width:960px; }
+#roppList table, #prList table, #icList table{ min-width:960px; }
 #arUdList th, #arUdList td,
 #arMpList th, #arMpList td{
   padding:8px;
@@ -435,6 +435,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <div class="navgroup">Отдел</div>
         <li><a href="#" data-target="allropp">🗂 Все РОПП</a></li>
         <li><a href="#" data-target="prolongations">📋 Продления</a></li>
+        <li><a href="#" data-target="ic">📨 Запрос в ИЦ</a></li>
         <li><a href="#" data-target="important">📌 Важное</a></li>
         <li><a href="#" data-target="staff">👥 Личный состав</a></li>
         <li><a href="#" data-target="addrecord">➕ Добавить запись</a></li>
@@ -459,6 +460,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
           <div class="quick" data-goto="ropp"><div class="qi">📄</div><div class="qt">Рапорт (РОПП)</div><div class="qd">Конструктор рапорта об обнаружении признаков преступления · Word · сохранение в реестр</div></div>
           <div class="quick" data-goto="allropp"><div class="qi">🗂</div><div class="qt">Все РОПП</div><div class="qd">Реестр сохранённых рапортов · создание материалов проверки</div></div>
           <div class="quick" data-goto="prolongations"><div class="qi">📋</div><div class="qt">Продления</div><div class="qd">Ходатайства о продлении срока проверки · утверждение руководителем · Word</div></div>
+          <div class="quick" data-goto="ic"><div class="qi">📨</div><div class="qt">Запрос в ИЦ</div><div class="qd">Требование о проверке судимости · справка ИЦ · реестр</div></div>
           <div class="quick" data-goto="important"><div class="qi">📌</div><div class="qt">Важное</div><div class="qd">Объявления от руководства отдела</div></div>
           <div class="quick" data-goto="addrecord"><div class="qi">➕</div><div class="qt">Добавить запись</div><div class="qd">Общий учёт уголовных дел и материалов проверки (синхронизируется у всех)</div></div>
           <div class="quick" data-goto="articles"><div class="qi">📖</div><div class="qt">Ключевые статьи</div><div class="qd">Что требует судебного решения, основания задержания, меры пресечения, прекращение</div></div>
@@ -762,6 +764,117 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <h2>Реестр продлений <span class="badge" id="prCount">0</span></h2>
         <p class="sub">Все ходатайства о продлении срока проверки. Утверждать могут: администратор, руководитель СО, заместитель руководителя СО.</p>
         <div id="prList"></div>
+      </div>
+    </section>
+
+    <section id="ic">
+      <div class="card rform">
+        <h2>Требование в ИЦ <span class="badge">запрос</span></h2>
+        <p class="sub">1) Заполните форму · 2) Скачайте Word · 3) Сохраните в реестр.</p>
+
+        <h3>Адресат</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Кому адресуется</label><input id="icAddr" value="В ИЦ УМВД России по Кировской области"></div>
+        </div>
+
+        <h3>Проверяемое лицо</h3>
+        <div class="rgrid">
+          <div class="field"><label>Фамилия</label><input id="icSur" placeholder="Валиев"></div>
+          <div class="field"><label>Имя, отчество</label><input id="icName" placeholder="Андрей Сергеевич"></div>
+          <div class="field"><label>Дата рождения</label><input id="icBirth" placeholder="23.05.2003"></div>
+          <div class="field w"><label>Место рождения</label><input id="icBirthPlace" placeholder="Кировская обл., г. Кирово-Чепецк"></div>
+          <div class="field w"><label>Адрес регистрации</label><input id="icRegAddr" placeholder="г. Левобережный, ул. Энтузиастов, д. 4, кв. 3"></div>
+        </div>
+
+        <h3>Основание проверки</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Чем вызвана проверка</label><input id="icReason" value="привлечение к уголовной ответственности"></div>
+          <div class="field w"><label>Какие нужны сведения</label><input id="icWhat" value="о наличии (отсутствии) судимости и (или) факта уголовного преследования"></div>
+        </div>
+
+        <h3>Подпись и исполнитель</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Должность подписанта</label><input id="icSignPos" value="Заместитель руководителя СО"></div>
+          <div class="field"><label>Звание</label><input id="icSignRank" placeholder="капитан юстиции"></div>
+          <div class="field"><label>ФИО подписанта</label><input id="icSignFio" placeholder="Петров И.В."></div>
+          <div class="field w"><label>Исполнитель (ФИО)</label><input id="icExec" placeholder="Селянин К.Н."></div>
+          <div class="field"><label>Телефон исполнителя</label><input id="icExecTel" placeholder="+7 (926) 314-8"></div>
+          <div class="field"><label>Адрес исполнителя</label><input id="icExecAddr" placeholder="УМВД России по Кировской области"></div>
+          <div class="field"><label>Исх. №</label><input id="icOutNum" placeholder="52/0291-12/"></div>
+          <div class="field"><label>Дата исходящего</label><input type="date" id="icOutDate"></div>
+        </div>
+
+        <h3>Предпросмотр</h3>
+        <div class="paper" id="icPrev"></div>
+        <div class="steps">
+          <button class="pill" id="icDoc">⬇ Скачать Word (.docx)</button>
+          <button class="pill" id="icSave">💾 Сохранить в реестр</button>
+          <button class="pill" id="icCopy">Скопировать текст</button>
+        </div>
+        <p class="sub" id="icSt"></p>
+      </div>
+
+      <div class="card rform">
+        <h2>Справка ИЦ <span class="badge">ответ</span></h2>
+        <p class="sub">Заполнение справки. Можно выбрать запрос — ФИО и дата рождения подставятся автоматически.</p>
+
+        <div class="rgrid">
+          <div class="field w"><label>По запросу (из реестра)</label><select id="icReqSel"><option value="">— выбрать запрос —</option></select><div class="hint" id="icReqLink"></div></div>
+        </div>
+
+        <h3>Реквизиты справки</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Наименование органа</label><input id="icRespOrg" value="Управление Министерства внутренних дел России по Кировской области (УМВД России по Кировской области)"></div>
+          <div class="field w"><label>Подразделение</label><input id="icRespDept" value="Информационный центр"></div>
+          <div class="field w"><label>Адрес</label><input id="icRespAddr" value="ул. Молодой гвардии 25, Киров, 610002"></div>
+          <div class="field w"><label>Телефоны</label><input id="icRespTel" value="(8332) 589-775, 589-457"></div>
+          <div class="field"><label>Дата справки</label><input type="date" id="icRespDate"></div>
+          <div class="field"><label>Исх. №</label><input id="icRespNum" placeholder="043/5565-Е"></div>
+          <div class="field"><label>Штрих-код / №</label><input id="icRespBarcode" placeholder="043П№0326154532"></div>
+        </div>
+
+        <h3>Проверяемое лицо</h3>
+        <div class="rgrid">
+          <div class="field w"><label>ФИО (в именительном падеже, КАПСОМ)</label><input id="icRespFio" placeholder="ВАЛИЕВ АНДРЕЙ СЕРГЕЕВИЧ"></div>
+          <div class="field w"><label>Дата и место рождения</label><input id="icRespBirth" placeholder="23.05.2003 г.р., Г. КИРОВО-ЧЕПЕЦК, КИРОВСКАЯ ОБЛАСТЬ, РОССИЯ"></div>
+        </div>
+
+        <h3>Сведения об осуждении</h3>
+        <div class="rgrid">
+          <div class="field"><label>Наличие</label>
+            <select id="icRespConv"><option value="no">не имеются</option><option value="yes">имеются</option></select>
+          </div>
+          <div class="field w"><label>Детали (если имеются)</label><textarea id="icRespConvText" rows="3"></textarea></div>
+        </div>
+
+        <h3>Сведения о факте уголовного преследования</h3>
+        <div class="rgrid">
+          <div class="field"><label>Наличие</label>
+            <select id="icRespPros"><option value="no">не имеются</option><option value="yes">имеются</option></select>
+          </div>
+          <div class="field w"><label>Детали (если имеются)</label><textarea id="icRespProsText" rows="3"></textarea></div>
+        </div>
+
+        <h3>Дополнительно</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Дополнительная информация</label><input id="icRespExtra" value="не имеется"></div>
+          <div class="field w"><label>Начальник (ФИО)</label><input id="icRespBoss" placeholder="Иванов А.В."></div>
+        </div>
+
+        <h3>Предпросмотр</h3>
+        <div class="paper" id="icRespPrev"></div>
+        <div class="steps">
+          <button class="pill" id="icRespDoc">⬇ Скачать Word (.docx)</button>
+          <button class="pill" id="icRespSave">💾 Сохранить в реестр</button>
+          <button class="pill" id="icRespCopy">Скопировать текст</button>
+        </div>
+        <p class="sub" id="icRespSt"></p>
+      </div>
+
+      <div class="card">
+        <h2>Реестр запросов в ИЦ <span class="badge" id="icCount">0</span></h2>
+        <p class="sub">Все запросы и полученные справки. Из запроса можно в один клик создать справку.</p>
+        <div id="icList"></div>
       </div>
     </section>
 
@@ -1330,7 +1443,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
   </div>
 </div>
 
-<!-- Модальное окно редактирования должности/звания (перенесено выше скрипта) -->
+<!-- Модальное окно редактирования должности/звания -->
 <div class="modal-overlay" id="posModal">
   <div class="modal" style="max-width:520px" role="dialog" aria-modal="true">
     <h3 id="posModalTitle">Изменить должность и звание</h3>
@@ -1524,17 +1637,18 @@ window.__db = db;
    УВЕДОМЛЕНИЯ В DISCORD (напрямую, без воркера)
    ============================================================ */
 const NOTIFY_URL = 'https://discord.com/api/webhooks/1556602854083399710/_dk54AUin-kgLHILNLVI4UfocRXQp9FtQKfnM9EbX7sCzzcnh2JDLwRoMi9vJEnzOBlo';
-const ROLE_MAIN   = '995945593232953394'; // Руководитель СО
-const ROLE_DEPUTY = '995945594319278130'; // Зам. руководителя СО
+const ROLE_MAIN   = '995945593232953394';
+const ROLE_DEPUTY = '995945594319278130';
 
 (function(){
   if(!db) return;
-  const WATCH = ['records','ropp','prolongations','announcements'];
+  const WATCH = ['records','ropp','prolongations','announcements','ic'];
   const KEEP = {
     records: ['type','num','date','art','suspect','where','by','to','decision','author'],
     ropp: ['num','city','when','time','src','text','who','arts','days','until','sigRank','sigFio','author'],
     prolongations: ['num','numDate','docDate','days','until','subject','status','author','approveFio','approvedBy'],
-    announcements: ['title','text','level','author']
+    announcements: ['title','text','level','author'],
+    ic: ['type','addr','sur','name','birth','birthPlace','regAddr','reason','what','signPos','signRank','signFio','exec','execTel','outNum','outDate','respNum','respDate','respFio','respBirth','author']
   };
   const pick = (col, o) => { const r = {}; KEEP[col].forEach(k => { if(o && o[k] !== undefined && o[k] !== '' && o[k] !== null) r[k] = o[k]; }); return r; };
   const who = () => { try{ const u = JSON.parse(localStorage.getItem('upk_user') || 'null'); return (u && u.name) || 'Гость'; }catch(e){ return 'Гость'; } };
@@ -1570,6 +1684,14 @@ const ROLE_DEPUTY = '995945594319278130'; // Зам. руководителя С
       if(op === 'add')         { title = '📌 Важное: ' + (d.title || ''); }
       else if(op === 'delete') { title = '🗑 Важное удалено: ' + (d.title || ''); color = 0x92a2b8; }
       else if(op === 'update') { title = '✏️ Важное изменено: ' + (d.title || ''); }
+    } else if(col === 'ic'){
+      if(d.type === 'req'){
+        if(op === 'add')         { title = '📨 Запрос в ИЦ'; color = 0x1e8e5a; }
+        else if(op === 'delete') { title = '🗑 Запрос в ИЦ удалён'; color = 0xc0392b; }
+      } else {
+        if(op === 'add')         { title = '📋 Справка ИЦ получена'; color = 0x1e8e5a; }
+        else if(op === 'delete') { title = '🗑 Справка ИЦ удалена'; color = 0xc0392b; }
+      }
     }
 
     const fields = [];
@@ -1596,6 +1718,15 @@ const ROLE_DEPUTY = '995945594319278130'; // Зам. руководителя С
     } else if(col === 'announcements'){
       if(d.level) add('Приоритет', d.level === 'urgent' ? '🚨 Срочно' : d.level === 'warn' ? '⚠️ Внимание' : 'ℹ️ Обычное');
       if(d.text)  add('Текст', d.text, false);
+    } else if(col === 'ic'){
+      if(d.type === 'req'){
+        add('ФИО', (d.sur || '') + ' ' + (d.name || ''));
+        add('Дата рожд.', d.birth); add('Место рожд.', d.birthPlace);
+        add('Адрес', d.regAddr); add('Исх. №', d.outNum); add('Дата', d.outDate);
+      } else {
+        add('ФИО', d.respFio); add('Дата, место рожд.', d.respBirth);
+        add('№ справки', d.respNum); add('Дата справки', d.respDate);
+      }
     }
 
     if(op === 'file_add' && ev.file){
@@ -1770,7 +1901,6 @@ function fmtDateShort(d){
   if(p.length !== 3) return d;
   return p[2] + '.' + p[1] + '.' + p[0];
 }
-/* Переопределения должности/звания (Firebase) */
 let staffOverrides = {};
 
 function effPos(u){ return (staffOverrides[u.surname] && staffOverrides[u.surname].pos) || u.pos; }
@@ -1844,7 +1974,6 @@ window.openPosModal = openPosModal;
       return;
     }
 
-    // Если совпадает с исходным — удаляем override
     if(newPos === user.pos && newZvan === user.zvan){
       window.__db.ref('staff_overrides/' + currentEditStaffSurname).remove()
         .then(close)
@@ -1913,7 +2042,6 @@ function renderStaff(){
 }
 renderStaff();
 
-/* Загрузка переопределений из Firebase */
 if(window.__db){
   window.__db.ref('staff_overrides').on('value', snap => {
     staffOverrides = snap.val() || {};
@@ -2676,7 +2804,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   g('prDocDate').value = today();
   g('prNumDate').value = today();
 
-  /* --- Даты --- */
   const dQuoteShort = (iso) => {
     if(!iso) return '«__» ________ 20__';
     const [y,m,dd] = iso.split('-').map(Number);
@@ -2699,12 +2826,10 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     return d.toISOString().slice(0,10);
   };
 
-  /* --- ФИО --- */
   function shortPos(pos){
     if(!pos) return '';
     return String(pos).replace(/\s+по\s+городу.*$/i, '').replace(/\s+следственного управления.*$/i, '').trim();
   }
-  /* Разбивает должность на 2 строки для подписи */
   function shortPosLines(pos){
     if(!pos) return [''];
     const s = shortPos(pos);
@@ -2714,8 +2839,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     return [parts.slice(0, mid).join(' '), parts.slice(mid).join(' ')];
   }
 
-  /* Собирает резолюцию как массив строк с выравниванием (всё справа — верхний правый угол).
-     Строка звания в резолюции УБРАНА — остались только сроки, должность утверждающего, подпись и дата. */
   function makeResolParts(days, untilShort, apPos, apRank, apFioIOF, apDate){
     if(!apPos && !apRank && !apFioIOF) return [];
     return [
@@ -2731,7 +2854,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     ];
   }
 
-  /* --- Автоподстановка должности/звания/ФИО из профиля --- */
   (function autoFillSig(){
     const u = currentUser();
     if(!u) return;
@@ -2751,7 +2873,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     }
   })();
 
-  /* --- Автоподсчёт даты «до какой продлить» --- */
   function recalcUntil(){
     const days = +g('prDays').value;
     const base = v('prDocDate');
@@ -2770,7 +2891,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   g('prDocDate').addEventListener('change', recalcUntil);
   recalcUntil();
 
-  /* --- Данные документа --- */
   function buildDoc(){
     const days = +g('prDays').value;
     const untilShort = dShort(v('prUntil'));
@@ -2816,7 +2936,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
              city, docDate, pFact, pWhy, pBase, pPostText, header1 };
   }
 
-  /* --- Предпросмотр --- */
   function esc2(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
   function drawPrev(){
@@ -2854,7 +2973,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     blocks.push('<div class="pt">ПОСТАНОВИЛ:</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pp">' + esc2(d.pPostText) + '</div>');
-    /* Подпись: 2 пустые → должность (1-2 строки) → 1 пустая → [звание] [ФИО] */
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
     shortPosLines(d.sigPos).forEach(function(line){
@@ -2870,7 +2988,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   document.querySelectorAll('#prolongations select').forEach(i => i.addEventListener('change', drawPrev));
   drawPrev();
 
-  /* --- Word (.docx) --- */
   const X = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const rpr = b => '<w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>'+(b?'<w:b/><w:bCs/>':'')+'<w:sz w:val="28"/><w:szCs w:val="28"/></w:rPr>';
   const run = (t,b) => '<w:r>'+rpr(b)+'<w:t xml:space="preserve">'+X(t)+'</w:t></w:r>';
@@ -2945,7 +3062,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     body.push(P(run('ПОСТАНОВИЛ:', true), {jc:'center'}));
     body.push(P(''));
     body.push(P(run(d.pPostText), {ind:'w:firstLine="709"', jc:'both'}));
-    /* Подпись: 2 пустые → должность (1-2 строки) → 1 пустая → [звание] [ФИО] */
     body.push(P(''));
     body.push(P(''));
     shortPosLines(d.sigPos).forEach(function(line){
@@ -3280,7 +3396,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   try{ records = JSON.parse(localStorage.getItem(CACHE) || '[]'); }catch(e){ records = []; }
   function cacheSave(){ try{ localStorage.setItem(CACHE, JSON.stringify(records)); }catch(e){} }
 
-  /* ---- Продление проверки: реестр продлений привязан к материалу (recId или совпадение № в КРСоП) ---- */
   let prols = [];
   if(window.__db){
     window.__db.ref('prolongations').on('value', snap => {
@@ -3704,7 +3819,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   g('qpDays').addEventListener('change', recalc);
   recalc();
 
-  /* «Открыть полную форму» — переносит данные в раздел Продления */
   g('qpGoFull').addEventListener('click', () => {
     const pairs = [
       ['qpNum','prNum'], ['qpNumDate','prNumDate'], ['qpDocDate','prDocDate'],
@@ -3718,7 +3832,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     goTo('prolongations');
   });
 
-  /* «Сохранить в реестр» — прямо в prolongations, статус «ожидает» */
   g('qpSave').addEventListener('click', () => {
     const st = g('qpSt');
     if(!v('qpNum')){ st.textContent = 'Укажите № в КРСоП.'; return; }
@@ -3855,7 +3968,8 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     g('impSt').textContent = '';
   });
 })();
-  /* ============================================================
+
+/* ============================================================
    ПИНГИ СЛЕДОВАТЕЛЯМ ПО ГОРЯЩИМ СРОКАМ (≤ 1 дня)
    ============================================================ */
 const DISCORD_IDS = {
@@ -3910,7 +4024,7 @@ const DISCORD_IDS = {
 
       const key = String(r.id) + '_' + dl.toISOString().slice(0,10);
       db.ref('notified/' + key).transaction(cur => {
-        if(cur) return; // уже отправлено — прерываем
+        if(cur) return;
         return { ts: Date.now(), by: whoami(), rec: r.num || '', until: dl.toISOString().slice(0,10) };
       }, (err, committed) => {
         if(err || !committed) return;
@@ -3961,6 +4075,370 @@ const DISCORD_IDS = {
     setTimeout(checkHot, 800);
   });
   setInterval(checkHot, 30 * 60 * 1000);
+})();
+
+/* ============================================================
+   ЗАПРОС В ИЦ + СПРАВКА ИЦ
+   ============================================================ */
+(function(){
+  const g = id => document.getElementById(id);
+  const v = id => g(id) ? g(id).value.trim() : '';
+  if(!g('icSave')) return;
+  const today = () => new Date().toISOString().slice(0,10);
+  const MON = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  const MON_SHORT = ['янв.','февр.','марта','апр.','мая','июня','июля','авг.','сент.','окт.','нояб.','дек.'];
+  const dShort = iso => { if(!iso) return '—'; const p = iso.split('-').map(Number); return String(p[2]).padStart(2,'0')+'.'+String(p[1]).padStart(2,'0')+'.'+p[0]; };
+  const dQuote = iso => { if(!iso) return '«__» ________ 20__ г.'; const p = iso.split('-').map(Number); return '«'+String(p[2]).padStart(2,'0')+'» '+MON_SHORT[p[1]-1]+' '+p[0]+' г.'; };
+
+  if(!g('icOutDate').value) g('icOutDate').value = today();
+  if(!g('icRespDate').value) g('icRespDate').value = today();
+
+  (function(){
+    const u = currentUser();
+    if(!u) return;
+    if(g('icSignRank') && !g('icSignRank').value.trim() && u.zvan) g('icSignRank').value = u.zvan;
+    if(g('icSignFio') && !g('icSignFio').value.trim()) g('icSignFio').value = u.full ? fioIOF(u.full) : (u.name || '');
+  })();
+
+  function esc2(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function buildReqBlocks(){
+    const B = [];
+    B.push({k:'h', t: v('icAddr') || 'В ИЦ УМВД России по Кировской области'});
+    B.push({k:'b'});
+    B.push({k:'p', t: '1. Фамилия ' + (v('icSur') || '________') + '  2. Имя, отчество ' + (v('icName') || '________') + '  3. Родился ' + (v('icBirthPlace') || '________') + (v('icBirth') ? ', ' + v('icBirth') : '')});
+    B.push({k:'b'});
+    B.push({k:'p', t: '4. Адрес регистрации ' + (v('icRegAddr') || '________')});
+    B.push({k:'b'});
+    B.push({k:'p', t: '5. Чем вызвана проверка: ' + (v('icReason') || 'привлечение к уголовной ответственности')});
+    B.push({k:'b'});
+    B.push({k:'p', t: '6. Какие нужны сведения: ' + (v('icWhat') || 'о наличии (отсутствии) судимости и (или) факта уголовного преследования')});
+    B.push({k:'b'}); B.push({k:'b'});
+    B.push({k:'p', t: (v('icSignPos') || '[должность]') + ' ' + (v('icSignRank') || '[звание]') + ' ' + (v('icSignFio') || '[ФИО]')});
+    B.push({k:'b'});
+    B.push({k:'p', t: 'Исполнитель ' + (v('icExec') || '________') + (v('icExecTel') ? ' тел. ' + v('icExecTel') : '') + '.'});
+    B.push({k:'b'});
+    B.push({k:'p', t: 'адрес исполнителя: ' + (v('icExecAddr') || '________')});
+    B.push({k:'b'});
+    B.push({k:'p', t: 'Исх. № ' + (v('icOutNum') || '________') + ' от ' + dShort(v('icOutDate'))});
+    return B;
+  }
+
+  function drawReqPrev(){
+    const B = buildReqBlocks();
+    g('icPrev').innerHTML = B.map(b => {
+      if(b.k === 'b') return '<div class="pb">&nbsp;</div>';
+      if(b.k === 'h') return '<div style="text-align:right;font-weight:700;margin-bottom:1.25em">' + esc2(b.t) + '</div>';
+      return '<div class="pp">' + esc2(b.t) + '</div>';
+    }).join('');
+  }
+
+  function respBlocksFrom(r){
+    const conv = r.respConv === 'yes' ? 'имеются' : 'не имеются';
+    const pros = r.respPros === 'yes' ? 'имеются' : 'не имеются';
+    const B = [
+      {k:'small', t: r.respBarcode || ''},
+      {k:'b'},
+      {k:'c', t: r.respOrg || ''},
+      {k:'c', t: r.respDept || ''},
+      {k:'c', t: r.respAddr || ''},
+      {k:'c', t: r.respTel ? 'тел.: ' + r.respTel : ''},
+      {k:'cd', l: dQuote(r.respDate), r: '№ ' + (r.respNum || '________')},
+      {k:'b'}, {k:'b'},
+      {k:'t', t: 'С П Р А В К А'},
+      {k:'c', t: 'о наличии (отсутствии) судимости и (или) факта уголовного преследования'},
+      {k:'c', t: 'либо о прекращении уголовного преследования'},
+      {k:'b'}, {k:'b'},
+      {k:'t', t: r.respFio || '________'},
+      {k:'small_c', t: '(фамилия, имя, отчество (при наличии) проверяемого лица, в том числе имевшиеся ранее, в именительном падеже)'},
+      {k:'b'},
+      {k:'t', t: r.respBirth || '________'},
+      {k:'b'},
+      {k:'c', t: 'ФКУ «ГИАЦ МВД России», ИЦ УМВД России по Кировской области (ИЦ территориального органа МВД России на региональном уровне)'},
+      {k:'b'},
+      {k:'p', t: 'имеются (не имеются) сведения об осуждении на территории Российской Федерации:'},
+      {k:'t', t: conv}
+    ];
+    if(r.respConv === 'yes' && r.respConvText) B.push({k:'p', t: r.respConvText});
+    B.push({k:'b'});
+    B.push({k:'p', t: 'имеются (не имеются) сведения о факте уголовного преследования либо о прекращении уголовного преследования на территории Российской Федерации:'});
+    B.push({k:'t', t: pros});
+    if(r.respPros === 'yes' && r.respProsText) B.push({k:'p', t: r.respProsText});
+    B.push({k:'b'});
+    B.push({k:'p', t: 'Дополнительная информация: ' + (r.respExtra || 'не имеется')});
+    B.push({k:'b'}); B.push({k:'b'});
+    B.push({k:'cd', l: 'Начальник', r: r.respBoss || ''});
+    B.push({k:'c', t: 'Подпись'});
+    return B;
+  }
+
+  function buildRespBlocks(){
+    return respBlocksFrom({
+      respBarcode: v('icRespBarcode'),
+      respOrg: v('icRespOrg'), respDept: v('icRespDept'), respAddr: v('icRespAddr'), respTel: v('icRespTel'),
+      respDate: v('icRespDate'), respNum: v('icRespNum'),
+      respFio: v('icRespFio'), respBirth: v('icRespBirth'),
+      respConv: g('icRespConv').value, respConvText: v('icRespConvText'),
+      respPros: g('icRespPros').value, respProsText: v('icRespProsText'),
+      respExtra: v('icRespExtra'), respBoss: v('icRespBoss')
+    });
+  }
+
+  function drawRespPrev(){
+    const B = buildRespBlocks();
+    g('icRespPrev').innerHTML = B.map(b => {
+      if(b.k === 'b') return '<div class="pb">&nbsp;</div>';
+      if(b.k === 't') return '<div class="pt">' + esc2(b.t) + '</div>';
+      if(b.k === 'c') return '<div style="text-align:center">' + esc2(b.t) + '</div>';
+      if(b.k === 'small') return '<div style="font-size:12px;color:#555">' + esc2(b.t) + '</div>';
+      if(b.k === 'small_c') return '<div style="text-align:center;font-size:11px;color:#555;margin-top:4px">' + esc2(b.t) + '</div>';
+      if(b.k === 'cd') return '<div class="pcd"><span>' + esc2(b.l) + '</span><span>' + esc2(b.r) + '</span></div>';
+      return '<div class="pp">' + esc2(b.t) + '</div>';
+    }).join('');
+  }
+
+  document.querySelectorAll('#ic input, #ic textarea, #ic select').forEach(el => {
+    el.addEventListener('input', () => { drawReqPrev(); drawRespPrev(); });
+    el.addEventListener('change', () => { drawReqPrev(); drawRespPrev(); });
+  });
+  drawReqPrev();
+  drawRespPrev();
+
+  function blocksToDocx(blocks){
+    const X = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const rpr = b => '<w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>'+(b?'<w:b/><w:bCs/>':'')+'<w:sz w:val="28"/><w:szCs w:val="28"/></w:rPr>';
+    const run = (t,b) => '<w:r>'+rpr(b)+'<w:t xml:space="preserve">'+X(t)+'</w:t></w:r>';
+    const TAB = '<w:r>'+rpr()+'<w:tab/></w:r>';
+    const P = (r,o) => { o = o||{}; return '<w:p><w:pPr>'+(o.tabs?'<w:tabs><w:tab w:val="right" w:pos="10466"/></w:tabs>':'')
+      +'<w:spacing w:after="0" w:line="240" w:lineRule="auto"/>'+(o.ind?'<w:ind '+o.ind+'/>':'')+(o.jc?'<w:jc w:val="'+o.jc+'"/>':'')+'</w:pPr>'+(r||'')+'</w:p>'; };
+    const body = blocks.map(b => {
+      if(b.k === 'b') return P('');
+      if(b.k === 't') return P(run(b.t, true), {jc: 'center'});
+      if(b.k === 'c') return P(run(b.t), {jc: 'center'});
+      if(b.k === 'h') return P(run(b.t, true), {jc: 'right'});
+      if(b.k === 'small') return P(run(b.t));
+      if(b.k === 'small_c') return P(run(b.t), {jc: 'center'});
+      if(b.k === 'cd') return P(run(b.l)+TAB+run(b.r), {tabs: 1});
+      return P(run(b.t), {ind: 'w:firstLine="709"', jc: 'both'});
+    }).join('');
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
+      + body
+      + '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>';
+  }
+
+  async function downloadBlocks(blocks, fname){
+    if(!window.JSZip){ alert('JSZip не загрузился'); return; }
+    const z = new JSZip(), H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    z.file('[Content_Types].xml', H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+    z.file('_rels/.rels', H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+    z.file('word/document.xml', blocksToDocx(blocks));
+    const blob = await z.generateAsync({type:'blob', mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fname;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+  }
+
+  const st = g('icSt');
+  g('icDoc').onclick = async () => {
+    try{ await downloadBlocks(buildReqBlocks(), 'IC_zapros_' + (v('icSur') || 'bez_familii') + '.docx'); st.textContent = 'Файл скачан.'; }
+    catch(e){ st.textContent = 'Ошибка: ' + (e.message || e); }
+  };
+  g('icCopy').onclick = () => {
+    const txt = buildReqBlocks().map(b => b.t || '').join('\n');
+    navigator.clipboard.writeText(txt).then(() => { st.textContent = 'Текст скопирован ✓'; });
+  };
+  g('icSave').onclick = () => {
+    if(!v('icSur') || !v('icName')){ st.textContent = 'Укажите фамилию и имя проверяемого.'; return; }
+    if(!window.__db){ st.textContent = 'Нет соединения с базой.'; return; }
+    const u = currentUser();
+    st.textContent = 'Сохранение…';
+    window.__db.ref('ic').push({
+      type: 'req',
+      addr: v('icAddr'), sur: v('icSur'), name: v('icName'),
+      birth: v('icBirth'), birthPlace: v('icBirthPlace'), regAddr: v('icRegAddr'),
+      reason: v('icReason'), what: v('icWhat'),
+      signPos: v('icSignPos'), signRank: v('icSignRank'), signFio: v('icSignFio'),
+      exec: v('icExec'), execTel: v('icExecTel'), execAddr: v('icExecAddr'),
+      outNum: v('icOutNum'), outDate: v('icOutDate'),
+      author: (u && u.name) || '', ts: Date.now()
+    }).then(() => { st.textContent = '✓ Запрос сохранён'; setTimeout(() => st.textContent = '', 3000); })
+      .catch(err => { st.textContent = 'Ошибка: ' + (err.message || err); });
+  };
+
+  const stR = g('icRespSt');
+  g('icRespDoc').onclick = async () => {
+    try{ await downloadBlocks(buildRespBlocks(), 'IC_spravka_' + (v('icRespFio') || 'bez_fio').replace(/\s+/g,'_') + '.docx'); stR.textContent = 'Файл скачан.'; }
+    catch(e){ stR.textContent = 'Ошибка: ' + (e.message || e); }
+  };
+  g('icRespCopy').onclick = () => {
+    const txt = buildRespBlocks().map(b => b.k === 'cd' ? (b.l + '\t' + b.r) : (b.t || '')).join('\n');
+    navigator.clipboard.writeText(txt).then(() => { stR.textContent = 'Текст скопирован ✓'; });
+  };
+  g('icRespSave').onclick = () => {
+    if(!v('icRespFio')){ stR.textContent = 'Укажите ФИО проверяемого.'; return; }
+    if(!window.__db){ stR.textContent = 'Нет соединения с базой.'; return; }
+    const u = currentUser();
+    stR.textContent = 'Сохранение…';
+    window.__db.ref('ic').push({
+      type: 'resp', linkedReqId: v('icReqSel') || '',
+      respOrg: v('icRespOrg'), respDept: v('icRespDept'), respAddr: v('icRespAddr'), respTel: v('icRespTel'),
+      respDate: v('icRespDate'), respNum: v('icRespNum'), respBarcode: v('icRespBarcode'),
+      respFio: v('icRespFio'), respBirth: v('icRespBirth'),
+      respConv: g('icRespConv').value, respConvText: v('icRespConvText'),
+      respPros: g('icRespPros').value, respProsText: v('icRespProsText'),
+      respExtra: v('icRespExtra'), respBoss: v('icRespBoss'),
+      author: (u && u.name) || '', ts: Date.now()
+    }).then(() => { stR.textContent = '✓ Справка сохранена'; setTimeout(() => stR.textContent = '', 3000); })
+      .catch(err => { stR.textContent = 'Ошибка: ' + (err.message || err); });
+  };
+
+  const icList = g('icList');
+  const icCount = g('icCount');
+  let icCache = [];
+
+  function fillRespFromReq(r){
+    g('icRespFio').value = ((r.sur || '') + ' ' + (r.name || '')).toUpperCase().trim();
+    const parts = [];
+    if(r.birth) parts.push(r.birth + ' г.р.');
+    if(r.birthPlace) parts.push(r.birthPlace.toUpperCase());
+    g('icRespBirth').value = parts.join(', ');
+    drawRespPrev();
+  }
+
+  if(g('icReqSel')) g('icReqSel').addEventListener('change', () => {
+    const r = icCache.find(x => x.id === g('icReqSel').value);
+    if(r) fillRespFromReq(r);
+  });
+
+  function reqBlocksFrom(r){
+    return [
+      {k:'h', t: r.addr || 'В ИЦ УМВД России по Кировской области'},
+      {k:'b'},
+      {k:'p', t: '1. Фамилия ' + (r.sur || '________') + '  2. Имя, отчество ' + (r.name || '________') + '  3. Родился ' + (r.birthPlace || '________') + (r.birth ? ', ' + r.birth : '')},
+      {k:'b'},
+      {k:'p', t: '4. Адрес регистрации ' + (r.regAddr || '________')},
+      {k:'b'},
+      {k:'p', t: '5. Чем вызвана проверка: ' + (r.reason || '')},
+      {k:'b'},
+      {k:'p', t: '6. Какие нужны сведения: ' + (r.what || '')},
+      {k:'b'}, {k:'b'},
+      {k:'p', t: [r.signPos, r.signRank, r.signFio].filter(Boolean).join(' ')},
+      {k:'b'},
+      {k:'p', t: 'Исполнитель ' + (r.exec || '') + (r.execTel ? ' тел. ' + r.execTel : '') + '.'},
+      {k:'b'},
+      {k:'p', t: 'адрес исполнителя: ' + (r.execAddr || '')},
+      {k:'b'},
+      {k:'p', t: 'Исх. № ' + (r.outNum || '') + ' от ' + dShort(r.outDate)}
+    ];
+  }
+
+  function renderIc(){
+    if(!icList) return;
+    const reqs = icCache.filter(r => r.type === 'req');
+    if(icCount) icCount.textContent = icCache.length;
+    const qsel = g('icReqSel');
+    if(qsel){
+      const cur = qsel.value;
+      qsel.innerHTML = '<option value="">— выбрать запрос —</option>' + reqs.map(r =>
+        '<option value="' + r.id + '">' + esc(r.sur || '') + ' ' + esc(r.name || '') + ' · ' + esc(dShort(r.outDate)) + '</option>'
+      ).join('');
+      qsel.value = cur;
+    }
+    const allow = canManage();
+    const rows = icCache.slice().sort((a,b) => (b.ts||0) - (a.ts||0)).map(r => {
+      const isReq = r.type === 'req';
+      const label = isReq ? '<span class="tag blue">Запрос</span>' : '<span class="tag green">Справка</span>';
+      const fio = isReq ? ((r.sur || '') + ' ' + (r.name || '')) : (r.respFio || '—');
+      const date = isReq ? dShort(r.outDate) : dShort(r.respDate);
+      const num = isReq ? (r.outNum || '—') : (r.respNum || '—');
+      return '<tr>' +
+        '<td>' + label + '</td>' +
+        '<td>' + esc(fio || '—') + '</td>' +
+        '<td>' + esc(date) + '</td>' +
+        '<td class="term">' + esc(num) + '</td>' +
+        '<td>' + esc(r.author || '—') + '</td>' +
+        '<td><div class="row-actions">' +
+          '<button class="btn" data-icview="' + r.id + '">👁</button>' +
+          '<button class="btn" data-icdoc="' + r.id + '">📥</button>' +
+          (isReq ? '<button class="btn primary" data-icresp="' + r.id + '">→ Справка</button>' : '') +
+          (allow ? '<button class="btn" data-icdel="' + r.id + '">✕</button>' : '') +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+    icList.innerHTML = icCache.length
+      ? '<table><thead><tr><th>Тип</th><th>ФИО</th><th>Дата</th><th>№</th><th>Автор</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>'
+      : '<p class="sub">Пока нет записей.</p>';
+
+    icList.querySelectorAll('[data-icview]').forEach(b => b.addEventListener('click', () => {
+      const r = icCache.find(x => x.id === b.dataset.icview);
+      if(!r) return;
+      if(r.type === 'req'){
+        alert(['ТРЕБОВАНИЕ В ИЦ',
+          'Кому: ' + (r.addr || '—'),
+          'Фамилия: ' + (r.sur || '—'),
+          'Имя, отчество: ' + (r.name || '—'),
+          'Дата рождения: ' + (r.birth || '—'),
+          'Место рождения: ' + (r.birthPlace || '—'),
+          'Адрес регистрации: ' + (r.regAddr || '—'),
+          'Основание: ' + (r.reason || '—'),
+          'Запрашивается: ' + (r.what || '—'),
+          'Подписант: ' + [r.signPos, r.signRank, r.signFio].filter(Boolean).join(' '),
+          'Исполнитель: ' + (r.exec || '—') + (r.execTel ? ' тел. ' + r.execTel : ''),
+          'Исх. №: ' + (r.outNum || '—') + ' от ' + dShort(r.outDate),
+          'Автор: ' + (r.author || '—')
+        ].join('\n'));
+      } else {
+        alert(['СПРАВКА ИЦ',
+          '№: ' + (r.respNum || '—') + ' от ' + dShort(r.respDate),
+          'Штрих-код: ' + (r.respBarcode || '—'),
+          'ФИО: ' + (r.respFio || '—'),
+          'Дата, место рождения: ' + (r.respBirth || '—'),
+          '',
+          'Осуждение: ' + (r.respConv === 'yes' ? 'имеются' : 'не имеются'),
+          r.respConvText || '',
+          '',
+          'Уголовное преследование: ' + (r.respPros === 'yes' ? 'имеются' : 'не имеются'),
+          r.respProsText || '',
+          '',
+          'Доп.: ' + (r.respExtra || '—'),
+          'Начальник: ' + (r.respBoss || '—'),
+          'Автор: ' + (r.author || '—')
+        ].filter(Boolean).join('\n'));
+      }
+    }));
+
+    icList.querySelectorAll('[data-icdoc]').forEach(b => b.addEventListener('click', async () => {
+      const r = icCache.find(x => x.id === b.dataset.icdoc);
+      if(!r) return;
+      if(r.type === 'req') await downloadBlocks(reqBlocksFrom(r), 'IC_zapros_' + (r.sur || 'bez') + '.docx');
+      else await downloadBlocks(respBlocksFrom(r), 'IC_spravka_' + (r.respFio || 'bez').replace(/\s+/g,'_') + '.docx');
+    }));
+
+    icList.querySelectorAll('[data-icresp]').forEach(b => b.addEventListener('click', () => {
+      const r = icCache.find(x => x.id === b.dataset.icresp);
+      if(!r) return;
+      g('icReqSel').value = r.id;
+      fillRespFromReq(r);
+      g('icRespFio').scrollIntoView({behavior:'smooth', block:'center'});
+    }));
+
+    if(allow) icList.querySelectorAll('[data-icdel]').forEach(b => b.addEventListener('click', () => {
+      if(!confirm('Удалить запись?')) return;
+      window.__db.ref('ic/' + b.dataset.icdel).remove();
+    }));
+  }
+
+  if(window.__db){
+    window.__db.ref('ic').on('value', snap => {
+      const val = snap.val() || {};
+      icCache = Object.keys(val).map(k => Object.assign({id: k}, val[k]));
+      renderIc();
+    }, err => { console.warn('ic read error', err); });
+  }
 })();
 </script>
 </body>
