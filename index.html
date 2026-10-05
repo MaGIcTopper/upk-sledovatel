@@ -3697,6 +3697,113 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     g('impSt').textContent = '';
   });
 })();
+  /* ============================================================
+   ПИНГИ СЛЕДОВАТЕЛЯМ ПО ГОРЯЩИМ СРОКАМ (≤ 1 дня)
+   ============================================================ */
+const DISCORD_IDS = {
+  'Котов':       '748147691149721613',
+  'Степанов':    '709706970537525298',
+  'Шолоков':     '666666709532540938',
+  'Воробьев':    '1092017465090908160',
+  'Соколов':     '1011220716307370004',
+  'Петров':      '1122471365384089610',
+  'Ермалов':     '840086765230489610',
+  'Азаренко':    '805848326313738240',
+  'Борисов':     '1108066637237714945',
+  'Маяковский':  '1315359007195529309',
+  'Смирнов':     '1110976797815869491',
+  'Мамалашвили': '930815090545029140',
+  'Сиваш':       '1485259434480635905'
+};
+
+(function(){
+  if(!window.__db) return;
+  const db = window.__db;
+  if(!NOTIFY_URL) return;
+
+  let recs = [], prols = [];
+
+  function computeDeadline(r){
+    const appr = prols.filter(p => (p.recId === r.id || (p.num && p.num === r.num)) && p.status === 'approved');
+    let dl = null;
+    if(r.date){ dl = new Date(r.date + 'T00:00'); dl.setDate(dl.getDate() + 3); }
+    appr.forEach(p => { if(p.until) dl = new Date(p.until + 'T00:00'); });
+    return dl;
+  }
+
+  function whoami(){
+    try{ const u = JSON.parse(localStorage.getItem('upk_user') || 'null'); return (u && u.name) || 'система'; }catch(e){ return 'система'; }
+  }
+
+  function checkHot(){
+    const today = new Date(new Date().toISOString().slice(0,10) + 'T00:00');
+    recs.filter(r => r.type === 'mp' && !(r.decision && r.decision.trim())).forEach(r => {
+      const dl = computeDeadline(r);
+      if(!dl) return;
+      const left = Math.round((dl - today) / 86400000);
+      if(left > 1) return;
+
+      const to = (r.to || r.by || '').trim();
+      if(!to) return;
+      const user = AUTH_USERS.find(u => to.indexOf(u.surname) !== -1);
+      if(!user) return;
+      const uid = DISCORD_IDS[user.surname];
+      if(!uid) return;
+
+      const key = String(r.id) + '_' + dl.toISOString().slice(0,10);
+      db.ref('notified/' + key).transaction(cur => {
+        if(cur) return; // уже отправлено — прерываем
+        return { ts: Date.now(), by: whoami(), rec: r.num || '', until: dl.toISOString().slice(0,10) };
+      }, (err, committed) => {
+        if(err || !committed) return;
+
+        const leftTxt = left < 0 ? 'ПРОСРОЧЕНО ' + (-left) + ' дн.' : (left === 0 ? 'сегодня' : 'завтра');
+        const fields = [];
+        const add = (n, v) => { if(v !== undefined && v !== null && v !== '') fields.push({ name:n, value:String(v), inline:true }); };
+        add('№ КРСоП', r.num);
+        add('Дата рег.', r.date);
+        add('Статья', r.art);
+        add('Срок до', dl.toLocaleDateString('ru-RU'));
+        add('Осталось', leftTxt);
+        add('ФИО', r.suspect);
+
+        const body = {
+          content: '<@' + uid + '>',
+          allowed_mentions: { users: [uid] },
+          embeds: [{
+            title: '🚨 Горит срок проверки сообщения',
+            description: left < 0 ? 'Срок уже **просрочен** — прими решение или продли.' : 'Осталось меньше суток — прими решение или оформи продление.',
+            color: left < 0 ? 0xc0392b : 0xb7791f,
+            fields: fields,
+            footer: { text: 'ст. 144 УПК РФ · ' + whoami() },
+            timestamp: new Date().toISOString()
+          }]
+        };
+
+        try{
+          fetch(NOTIFY_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+            keepalive: true
+          }).catch(() => {});
+        }catch(e){}
+      });
+    });
+  }
+
+  db.ref('records').on('value', s => {
+    const val = s.val() || {};
+    recs = Object.keys(val).map(k => Object.assign({id:k}, val[k]));
+    setTimeout(checkHot, 800);
+  });
+  db.ref('prolongations').on('value', s => {
+    const val = s.val() || {};
+    prols = Object.keys(val).map(k => Object.assign({id:k}, val[k]));
+    setTimeout(checkHot, 800);
+  });
+  setInterval(checkHot, 30 * 60 * 1000);
+})();
 </script>
 </body>
 </html>
