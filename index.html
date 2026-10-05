@@ -121,7 +121,7 @@ header .spacer{flex:1}
   color:#fff;padding:9px 14px;border-radius:8px;width:280px;font-size:14px;outline:none;}
 #globalSearch::placeholder{color:#8ea6c4}
 #globalSearch:focus{background:rgba(255,255,255,.14);border-color:var(--gold)}
-.layout{display:flex;max-width:1500px;margin:0 auto;gap:22px;padding:22px}
+.layout{display:flex;max-width:1760px;margin:0 auto;gap:22px;padding:22px}
 aside{width:250px;flex:0 0 250px;position:sticky;top:88px;align-self:flex-start;
   max-height:calc(100vh - 110px);overflow-y:auto;}
 aside::-webkit-scrollbar{width:6px}
@@ -334,6 +334,35 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 .row-actions{display:flex;gap:6px;flex-wrap:nowrap}
 .row-actions .btn{padding:5px 9px;font-size:13px;line-height:1}
 .row-actions .btn.edit:hover{border-color:var(--green);color:var(--green)}
+  /* Скролл внутри карточек со таблицами + компактные ячейки */
+#arUdList, #arMpList, #roppList, #prList{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  margin:0 -8px;
+  padding:0 8px;
+}
+#arUdList table, #arMpList table{ min-width:1080px; }
+#roppList table, #prList table{ min-width:960px; }
+#arUdList th, #arUdList td,
+#arMpList th, #arMpList td{
+  padding:8px;
+  font-size:12.5px;
+  white-space:nowrap;
+}
+#arUdList td.decision, #arMpList td.decision{
+  white-space:normal;
+  max-width:200px;
+  font-size:12px;
+}
+#arUdList .row-actions .btn,
+#arMpList .row-actions .btn{
+  padding:4px 6px;
+  font-size:12px;
+  max-width:140px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
 @media print{header,aside,#toTop,#searchRes,.modal-overlay{display:none!important}section{display:block!important}.layout{display:block}}
 @media(max-width:960px){
   .layout{flex-direction:column;padding:14px}
