@@ -552,10 +552,11 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
       </div>
 
       <div class="card rform">
-        <h2>Добавить продление <span class="badge">ст. 144 УПК РФ</span></h2>
+        <h2>Продление проверки <span class="badge">ст. 144 УПК РФ</span></h2>
         <p class="sub">Быстрая запись в общий реестр продлений. Для формирования документа Word с предпросмотром — используйте раздел <b>«Продления»</b>.</p>
 
         <div class="rgrid">
+          <div class="field w"><label>Материал проверки (выберите — поля заполнятся сами)</label><select id="qpMat"><option value="">— выбрать материал —</option></select><div class="hint" id="qpLink"></div></div>
           <div class="field"><label>№ в КРСоП</label><input id="qpNum" placeholder="33пр-26"></div>
           <div class="field"><label>Дата регистрации в КРСоП</label><input type="date" id="qpNumDate"></div>
           <div class="field"><label>Дата постановления</label><input type="date" id="qpDocDate"></div>
@@ -2651,6 +2652,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
 
     const u = currentUser();
     const rec = {
+      recId: window.__prRecId || '',
       num: v('prNum'),
       numDate: v('prNumDate'),
       docDate: v('prDocDate'),
@@ -2910,6 +2912,50 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   try{ records = JSON.parse(localStorage.getItem(CACHE) || '[]'); }catch(e){ records = []; }
   function cacheSave(){ try{ localStorage.setItem(CACHE, JSON.stringify(records)); }catch(e){} }
 
+  /* ---- Продление проверки: реестр продлений привязан к материалу (recId или совпадение № в КРСоП) ---- */
+  let prols = [];
+  if(window.__db){
+    window.__db.ref('prolongations').on('value', snap => {
+      const val = snap.val() || {};
+      prols = Object.keys(val).map(k => Object.assign({id:k}, val[k]));
+      render();
+    });
+  }
+  function mpTerm(r){
+    const mine = prols.filter(p => p.recId ? p.recId === r.id : (p.num && p.num === r.num));
+    const appr = mine.filter(p => p.status === 'approved');
+    const untils = appr.map(p => p.until).filter(Boolean).sort();
+    let dl = null;
+    if(r.date){ dl = new Date(r.date + 'T00:00'); dl.setDate(dl.getDate() + 3); }
+    if(untils.length) dl = new Date(untils[untils.length-1] + 'T00:00');
+    return {dl, ext: appr.length > 0, maxDays: Math.max(0, ...appr.map(p => +p.days || 0)), pend: mine.find(p => p.status === 'pending')};
+  }
+  function termCell(r){
+    if(r.decision && r.decision.trim()) return '<span style="color:var(--muted)">решение принято</span>';
+    const t = mpTerm(r); if(!t.dl) return '—';
+    const today = new Date(new Date().toISOString().slice(0,10) + 'T00:00');
+    const left = Math.round((t.dl - today) / 864e5);
+    const st = left <= 1 ? 'color:#d32f2f;font-weight:700' : left <= 3 ? 'color:#e68a00;font-weight:700' : '';
+    return '<div style="' + st + '">' + (t.ext ? 'продлено до ' : 'до ') + t.dl.toLocaleDateString('ru-RU') + '<br><small>' +
+      (left < 0 ? 'просрочено ' + (-left) + ' дн.' : 'осталось ' + left + ' дн.') + '</small></div>' +
+      (t.pend ? '<small>⏳ продление на утверждении</small>' : '<button class="btn" data-prolong="' + r.id + '">⏳ Продлить</button>');
+  }
+  function startProlong(id){
+    const sel = g('qpMat'); if(!sel) return;
+    sel.value = id; sel.dispatchEvent(new Event('change'));
+    g('qpNum').scrollIntoView({behavior:'smooth', block:'center'});
+  }
+  window.__mpTerm = mpTerm; window.__recs = () => records;
+  if(g('qpMat')) g('qpMat').addEventListener('change', () => {
+    const r = records.find(x => x.id === g('qpMat').value), link = g('qpLink');
+    if(!r){ link.textContent = ''; return; }
+    const t = mpTerm(r);
+    g('qpNum').value = r.num || ''; g('qpNumDate').value = r.date || '';
+    if(!g('qpDocDate').value) g('qpDocDate').value = new Date().toISOString().slice(0,10);
+    g('qpDays').value = t.ext ? '30' : '10'; g('qpDays').dispatchEvent(new Event('change'));
+    link.textContent = 'Материал № ' + (r.num || '—') + ': ' + (t.ext ? 'уже продлён до ' + t.dl.toLocaleDateString('ru-RU') + ', дальше — только до 30 суток' : 'срок 3 суток, продление до 10 или 30 суток');
+  });
+
   function fmtDate(d){
     if(!d) return '—';
     const p = d.split('-');
@@ -2921,6 +2967,13 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     const mp = records.filter(r => r.type === 'mp');
     g('arUdCount').textContent = ud.length;
     g('arMpCount').textContent = mp.length;
+    const qsel = g('qpMat');
+    if(qsel){
+      const cur = qsel.value;
+      qsel.innerHTML = '<option value="">— выбрать материал —</option>' + mp.filter(r => !(r.decision && r.decision.trim()))
+        .map(r => '<option value="' + r.id + '">' + esc(r.num || '—') + ' · ' + esc(fmtDate(r.date)) + (r.art ? ' · ст. ' + esc(r.art) : '') + '</option>').join('');
+      qsel.value = cur;
+    }
 
     const allowManage = canManage();
     const UNKNOWN = 'неустановленное лицо';
@@ -2935,6 +2988,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
           '<th>№</th><th>Дата</th><th>Статья</th><th>ФИО заподозренного</th>' +
           '<th>Город</th><th>Кто сообщил</th><th>Кому поручено</th><th>Кто добавил</th>' +
           '<th>Файл</th>' +
+          (!isUd ? '<th>Срок проверки</th>' : '') +
           '<th>Принятое решение</th>' +
           (allowManage ? '<th></th>' : '') +
         '</tr>';
@@ -2964,6 +3018,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
           '<td>' + (isUd ? esc(r.to || r.by || '—') : '') + '</td>' +
           '<td>' + esc(r.author || '—') + '</td>' +
           '<td>' + fileCell + '</td>' +
+          (!isUd ? '<td>' + termCell(r) + '</td>' : '') +
           '<td class="decision">' + esc(r.decision || '—') + '</td>' +
           (allowManage ? '<td><div class="row-actions">' +
             '<button class="btn edit" data-edit="' + r.id + '" title="Редактировать">✏️</button>' +
@@ -3018,6 +3073,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
           if(rec) downloadRecordFile(rec);
         });
       });
+      box.querySelectorAll('[data-prolong]').forEach(b => b.addEventListener('click', () => startProlong(b.dataset.prolong)));
     }
 
     drawList(ud, 'arUdList', true);
@@ -3290,6 +3346,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       const src = g(from), dst = g(to);
       if(src && dst && src.value) dst.value = src.value;
     });
+    window.__prRecId = g('qpMat') ? g('qpMat').value : '';
     goTo('prolongations');
   });
 
@@ -3300,8 +3357,18 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     if(!v('qpSubject')){ st.textContent = 'Укажите, по факту чего зарегистрирован материал.'; return; }
     if(!window.__db){ st.textContent = 'Нет соединения с базой.'; return; }
 
+    const rid = v('qpMat');
+    if(rid && window.__mpTerm){
+      const rr = (window.__recs() || []).find(x => x.id === rid);
+      if(rr){
+        const t = window.__mpTerm(rr);
+        if(t.pend){ st.textContent = 'По этому материалу продление уже ожидает утверждения.'; return; }
+        if(t.ext && (t.maxDays >= 30 || +g('qpDays').value <= t.maxDays)){ st.textContent = t.maxDays >= 30 ? 'Предельный срок 30 суток уже исчерпан.' : 'Материал уже продлён до ' + t.maxDays + ' суток — следующее продление только до 30 суток.'; return; }
+      }
+    }
     const u = currentUser();
     const rec = {
+      recId: rid,
       num: v('qpNum'),
       numDate: v('qpNumDate'),
       docDate: v('qpDocDate'),
@@ -3323,6 +3390,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     window.__db.ref('prolongations').push(rec).then(() => {
       st.textContent = '✓ Продление добавлено в реестр (ожидает утверждения).';
       ['qpNum','qpSubject','qpReasons'].forEach(id => { const el = g(id); if(el) el.value = ''; });
+      if(g('qpMat')) g('qpMat').value = ''; if(g('qpLink')) g('qpLink').textContent = '';
       setTimeout(() => { st.textContent = ''; }, 3000);
     }).catch(err => {
       st.textContent = 'Ошибка: ' + (err && err.message ? err.message : err);
