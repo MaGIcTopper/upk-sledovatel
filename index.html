@@ -1282,6 +1282,27 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
   </div>
 </div>
 
+<!-- Модальное окно редактирования должности/звания -->
+<div class="modal-overlay" id="posModal">
+  <div class="modal" style="max-width:520px" role="dialog" aria-modal="true">
+    <h3 id="posModalTitle">Изменить должность и звание</h3>
+    <p class="msub" id="posModalSub"></p>
+    <div class="mf">
+      <label for="posDolzhnost">Должность</label>
+      <input id="posDolzhnost" placeholder="Следователь">
+    </div>
+    <div class="mf">
+      <label for="posZvanie">Звание</label>
+      <input id="posZvanie" placeholder="Лейтенант юстиции">
+    </div>
+    <div class="mactions">
+      <button class="btn" id="posCancel" type="button">Отмена</button>
+      <button class="btn" id="posReset" type="button" title="Вернуть исходные">↺ Сброс</button>
+      <button class="btn primary" id="posSave" type="button">💾 Сохранить</button>
+    </div>
+  </div>
+</div> 
+  
 <!-- Модальное окно отметок личного состава -->
 <div class="modal-overlay" id="staffModal">
   <div class="modal" style="max-width:640px" role="dialog" aria-modal="true" aria-labelledby="staffModalTitle">
@@ -1745,6 +1766,14 @@ let staffOverrides = {};
 
 function effPos(u){ return (staffOverrides[u.surname] && staffOverrides[u.surname].pos) || u.pos; }
 function effZvan(u){ return (staffOverrides[u.surname] && staffOverrides[u.surname].zvan) || u.zvan; }
+function canEditStaffPos(){
+  const u = currentUser();
+  if(!u) return false;
+  if(u.name === 'Администратор') return true;
+  const pos = (u.pos || '').toLowerCase();
+  const unit = (u.unit || '').toLowerCase();
+  return pos.indexOf('руководител') !== -1 && unit.indexOf('левобережн') !== -1;
+}
 
 function renderStaff(){
   const box = document.getElementById('staffBox');
@@ -3645,7 +3674,58 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     });
   });
 })();
+/* ============================================================
+   МОДАЛКА РЕДАКТИРОВАНИЯ ДОЛЖНОСТИ/ЗВАНИЯ
+   ============================================================ */
+(function(){
+  const g = id => document.getElementById(id);
+  const modal = g('posModal');
+  if(!modal) return;
+  let editSurname = null;
 
+  window.openPosModal = function(surname){
+    if(!canEditStaffPos()) return;
+    const u = AUTH_USERS.find(x => x.surname === surname);
+    if(!u) return;
+    editSurname = surname;
+    const ov = staffOverrides[surname] || {};
+    g('posModalTitle').textContent = 'Изменить: ' + u.full;
+    g('posModalSub').textContent = 'Должность и звание отобразятся в личном составе и будут подставляться в документы.';
+    g('posDolzhnost').value = ov.pos || u.pos;
+    g('posZvanie').value = ov.zvan || u.zvan;
+    modal.classList.add('on');
+    setTimeout(() => g('posDolzhnost').focus(), 60);
+  };
+  function close(){ editSurname = null; modal.classList.remove('on'); }
+
+  g('posCancel').addEventListener('click', close);
+  modal.addEventListener('click', e => { if(e.target === modal) close(); });
+  window.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('on')) close(); });
+
+  g('posSave').addEventListener('click', () => {
+    if(!canEditStaffPos()) return;
+    if(!editSurname || !window.__db) return;
+    const pos = g('posDolzhnost').value.trim();
+    const zvan = g('posZvanie').value.trim();
+    if(!pos && !zvan){ alert('Заполни хотя бы одно поле.'); return; }
+    const u = currentUser();
+    window.__db.ref('staff_overrides/' + editSurname).set({
+      pos: pos, zvan: zvan,
+      by: (u && u.name) || '',
+      ts: Date.now()
+    }).then(() => close()).catch(err => alert('Ошибка: ' + (err && err.message ? err.message : err)));
+  });
+
+  g('posReset').addEventListener('click', () => {
+    if(!canEditStaffPos()) return;
+    if(!editSurname || !window.__db) return;
+    if(!confirm('Вернуть исходные должность и звание?')) return;
+    window.__db.ref('staff_overrides/' + editSurname).remove()
+      .then(() => close())
+      .catch(err => alert('Ошибка: ' + (err && err.message ? err.message : err)));
+  });
+})();
+  
 /* ============================================================
    ВАЖНОЕ (объявления руководства)
    ============================================================ */
@@ -3843,25 +3923,5 @@ const DISCORD_IDS = {
   setInterval(checkHot, 30 * 60 * 1000);
 })();
 </script>
-<!-- Модальное окно редактирования должности/звания -->
-<div class="modal-overlay" id="posModal">
-  <div class="modal" style="max-width:520px" role="dialog" aria-modal="true">
-    <h3 id="posModalTitle">Изменить должность и звание</h3>
-    <p class="msub" id="posModalSub"></p>
-    <div class="mf">
-      <label for="posDolzhnost">Должность</label>
-      <input id="posDolzhnost" placeholder="Следователь">
-    </div>
-    <div class="mf">
-      <label for="posZvanie">Звание</label>
-      <input id="posZvanie" placeholder="Лейтенант юстиции">
-    </div>
-    <div class="mactions">
-      <button class="btn" id="posCancel" type="button">Отмена</button>
-      <button class="btn" id="posReset" type="button" title="Вернуть исходные">↺ Сброс</button>
-      <button class="btn primary" id="posSave" type="button">💾 Сохранить</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
