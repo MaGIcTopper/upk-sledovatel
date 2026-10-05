@@ -1740,6 +1740,12 @@ function fmtDateShort(d){
   if(p.length !== 3) return d;
   return p[2] + '.' + p[1] + '.' + p[0];
 }
+/* Переопределения должности/звания (Firebase) */
+let staffOverrides = {};
+
+function effPos(u){ return (staffOverrides[u.surname] && staffOverrides[u.surname].pos) || u.pos; }
+function effZvan(u){ return (staffOverrides[u.surname] && staffOverrides[u.surname].zvan) || u.zvan; }
+
 function renderStaff(){
   const box = document.getElementById('staffBox');
   const cnt = document.getElementById('staffCount');
@@ -1756,13 +1762,17 @@ function renderStaff(){
       const marks = staffMarks[u.surname] || {};
       const reps = Object.keys(marks).filter(function(k){ return marks[k].type === 'reprimand'; }).length;
       const vacs = Object.keys(marks).filter(function(k){ return marks[k].type === 'vacation'; }).length;
+      const edited = !!staffOverrides[u.surname];
       return '<tr>' +
         '<td class="term">' + esc(u.full) + '</td>' +
-        '<td>' + esc(u.pos) + '</td>' +
-        '<td>' + esc(u.zvan) + '</td>' +
+        '<td>' + esc(effPos(u)) + (edited ? ' <span class="tag blue" title="изменено вручную">✎</span>' : '') + '</td>' +
+        '<td>' + esc(effZvan(u)) + '</td>' +
         '<td><span class="tag red">' + reps + '</span></td>' +
         '<td><span class="tag green">' + vacs + '</span></td>' +
-        (manage ? '<td><button class="btn edit" data-staff="' + esc(u.surname) + '">📋 Управление</button></td>' : '') +
+        (manage ? '<td><div class="row-actions">' +
+          '<button class="btn edit" data-staff="' + esc(u.surname) + '" title="Отметки (выговоры/отпуска)">📋</button>' +
+          (canEditStaffPos() ? '<button class="btn" data-editstaff="' + esc(u.surname) + '" title="Изменить должность и звание">✏️</button>' : '') +
+        '</div></td>' : '') +
       '</tr>';
     }).join('');
     return '<h3>' + esc(unit) + '</h3><table><thead><tr><th>ФИО</th><th>Должность</th><th>Звание</th><th>Выговоры</th><th>Отпуска</th>' + (manage ? '<th>Действия</th>' : '') + '</tr></thead><tbody>' + rows + '</tbody></table>';
@@ -1774,9 +1784,37 @@ function renderStaff(){
         if(window.openStaffModal) window.openStaffModal(b.dataset.staff);
       });
     });
+    box.querySelectorAll('[data-editstaff]').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(window.openPosModal) window.openPosModal(b.dataset.editstaff);
+      });
+    });
   }
 }
 renderStaff();
+
+/* Загрузка переопределений из Firebase */
+if(window.__db){
+  window.__db.ref('staff_overrides').on('value', snap => {
+    staffOverrides = snap.val() || {};
+    renderStaff();
+    try{
+      const u = JSON.parse(localStorage.getItem('upk_user') || 'null');
+      if(u && u.name && u.name !== 'Администратор'){
+        const sur = u.name.split(' ')[0];
+        const ov = staffOverrides[sur];
+        if(ov){
+          const changed = (ov.pos && ov.pos !== u.pos) || (ov.zvan && ov.zvan !== u.zvan);
+          if(changed){
+            u.pos = ov.pos || u.pos;
+            u.zvan = ov.zvan || u.zvan;
+            localStorage.setItem('upk_user', JSON.stringify(u));
+          }
+        }
+      }
+    }catch(e){}
+  }, err => { console.warn('staff_overrides read error', err); });
+}
 
 const ALGOS = [
 {id:'a1', title:'Проверка сообщения о преступлении', law:'ст. 140–145 УПК РФ', steps:[
@@ -3805,5 +3843,25 @@ const DISCORD_IDS = {
   setInterval(checkHot, 30 * 60 * 1000);
 })();
 </script>
+<!-- Модальное окно редактирования должности/звания -->
+<div class="modal-overlay" id="posModal">
+  <div class="modal" style="max-width:520px" role="dialog" aria-modal="true">
+    <h3 id="posModalTitle">Изменить должность и звание</h3>
+    <p class="msub" id="posModalSub"></p>
+    <div class="mf">
+      <label for="posDolzhnost">Должность</label>
+      <input id="posDolzhnost" placeholder="Следователь">
+    </div>
+    <div class="mf">
+      <label for="posZvanie">Звание</label>
+      <input id="posZvanie" placeholder="Лейтенант юстиции">
+    </div>
+    <div class="mactions">
+      <button class="btn" id="posCancel" type="button">Отмена</button>
+      <button class="btn" id="posReset" type="button" title="Вернуть исходные">↺ Сброс</button>
+      <button class="btn primary" id="posSave" type="button">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
