@@ -437,6 +437,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <li><a href="#" data-target="prolongations">📋 Продления</a></li>
         <li><a href="#" data-target="important">📌 Важное</a></li>
         <li><a href="#" data-target="staff">👥 Личный состав</a></li>
+        <li><a href="#" data-target="addrecord">➕ Добавить запись</a></li>
       </ul>
     </nav>
   </aside>
@@ -458,6 +459,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
           <div class="quick" data-goto="ropp"><div class="qi">📄</div><div class="qt">Рапорт (РОПП)</div><div class="qd">Конструктор рапорта об обнаружении признаков преступления · Word · сохранение в реестр</div></div>
           <div class="quick" data-goto="allropp"><div class="qi">🗂</div><div class="qt">Все РОПП</div><div class="qd">Реестр сохранённых рапортов · создание материалов проверки</div></div>
           <div class="quick" data-goto="prolongations"><div class="qi">📋</div><div class="qt">Продления</div><div class="qd">Ходатайства о продлении срока проверки · утверждение руководителем · Word</div></div>
+          <div class="quick" data-goto="important"><div class="qi">📌</div><div class="qt">Важное</div><div class="qd">Объявления от руководства отдела</div></div>
           <div class="quick" data-goto="addrecord"><div class="qi">➕</div><div class="qt">Добавить запись</div><div class="qd">Общий учёт уголовных дел и материалов проверки (синхронизируется у всех)</div></div>
           <div class="quick" data-goto="articles"><div class="qi">📖</div><div class="qt">Ключевые статьи</div><div class="qd">Что требует судебного решения, основания задержания, меры пресечения, прекращение</div></div>
           <div class="quick" data-goto="memo"><div class="qi">💡</div><div class="qt">Памятки</div><div class="qd">Типичные ошибки, запреты, правила составления протокола</div></div>
@@ -505,7 +507,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
       </div>
     </section>
 
-        <section id="important">
+    <section id="important">
       <div class="card rform" id="impFormCard" style="display:none">
         <h2>Опубликовать важное <span class="badge">только для руководства</span></h2>
         <p class="sub">Сообщение увидят все сотрудники, и оно уйдёт в Discord (без пинга ролей).</p>
@@ -1531,12 +1533,19 @@ const ROLE_DEPUTY = '995945594319278130'; // Зам. руководителя С
         else if(d.status === 'rejected'){ title = '❌ Продление отклонено';  color = 0xc0392b; }
         else                             { title = '✏️ Продление изменено';  color = 0x2f6fd0; }
       }
+    } else if(col === 'announcements'){
+      if(d.level === 'urgent')     color = 0xc0392b;
+      else if(d.level === 'warn')  color = 0xb7791f;
+      else                          color = 0x2f6fd0;
+      if(op === 'add')         { title = '📌 Важное: ' + (d.title || ''); }
+      else if(op === 'delete') { title = '🗑 Важное удалено: ' + (d.title || ''); color = 0x92a2b8; }
+      else if(op === 'update') { title = '✏️ Важное изменено: ' + (d.title || ''); }
     }
 
     const fields = [];
-    const add = (name, value) => {
+    const add = (name, value, inline) => {
       if(value === undefined || value === null || value === '') return;
-      fields.push({ name, value: short(value, 1024), inline: true });
+      fields.push({ name, value: short(value, 1024), inline: inline !== false });
     };
 
     if(col === 'records'){
@@ -1554,6 +1563,9 @@ const ROLE_DEPUTY = '995945594319278130'; // Зам. руководителя С
       add('По факту', d.subject);
       if(d.status) add('Статус', d.status === 'approved' ? '✓ Утверждено' : d.status === 'rejected' ? '✕ Отклонено' : 'Ожидает');
       if(d.approveFio) add('Утвердил', d.approveFio);
+    } else if(col === 'announcements'){
+      if(d.level) add('Приоритет', d.level === 'urgent' ? '🚨 Срочно' : d.level === 'warn' ? '⚠️ Внимание' : 'ℹ️ Обычное');
+      if(d.text)  add('Текст', d.text, false);
     }
 
     if(op === 'file_add' && ev.file){
@@ -1566,7 +1578,7 @@ const ROLE_DEPUTY = '995945594319278130'; // Зам. руководителя С
   function send(ev){
     if(!NOTIFY_URL) return;
     const e = buildEmbed(ev);
-    const ping = (ev.op === 'add' || ev.op === 'delete');
+    const ping = (ev.op === 'add' || ev.op === 'delete') && ev.col !== 'announcements';
     const content = ping ? '<@&' + ROLE_MAIN + '> <@&' + ROLE_DEPUTY + '>' : '';
 
     const body = {
@@ -3593,6 +3605,96 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     }).catch(err => {
       st.textContent = 'Ошибка: ' + (err && err.message ? err.message : err);
     });
+  });
+})();
+
+/* ============================================================
+   ВАЖНОЕ (объявления руководства)
+   ============================================================ */
+(function(){
+  const g = id => document.getElementById(id);
+  const v = id => g(id) ? g(id).value.trim() : '';
+  if(!g('impAdd')) return;
+
+  const canPost = canManage();
+
+  function renderList(list){
+    const box = g('impList');
+    const cnt = g('impCount');
+    if(cnt) cnt.textContent = list.length;
+    if(!list.length){
+      box.innerHTML = '<p class="sub">Пока нет объявлений.</p>';
+      return;
+    }
+    const LV = { info:['ℹ️','tag blue'], warn:['⚠️','tag amber'], urgent:['🚨','tag red'] };
+    box.innerHTML = list.map(r => {
+      const lv = LV[r.level] || LV.info;
+      const dateStr = r.ts ? new Date(r.ts).toLocaleString('ru-RU') : '';
+      const bc = r.level === 'urgent' ? 'var(--red)' : r.level === 'warn' ? 'var(--amber)' : 'var(--accent)';
+      return '<div style="border-left:4px solid ' + bc +
+        ';background:var(--card);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:12px;' +
+        'border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">' +
+          '<span class="' + lv[1] + '">' + lv[0] + ' ' + (r.level === 'urgent' ? 'Срочно' : r.level === 'warn' ? 'Внимание' : 'Обычное') + '</span>' +
+          '<b style="flex:1;font-size:15px">' + esc(r.title || '—') + '</b>' +
+          (canPost ? '<button class="btn" data-delimp="' + r.id + '" title="Удалить">✕</button>' : '') +
+        '</div>' +
+        '<div style="white-space:pre-wrap;font-size:14px;margin-bottom:8px">' + esc(r.text || '') + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted)">👤 ' + esc(r.author || '—') + (dateStr ? ' · ' + dateStr : '') + '</div>' +
+      '</div>';
+    }).join('');
+
+    box.querySelectorAll('[data-delimp]').forEach(b => {
+      b.addEventListener('click', () => {
+        if(!confirm('Удалить объявление?')) return;
+        window.__db.ref('announcements/' + b.dataset.delimp).remove();
+      });
+    });
+  }
+
+  if(window.__db){
+    window.__db.ref('announcements').on('value', snap => {
+      const val = snap.val() || {};
+      const list = Object.keys(val).map(k => Object.assign({id:k}, val[k]))
+                                  .sort((a,b) => (b.ts||0) - (a.ts||0));
+      renderList(list);
+    }, err => { console.warn('announcements read error', err); });
+  }
+
+  if(canPost) g('impFormCard').style.display = '';
+
+  g('impAdd').addEventListener('click', () => {
+    if(!canPost) return;
+    const st = g('impSt');
+    if(!v('impTitle')){ st.textContent = 'Укажите заголовок.'; return; }
+    if(!v('impText')){ st.textContent = 'Введите текст объявления.'; return; }
+    if(!window.__db){ st.textContent = 'Нет соединения с базой.'; return; }
+
+    const u = currentUser();
+    const rec = {
+      title: v('impTitle'),
+      text: v('impText'),
+      level: g('impLevel').value,
+      author: (u && u.name) || '',
+      ts: Date.now()
+    };
+    st.textContent = 'Публикация…';
+    window.__db.ref('announcements').push(rec).then(() => {
+      st.textContent = '✓ Опубликовано';
+      g('impTitle').value = '';
+      g('impText').value = '';
+      g('impLevel').value = 'info';
+      setTimeout(() => { st.textContent = ''; }, 2500);
+    }).catch(err => {
+      st.textContent = 'Ошибка: ' + (err && err.message ? err.message : err);
+    });
+  });
+
+  g('impClear').addEventListener('click', () => {
+    g('impTitle').value = '';
+    g('impText').value = '';
+    g('impLevel').value = 'info';
+    g('impSt').textContent = '';
   });
 })();
 </script>
