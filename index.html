@@ -625,7 +625,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
               <option value="7">7 суток</option>
               <option value="10" selected>10 суток</option>
               <option value="14">14 суток</option>
-              <option value="14">21 суток</option>
+              <option value="21">21 суток</option>
               <option value="30">30 суток</option>
             </select>
           </div>
@@ -1326,6 +1326,27 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 
     <div class="mactions">
       <button class="btn" id="smClose" type="button">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модальное окно редактирования должности/звания (перенесено выше скрипта) -->
+<div class="modal-overlay" id="posModal">
+  <div class="modal" style="max-width:520px" role="dialog" aria-modal="true">
+    <h3 id="posModalTitle">Изменить должность и звание</h3>
+    <p class="msub" id="posModalSub"></p>
+    <div class="mf">
+      <label for="posDolzhnost">Должность</label>
+      <input id="posDolzhnost" placeholder="Следователь">
+    </div>
+    <div class="mf">
+      <label for="posZvanie">Звание</label>
+      <input id="posZvanie" placeholder="Лейтенант юстиции">
+    </div>
+    <div class="mactions">
+      <button class="btn" id="posCancel" type="button">Отмена</button>
+      <button class="btn" id="posReset" type="button" title="Вернуть исходные">↺ Сброс</button>
+      <button class="btn primary" id="posSave" type="button">💾 Сохранить</button>
     </div>
   </div>
 </div>
@@ -3942,25 +3963,5 @@ const DISCORD_IDS = {
   setInterval(checkHot, 30 * 60 * 1000);
 })();
 </script>
-<!-- Модальное окно редактирования должности/звания -->
-<div class="modal-overlay" id="posModal">
-  <div class="modal" style="max-width:520px" role="dialog" aria-modal="true">
-    <h3 id="posModalTitle">Изменить должность и звание</h3>
-    <p class="msub" id="posModalSub"></p>
-    <div class="mf">
-      <label for="posDolzhnost">Должность</label>
-      <input id="posDolzhnost" placeholder="Следователь">
-    </div>
-    <div class="mf">
-      <label for="posZvanie">Звание</label>
-      <input id="posZvanie" placeholder="Лейтенант юстиции">
-    </div>
-    <div class="mactions">
-      <button class="btn" id="posCancel" type="button">Отмена</button>
-      <button class="btn" id="posReset" type="button" title="Вернуть исходные">↺ Сброс</button>
-      <button class="btn primary" id="posSave" type="button">💾 Сохранить</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
