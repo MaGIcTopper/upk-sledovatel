@@ -2466,11 +2466,11 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pp">' + esc2(d.pPostText) + '</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
-    /* Подпись: должность на 2 строки, потом отступ, потом [звание] + [ФИО] на 1 строке */
+    blocks.push('<div class="pb">&nbsp;</div>');
+    /* Подпись: 2 пустые → должность → 1 пустая → [звание] [ФИО] */
     shortPosLines(d.sigPos).forEach(function(line){
       blocks.push('<div>' + esc2(line) + '</div>');
     });
-    blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pcd"><span>' + esc2(d.sigRank) + '</span><span>' + esc2(d.sigFio) + '</span></div>');
 
@@ -2557,11 +2557,11 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     body.push(P(''));
     body.push(P(run(d.pPostText), {ind:'w:firstLine="709"', jc:'both'}));
     body.push(P(''));
-    /* Подпись: должность на 2 строки, потом отступ, потом [звание] + [ФИО] на 1 строке */
+    body.push(P(''));
+    /* Подпись: 2 пустые → должность → 1 пустая → [звание] [ФИО] */
     shortPosLines(d.sigPos).forEach(function(line){
       body.push(P(run(line)));
     });
-    body.push(P(''));
     body.push(P(''));
     body.push(P(run(d.sigRank)+TAB+run(d.sigFio), {tabs:1}));
 
@@ -2615,8 +2615,8 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       '',
       d.pPostText,
       '',
-      sigLines,
       '',
+      sigLines,
       '',
       d.sigRank + '\t\t\t\t' + d.sigFio
     ].join('\n').replace(/\n{3,}/g, '\n\n');
