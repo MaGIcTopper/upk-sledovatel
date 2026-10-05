@@ -550,6 +550,29 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <h2>Материалы проверки <span class="badge" id="arMpCount">0</span></h2>
         <div id="arMpList"></div>
       </div>
+
+      <div class="card rform">
+        <h2>Добавить продление <span class="badge">ст. 144 УПК РФ</span></h2>
+        <p class="sub">Быстрая запись в общий реестр продлений. Для формирования документа Word с предпросмотром — используйте раздел <b>«Продления»</b>.</p>
+
+        <div class="rgrid">
+          <div class="field"><label>№ в КРСоП</label><input id="qpNum" placeholder="33пр-26"></div>
+          <div class="field"><label>Дата регистрации в КРСоП</label><input type="date" id="qpNumDate"></div>
+          <div class="field"><label>Дата постановления</label><input type="date" id="qpDocDate"></div>
+          <div class="field"><label>Продлить до (суток)</label>
+            <select id="qpDays"><option value="10">10 суток</option><option value="30">30 суток</option></select>
+          </div>
+          <div class="field"><label>Дата, до которой продлевается</label><input type="date" id="qpUntil"></div>
+          <div class="field w"><label>По факту чего</label><input id="qpSubject" placeholder="угрозы применения насилия в отношении представителя власти…"></div>
+          <div class="field w"><label>Обстоятельства</label><textarea id="qpReasons" rows="4">В настоящее время для принятия решения в порядке ст.ст. 144-145 УПК РФ необходимо произвести комплекс оперативно-розыскных мероприятий, направленных на установление лица, получить ответы на поручения, получить заключения судебных экспертиз, что исполнить в установленный законом трехдневный срок не представилось возможным</textarea></div>
+        </div>
+
+        <div class="steps">
+          <button class="pill" id="qpSave">💾 Сохранить в реестр продлений</button>
+          <button class="pill" id="qpGoFull">✏️ Открыть полную форму (Word)</button>
+        </div>
+        <p class="sub" id="qpSt"></p>
+      </div>
     </section>
 
     <section id="ropp">
@@ -2322,7 +2345,8 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     return [parts.slice(0, mid).join(' '), parts.slice(mid).join(' ')];
   }
 
-  /* Собирает резолюцию как массив строк с выравниванием (всё справа — верхний правый угол) */
+  /* Собирает резолюцию как массив строк с выравниванием (всё справа — верхний правый угол).
+     Строка звания в резолюции УБРАНА — остались только сроки, должность утверждающего, подпись и дата. */
   function makeResolParts(days, untilShort, apPos, apRank, apFioIOF, apDate){
     if(!apPos && !apRank && !apFioIOF) return [];
     return [
@@ -2331,8 +2355,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       {t:'т.е. до ' + untilShort,                  a:'right'},
       {t:'', a:'blank'},
       {t: apPos || '',                              a:'right'},
-      {t:'', a:'blank'},
-      {t: apRank || '',                             a:'right'},
       {t:'', a:'blank'},
       {t: '________________________ ' + (apFioIOF || '[ФИО]'), a:'right'},
       {t:'', a:'blank'},
@@ -2463,9 +2485,9 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     blocks.push('<div class="pt">ПОСТАНОВИЛ:</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pp">' + esc2(d.pPostText) + '</div>');
+    /* Подпись: 2 пустые → должность (1-2 строки) → 1 пустая → [звание] [ФИО] */
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
-    /* Подпись: 2 пустые → должность → 1 пустая → [звание] [ФИО] */
     shortPosLines(d.sigPos).forEach(function(line){
       blocks.push('<div>' + esc2(line) + '</div>');
     });
@@ -2554,9 +2576,9 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     body.push(P(run('ПОСТАНОВИЛ:', true), {jc:'center'}));
     body.push(P(''));
     body.push(P(run(d.pPostText), {ind:'w:firstLine="709"', jc:'both'}));
+    /* Подпись: 2 пустые → должность (1-2 строки) → 1 пустая → [звание] [ФИО] */
     body.push(P(''));
     body.push(P(''));
-    /* Подпись: 2 пустые → должность → 1 пустая → [звание] [ФИО] */
     shortPosLines(d.sigPos).forEach(function(line){
       body.push(P(run(line)));
     });
@@ -3071,25 +3093,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     if(g('arFileWrap')) g('arFileWrap').style.display = isUd ? 'none' : '';
   }
   g('arBy').addEventListener('input', updateArTo);
-
-  /* Переключение типа записи: "prod" → перенос в раздел Продления */
   g('arType').addEventListener('change', () => {
-    const hint = g('arProdHint');
-    const type = g('arType').value;
-    if(type === 'prod'){
-      if(hint) hint.style.display = '';
-      const numVal = g('arNum').value.trim();
-      goTo('prolongations');
-      setTimeout(() => {
-        const prNum = document.getElementById('prNum');
-        if(prNum && numVal && !prNum.value.trim()) prNum.value = numVal;
-      }, 120);
-      /* Возвращаем селект в исходное положение, чтобы не путать пользователя */
-      g('arType').value = 'ud';
-      setTimeout(() => { if(hint) hint.style.display = 'none'; }, 500);
-      return;
-    }
-    if(hint) hint.style.display = 'none';
     arToWasEdited = false;
     g('arTo').value = '';
     updateArTo();
@@ -3247,6 +3251,83 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       console.warn('staff_marks read error', err);
     });
   }
+})();
+
+/* ============================================================
+   БЫСТРАЯ ФОРМА ПРОДЛЕНИЯ в разделе «Добавить запись»
+   ============================================================ */
+(function(){
+  const g = id => document.getElementById(id);
+  const v = id => g(id) ? g(id).value.trim() : '';
+  const today = () => new Date().toISOString().slice(0,10);
+
+  if(!g('qpNum')) return;
+
+  g('qpNumDate').value = today();
+  g('qpDocDate').value = today();
+
+  const addDaysIso = (iso, n) => {
+    if(!iso) return '';
+    const d = new Date(iso + 'T09:00:00');
+    d.setDate(d.getDate() + n);
+    return d.toISOString().slice(0,10);
+  };
+  function recalc(){
+    const b = v('qpDocDate');
+    if(b) g('qpUntil').value = addDaysIso(b, +g('qpDays').value);
+  }
+  g('qpDocDate').addEventListener('change', recalc);
+  g('qpDays').addEventListener('change', recalc);
+  recalc();
+
+  /* «Открыть полную форму» — переносит данные в раздел Продления */
+  g('qpGoFull').addEventListener('click', () => {
+    const pairs = [
+      ['qpNum','prNum'], ['qpNumDate','prNumDate'], ['qpDocDate','prDocDate'],
+      ['qpDays','prDays'], ['qpUntil','prUntil'], ['qpSubject','prSubject'], ['qpReasons','prReasons']
+    ];
+    pairs.forEach(([from, to]) => {
+      const src = g(from), dst = g(to);
+      if(src && dst && src.value) dst.value = src.value;
+    });
+    goTo('prolongations');
+  });
+
+  /* «Сохранить в реестр» — прямо в prolongations, статус «ожидает» */
+  g('qpSave').addEventListener('click', () => {
+    const st = g('qpSt');
+    if(!v('qpNum')){ st.textContent = 'Укажите № в КРСоП.'; return; }
+    if(!v('qpSubject')){ st.textContent = 'Укажите, по факту чего зарегистрирован материал.'; return; }
+    if(!window.__db){ st.textContent = 'Нет соединения с базой.'; return; }
+
+    const u = currentUser();
+    const rec = {
+      num: v('qpNum'),
+      numDate: v('qpNumDate'),
+      docDate: v('qpDocDate'),
+      days: +g('qpDays').value,
+      until: v('qpUntil'),
+      subject: v('qpSubject'),
+      reasons: v('qpReasons'),
+      sigPos: fullPositionFor(u),
+      sigRank: (u && u.zvan) || '',
+      sigFio: u && u.full ? fioIOF(u.full) : ((u && u.name) || ''),
+      city: 'г. Левобережный',
+      org: 'следственного отдела по городу Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области',
+      author: (u && u.name) || '',
+      ts: Date.now(),
+      status: 'pending'
+    };
+
+    st.textContent = 'Сохранение…';
+    window.__db.ref('prolongations').push(rec).then(() => {
+      st.textContent = '✓ Продление добавлено в реестр (ожидает утверждения).';
+      ['qpNum','qpSubject','qpReasons'].forEach(id => { const el = g(id); if(el) el.value = ''; });
+      setTimeout(() => { st.textContent = ''; }, 3000);
+    }).catch(err => {
+      st.textContent = 'Ошибка: ' + (err && err.message ? err.message : err);
+    });
+  });
 })();
 </script>
 </body>
