@@ -435,8 +435,8 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <div class="navgroup">Отдел</div>
         <li><a href="#" data-target="allropp">🗂 Все РОПП</a></li>
         <li><a href="#" data-target="prolongations">📋 Продления</a></li>
+        <li><a href="#" data-target="important">📌 Важное</a></li>
         <li><a href="#" data-target="staff">👥 Личный состав</a></li>
-        <li><a href="#" data-target="addrecord">➕ Добавить запись</a></li>
       </ul>
     </nav>
   </aside>
@@ -502,6 +502,35 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <div class="note red"><b>1. Судебное решение.</b> Перечень действий, допускаемых только по решению суда, установлен ч. 2 ст. 29 УПК РФ. В неотложных случаях — ч. 5 ст. 165 УПК РФ (уведомить судью и прокурора в течение 3 суток).</div>
         <div class="note red"><b>2. Согласие руководителя / прокурора.</b> Ряд действий следователь совершает с согласия руководителя следственного органа, дознаватель — с согласия прокурора. См. ст. 29, 108, 115, 164.1, 165 УПК РФ.</div>
         <div class="note red"><b>3. Недопустимые доказательства.</b> Доказательства, полученные с нарушением УПК РФ, не имеют юридической силы и не могут быть положены в основу обвинения (ст. 75 УПК РФ).</div>
+      </div>
+    </section>
+
+        <section id="important">
+      <div class="card rform" id="impFormCard" style="display:none">
+        <h2>Опубликовать важное <span class="badge">только для руководства</span></h2>
+        <p class="sub">Сообщение увидят все сотрудники, и оно уйдёт в Discord (без пинга ролей).</p>
+        <div class="rgrid">
+          <div class="field w"><label>Заголовок</label><input id="impTitle" placeholder="Кратко: о чём"></div>
+          <div class="field w"><label>Текст</label><textarea id="impText" rows="6" placeholder="Полный текст объявления"></textarea></div>
+          <div class="field"><label>Приоритет</label>
+            <select id="impLevel">
+              <option value="info">ℹ️ Обычное</option>
+              <option value="warn">⚠️ Внимание</option>
+              <option value="urgent">🚨 Срочно</option>
+            </select>
+          </div>
+        </div>
+        <div class="steps">
+          <button class="pill" id="impAdd">📌 Опубликовать</button>
+          <button class="pill" id="impClear">Очистить</button>
+        </div>
+        <p class="sub" id="impSt"></p>
+      </div>
+
+      <div class="card">
+        <h2>Важное <span class="badge" id="impCount">0</span></h2>
+        <p class="sub">Объявления от руководства отдела. Видны всем сотрудникам.</p>
+        <div id="impList"></div>
       </div>
     </section>
 
@@ -1468,11 +1497,12 @@ const ROLE_DEPUTY = '995945594319278130'; // Зам. руководителя С
 
 (function(){
   if(!db) return;
-  const WATCH = ['records','ropp','prolongations'];
+  const WATCH = ['records','ropp','prolongations','announcements'];
   const KEEP = {
     records: ['type','num','date','art','suspect','where','by','to','decision','author'],
     ropp: ['num','city','when','time','src','text','who','arts','days','until','sigRank','sigFio','author'],
-    prolongations: ['num','numDate','docDate','days','until','subject','status','author','approveFio','approvedBy']
+    prolongations: ['num','numDate','docDate','days','until','subject','status','author','approveFio','approvedBy'],
+    announcements: ['title','text','level','author']
   };
   const pick = (col, o) => { const r = {}; KEEP[col].forEach(k => { if(o && o[k] !== undefined && o[k] !== '' && o[k] !== null) r[k] = o[k]; }); return r; };
   const who = () => { try{ const u = JSON.parse(localStorage.getItem('upk_user') || 'null'); return (u && u.name) || 'Гость'; }catch(e){ return 'Гость'; } };
