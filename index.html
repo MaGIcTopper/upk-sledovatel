@@ -504,9 +504,11 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
             <select id="arType">
               <option value="ud">Уголовное дело</option>
               <option value="mp">Материал проверки</option>
+              <option value="prod">Продление срока проверки</option>
             </select>
           </div>
         </div>
+        <p class="hint" id="arProdHint" style="display:none">При выборе «Продление срока проверки» откроется раздел <b>«Продления»</b> с формой ходатайства по ст. 144 УПК РФ. Должность, звание и ФИО составителя подставятся автоматически.</p>
 
         <h3>Основные сведения</h3>
         <div class="rgrid">
@@ -634,8 +636,9 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         </div>
 
         <h3>Составитель</h3>
+        <p class="hint" style="margin-bottom:10px">Должность, звание и ФИО подставляются автоматически из вашего профиля. Можно изменить вручную.</p>
         <div class="rgrid">
-          <div class="field w"><label>Должность (полная, как в документе)</label><textarea id="prSigPos" rows="2">Заместитель руководителя следственного отдела по городу Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области</textarea></div>
+          <div class="field w"><label>Должность (полная, как в документе)</label><textarea id="prSigPos" rows="2"></textarea></div>
           <div class="field"><label>Звание</label><input id="prSigRank" placeholder="капитан юстиции"></div>
           <div class="field"><label>ФИО</label><input id="prSigFio" placeholder="Петров И.В."></div>
         </div>
@@ -1447,6 +1450,50 @@ function downloadRecordFile(rec){
   document.body.appendChild(a);
   a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 5000);
+}
+
+/* ---- Полная должность по профилю ---- */
+function fullPositionFor(u){
+  if(!u || !u.pos) return '';
+  const pos = u.pos;
+  const unit = u.unit || '';
+  let prefix;
+  if(/Зам\.?\s*руководителя/i.test(pos)) prefix = 'Заместитель руководителя';
+  else if(/Руководитель отдела/i.test(pos)) prefix = 'Руководитель';
+  else if(/Следователь-криминалист/i.test(pos)) prefix = 'Следователь-криминалист';
+  else if(/Помощник следователя/i.test(pos)) prefix = 'Помощник следователя';
+  else if(/Следователь/i.test(pos)) prefix = 'Следователь';
+  else if(/Эксперт-криминалист/i.test(pos)) prefix = 'Эксперт-криминалист';
+  else prefix = pos;
+  if(/Левобережный/.test(unit)){
+    return prefix + ' следственного отдела по городу Левобережный следственного управления Следственного комитета Российской Федерации по Кировской области';
+  }
+  if(/криминалистики/i.test(unit)){
+    return prefix + ' отдела криминалистики следственного управления Следственного комитета Российской Федерации по Кировской области';
+  }
+  return pos;
+}
+function fioIOF(s){
+  if(!s) return '';
+  const t = String(s).trim();
+  const parts = t.split(/\s+/);
+  if(parts.length === 1) return t;
+  if(parts[0].indexOf('.') !== -1) return t;
+  if(parts[1].indexOf('.') !== -1) return parts[1] + ' ' + parts[0];
+  const surname = parts[0];
+  const inits = parts.slice(1).map(p => p[0].toUpperCase() + '.').join('');
+  return inits + ' ' + surname;
+}
+function fioFIO(s){
+  if(!s) return '';
+  const t = String(s).trim();
+  const parts = t.split(/\s+/);
+  if(parts.length === 1) return t;
+  if(parts[0].indexOf('.') !== -1) return parts.slice(1).join(' ') + ' ' + parts[0];
+  if(parts[1].indexOf('.') !== -1) return t;
+  const surname = parts[0];
+  const inits = parts.slice(1).map(p => p[0].toUpperCase() + '.').join('');
+  return surname + ' ' + inits;
 }
 
 /* ---- Личный состав: отметки ---- */
@@ -2263,31 +2310,18 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   };
 
   /* --- ФИО --- */
-  function fioFIO(s){
-    if(!s) return '';
-    const t = String(s).trim();
-    const parts = t.split(/\s+/);
-    if(parts.length === 1) return t;
-    if(parts[0].indexOf('.') !== -1) return parts.slice(1).join(' ') + ' ' + parts[0];
-    if(parts[1].indexOf('.') !== -1) return t;
-    const surname = parts[0];
-    const inits = parts.slice(1).map(p => p[0].toUpperCase() + '.').join('');
-    return surname + ' ' + inits;
-  }
-  function fioIOF(s){
-    if(!s) return '';
-    const t = String(s).trim();
-    const parts = t.split(/\s+/);
-    if(parts.length === 1) return t;
-    if(parts[0].indexOf('.') !== -1) return t;
-    if(parts[1].indexOf('.') !== -1) return parts[1] + ' ' + parts[0];
-    const surname = parts[0];
-    const inits = parts.slice(1).map(p => p[0].toUpperCase() + '.').join('');
-    return inits + ' ' + surname;
-  }
   function shortPos(pos){
     if(!pos) return '';
-    return String(pos).replace(/\s+следственного отдела.*$/i, '').trim();
+    return String(pos).replace(/\s+по\s+городу.*$/i, '').replace(/\s+следственного управления.*$/i, '').trim();
+  }
+  /* Разбивает должность на 2 строки для подписи */
+  function shortPosLines(pos){
+    if(!pos) return [''];
+    const s = shortPos(pos);
+    const parts = s.split(/\s+/);
+    if(parts.length <= 2) return [s];
+    const mid = Math.ceil(parts.length / 2);
+    return [parts.slice(0, mid).join(' '), parts.slice(mid).join(' ')];
   }
 
   /* Собирает резолюцию как массив строк с выравниванием (всё справа — верхний правый угол) */
@@ -2307,6 +2341,26 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       {t: apDate || '',                             a:'right'}
     ];
   }
+
+  /* --- Автоподстановка должности/звания/ФИО из профиля --- */
+  (function autoFillSig(){
+    const u = currentUser();
+    if(!u) return;
+    const posField = g('prSigPos');
+    const rankField = g('prSigRank');
+    const fioField = g('prSigFio');
+    if(posField && !posField.value.trim()){
+      const fullPos = fullPositionFor(u);
+      if(fullPos) posField.value = fullPos;
+    }
+    if(rankField && !rankField.value.trim()){
+      if(u.zvan) rankField.value = u.zvan;
+    }
+    if(fioField && !fioField.value.trim()){
+      const fioStr = u.full ? fioIOF(u.full) : (u.name || '');
+      if(fioStr) fioField.value = fioStr;
+    }
+  })();
 
   /* --- Автоподсчёт даты «до какой продлить» --- */
   function recalcUntil(){
@@ -2412,7 +2466,10 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pp">' + esc2(d.pPostText) + '</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
-    blocks.push('<div>' + esc2(shortPos(d.sigPos)) + '</div>');
+    /* Подпись: должность на 2 строки, потом отступ, потом [звание] + [ФИО] на 1 строке */
+    shortPosLines(d.sigPos).forEach(function(line){
+      blocks.push('<div>' + esc2(line) + '</div>');
+    });
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pb">&nbsp;</div>');
     blocks.push('<div class="pcd"><span>' + esc2(d.sigRank) + '</span><span>' + esc2(d.sigFio) + '</span></div>');
@@ -2500,7 +2557,10 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     body.push(P(''));
     body.push(P(run(d.pPostText), {ind:'w:firstLine="709"', jc:'both'}));
     body.push(P(''));
-    body.push(P(run(shortPos(d.sigPos))));
+    /* Подпись: должность на 2 строки, потом отступ, потом [звание] + [ФИО] на 1 строке */
+    shortPosLines(d.sigPos).forEach(function(line){
+      body.push(P(run(line)));
+    });
     body.push(P(''));
     body.push(P(''));
     body.push(P(run(d.sigRank)+TAB+run(d.sigFio), {tabs:1}));
@@ -2531,6 +2591,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   g('prCopy').onclick = () => {
     const d = buildDoc();
     const resolTxt = (d.resolParts || []).map(p => p.t).join('\n');
+    const sigLines = shortPosLines(d.sigPos).join('\n');
     const txt = [
       resolTxt, '',
       'ПОСТАНОВЛЕНИЕ',
@@ -2554,7 +2615,7 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
       '',
       d.pPostText,
       '',
-      shortPos(d.sigPos),
+      sigLines,
       '',
       '',
       d.sigRank + '\t\t\t\t' + d.sigFio
@@ -3012,7 +3073,25 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
     if(g('arFileWrap')) g('arFileWrap').style.display = isUd ? 'none' : '';
   }
   g('arBy').addEventListener('input', updateArTo);
+
+  /* Переключение типа записи: "prod" → перенос в раздел Продления */
   g('arType').addEventListener('change', () => {
+    const hint = g('arProdHint');
+    const type = g('arType').value;
+    if(type === 'prod'){
+      if(hint) hint.style.display = '';
+      const numVal = g('arNum').value.trim();
+      goTo('prolongations');
+      setTimeout(() => {
+        const prNum = document.getElementById('prNum');
+        if(prNum && numVal && !prNum.value.trim()) prNum.value = numVal;
+      }, 120);
+      /* Возвращаем селект в исходное положение, чтобы не путать пользователя */
+      g('arType').value = 'ud';
+      setTimeout(() => { if(hint) hint.style.display = 'none'; }, 500);
+      return;
+    }
+    if(hint) hint.style.display = 'none';
     arToWasEdited = false;
     g('arTo').value = '';
     updateArTo();
