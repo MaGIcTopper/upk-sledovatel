@@ -855,9 +855,9 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
           <div class="field w"><label>Должность подписанта</label><input id="icSignPos" value="Заместитель руководителя СО"></div>
           <div class="field"><label>Звание</label><input id="icSignRank" placeholder="капитан юстиции"></div>
           <div class="field"><label>ФИО подписанта</label><input id="icSignFio" placeholder="Петров И.В."></div>
-          <div class="field w"><label>Исполнитель (ФИО)</label><input id="icExec" placeholder="Селянин К.Н."></div>
-          <div class="field"><label>Телефон исполнителя</label><input id="icExecTel" placeholder="+7 (926) 314-8"></div>
-          <div class="field"><label>Адрес исполнителя</label><input id="icExecAddr" placeholder="УМВД России по Кировской области"></div>
+          <div class="field w"><label>Исполнитель (ФИО)</label><input id="icExec" value="Селянин К.Н." readonly></div>
+          <div class="field"><label>Телефон исполнителя</label><input id="icExecTel" value="+7 (926) 314-8" readonly></div>
+          <div class="field"><label>Адрес исполнителя</label><input id="icExecAddr" value="УМВД России по Кировской области" readonly></div>
           <div class="field"><label>Исх. №</label><input id="icOutNum" placeholder="52/0291-12/"></div>
           <div class="field"><label>Дата исходящего</label><input type="date" id="icOutDate"></div>
         </div>
@@ -916,7 +916,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <h3>Дополнительно</h3>
         <div class="rgrid">
           <div class="field w"><label>Дополнительная информация</label><input id="icRespExtra" value="не имеется"></div>
-          <div class="field w"><label>Начальник (ФИО)</label><input id="icRespBoss" placeholder="Иванов А.В."></div>
+          <div class="field w"><label>Начальник (ФИО)</label><input id="icRespBoss" value="Иванов А.В." readonly></div>
         </div>
 
         <h3>Предпросмотр</h3>
@@ -2858,6 +2858,24 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   const g = id => document.getElementById(id), v = id => g(id).value.trim();
   const MON = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   const today = () => new Date().toISOString().slice(0,10);
+  const FIXED_IC_EXEC = Object.freeze({
+    fio: 'Селянин К.Н.',
+    tel: '+7 (926) 314-8',
+    addr: 'УМВД России по Кировской области'
+  });
+  const FIXED_EXEC_IDS = {icExec: 'fio', icExecTel: 'tel', icExecAddr: 'addr'};
+  const FIXED_IC_BOSS = 'Иванов А.В.';
+  function icExecValue(id){ return FIXED_EXEC_IDS[id] ? FIXED_IC_EXEC[FIXED_EXEC_IDS[id]] : ''; }
+  function lockICExecutorFields(){
+    Object.keys(FIXED_EXEC_IDS).forEach(id => {
+      const el = g(id);
+      if(!el) return;
+      el.value = icExecValue(id);
+      el.readOnly = true;
+      el.disabled = false;
+      ['input','change','paste','drop'].forEach(ev => el.addEventListener(ev, () => { el.value = icExecValue(id); }));
+    });
+  }
 
   g('prDocDate').value = today();
   g('prNumDate').value = today();
@@ -4171,6 +4189,12 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     if(g('icRespBarcode') && (forceResp || !g('icRespBarcode').value.trim())) g('icRespBarcode').value = makeRespBarcode();
   }
 
+  lockICExecutorFields();
+  if(g('icRespBoss')){
+    g('icRespBoss').value = FIXED_IC_BOSS;
+    g('icRespBoss').readOnly = true;
+    ['input','change','paste','drop'].forEach(ev => g('icRespBoss').addEventListener(ev, () => { g('icRespBoss').value = FIXED_IC_BOSS; }));
+  }
   if(!g('icOutDate').value) g('icOutDate').value = today();
   if(!g('icRespDate').value) g('icRespDate').value = today();
   initICRandomNumbers(false);
@@ -4286,7 +4310,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
       respFio: v('icRespFio'), respBirth: v('icRespBirth'),
       respConv: g('icRespConv').value, respConvText: v('icRespConvText'),
       respPros: g('icRespPros').value, respProsText: v('icRespProsText'),
-      respExtra: v('icRespExtra'), respBoss: v('icRespBoss')
+      respExtra: v('icRespExtra'), respBoss: FIXED_IC_BOSS
     });
   }
 
@@ -4311,7 +4335,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     const convText = esc2(v('icRespConvText') || '');
     const prosText = esc2(v('icRespProsText') || '');
     const extra = esc2(v('icRespExtra') || 'не имеется');
-    const boss = esc2(v('icRespBoss') || 'Иванов А.В.');
+    const boss = esc2(FIXED_IC_BOSS);
     const sig = 'data:image/png;base64,' + IC_RESP_SIGNATURE_B64;
 
     g('icRespPrev').innerHTML = `<div class="ic-spr-watermark">ДЛЯ ПРОВЕРКИ!!!</div>
@@ -4555,7 +4579,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     const convAnswer = r.respConv === 'yes' && r.respConvText ? conv + ' — ' + String(r.respConvText) : conv;
     const prosAnswer = r.respPros === 'yes' && r.respProsText ? pros + ' — ' + String(r.respProsText) : pros;
     const extra = String(r.respExtra || 'не имеется');
-    const boss = String(r.respBoss || 'Иванов А.В.');
+    const boss = FIXED_IC_BOSS;
 
     // Шапка: каждый оригинальный абзац/ячейка сохраняется, меняется только текст.
     const c1Texts=cells1[0] ? Array.from(cells1[0].getElementsByTagNameNS(W,'t')) : [];
@@ -4698,7 +4722,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
       respFio: v('icRespFio'), respBirth: v('icRespBirth'),
       respConv: g('icRespConv').value, respConvText: v('icRespConvText'),
       respPros: g('icRespPros').value, respProsText: v('icRespProsText'),
-      respExtra: v('icRespExtra'), respBoss: v('icRespBoss'),
+      respExtra: v('icRespExtra'), respBoss: FIXED_IC_BOSS,
       author: (u && u.name) || '', ts: Date.now()
     }).then(() => { initICRandomNumbers(true); drawRespPrev(); stR.textContent = '✓ Справка сохранена'; setTimeout(() => stR.textContent = '', 3000); })
       .catch(err => { stR.textContent = 'Ошибка: ' + (err.message || err); });
