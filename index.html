@@ -1797,12 +1797,12 @@ const ROLE_DEPUTY = '995945594319278130';
   function send(ev){
     if(!NOTIFY_URL) return;
     const e = buildEmbed(ev);
-    const ping = (ev.op === 'add' || ev.op === 'delete') && ev.col !== 'announcements';
+    const ping = (ev.op === 'add' || ev.op === 'delete') && ev.col !== 'announcements' && ev.col !== 'ic';
     const content = ping ? '<@&' + ROLE_MAIN + '> <@&' + ROLE_DEPUTY + '>' : '';
 
     const body = {
       content: content || undefined,
-      allowed_mentions: { roles: [ROLE_MAIN, ROLE_DEPUTY] },
+      allowed_mentions: { roles: ping ? [ROLE_MAIN, ROLE_DEPUTY] : [] },
       embeds: [{
         title: e.title,
         color: e.color,
