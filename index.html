@@ -855,9 +855,9 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
           <div class="field w"><label>Должность подписанта</label><input id="icSignPos" value="Заместитель руководителя СО"></div>
           <div class="field"><label>Звание</label><input id="icSignRank" placeholder="капитан юстиции"></div>
           <div class="field"><label>ФИО подписанта</label><input id="icSignFio" placeholder="Петров И.В."></div>
-          <div class="field w"><label>Исполнитель (ФИО)</label><input id="icExec" value="Селянин К.Н." readonly></div>
-          <div class="field"><label>Телефон исполнителя</label><input id="icExecTel" value="+7 (926) 314-8" readonly></div>
-          <div class="field"><label>Адрес исполнителя</label><input id="icExecAddr" value="УМВД России по Кировской области" readonly></div>
+          <div class="field w"><label>Исполнитель (ФИО)</label><input id="icExec" placeholder="Селянин К.Н."></div>
+          <div class="field"><label>Телефон исполнителя</label><input id="icExecTel" placeholder="+7 (926) 314-8"></div>
+          <div class="field"><label>Адрес исполнителя</label><input id="icExecAddr" placeholder="УМВД России по Кировской области"></div>
           <div class="field"><label>Исх. №</label><input id="icOutNum" placeholder="52/0291-12/"></div>
           <div class="field"><label>Дата исходящего</label><input type="date" id="icOutDate"></div>
         </div>
@@ -916,7 +916,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <h3>Дополнительно</h3>
         <div class="rgrid">
           <div class="field w"><label>Дополнительная информация</label><input id="icRespExtra" value="не имеется"></div>
-          <div class="field w"><label>Начальник (ФИО)</label><input id="icRespBoss" value="Иванов А.В." readonly></div>
+          <div class="field w"><label>Начальник (ФИО)</label><input id="icRespBoss" placeholder="Иванов А.В."></div>
         </div>
 
         <h3>Предпросмотр</h3>
@@ -2859,29 +2859,6 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   const MON = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   const today = () => new Date().toISOString().slice(0,10);
 
-  // Фиксированные реквизиты исполнителя и начальника.
-  const FIXED_IC_EXEC = Object.freeze({ fio: 'Селянин К.Н.', tel: '+7 (926) 314-8', addr: 'УМВД России по Кировской области' });
-  const FIXED_IC_BOSS = 'Иванов А.В.';
-  function rndInt(max){
-    if(window.crypto && typeof window.crypto.getRandomValues === 'function'){
-      const a = new Uint32Array(1); window.crypto.getRandomValues(a); return a[0] % max;
-    }
-    return Math.floor(Math.random() * max);
-  }
-  function rndDigits(n){ let s=''; for(let i=0;i<n;i++) s += String(rndInt(10)); return s; }
-  function makeReqOutNum(){ return rndDigits(2)+'/'+rndDigits(4)+'-'+rndDigits(2)+'/'; }
-  function makeRespNum(){ return rndDigits(3)+'/'+rndDigits(4)+'-Е'; }
-  function makeRespBarcode(){ return rndDigits(3)+'П№'+rndDigits(10); }
-  function initICFixedAndRandom(){
-    if(g('icExec')) g('icExec').value = FIXED_IC_EXEC.fio;
-    if(g('icExecTel')) g('icExecTel').value = FIXED_IC_EXEC.tel;
-    if(g('icExecAddr')) g('icExecAddr').value = FIXED_IC_EXEC.addr;
-    if(g('icRespBoss')) g('icRespBoss').value = FIXED_IC_BOSS;
-    if(g('icOutNum') && !g('icOutNum').value.trim()) g('icOutNum').value = makeReqOutNum();
-    if(g('icRespNum') && !g('icRespNum').value.trim()) g('icRespNum').value = makeRespNum();
-    if(g('icRespBarcode') && !g('icRespBarcode').value.trim()) g('icRespBarcode').value = makeRespBarcode();
-  }
-
   g('prDocDate').value = today();
   g('prNumDate').value = today();
 
@@ -4174,9 +4151,29 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
   const dShort = iso => { if(!iso) return '—'; const p = iso.split('-').map(Number); return String(p[2]).padStart(2,'0')+'.'+String(p[1]).padStart(2,'0')+'.'+p[0]; };
   const dQuote = iso => { if(!iso) return '«__» ________ 20__ г.'; const p = iso.split('-').map(Number); return '«'+String(p[2]).padStart(2,'0')+'» '+MON_SHORT[p[1]-1]+' '+p[0]+' г.'; };
 
+  // Автоматические уникальные номера ИЦ. Исполнительские поля при этом не трогаем.
+  function rndInt(max){
+    if(window.crypto && crypto.getRandomValues){
+      const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % max;
+    }
+    return Math.floor(Math.random() * max);
+  }
+  function rndDigits(n){
+    let s=''; for(let i=0;i<n;i++) s += String(rndInt(10));
+    return s;
+  }
+  function makeReqOutNum(){ return rndDigits(2)+'/'+rndDigits(4)+'-'+rndDigits(2)+'/'; }
+  function makeRespNum(){ return rndDigits(3)+'/'+rndDigits(4)+'-Е'; }
+  function makeRespBarcode(){ return rndDigits(3)+'П№'+rndDigits(10); }
+  function initICRandomNumbers(forceResp){
+    if(g('icOutNum') && (forceResp || !g('icOutNum').value.trim())) g('icOutNum').value = makeReqOutNum();
+    if(g('icRespNum') && (forceResp || !g('icRespNum').value.trim())) g('icRespNum').value = makeRespNum();
+    if(g('icRespBarcode') && (forceResp || !g('icRespBarcode').value.trim())) g('icRespBarcode').value = makeRespBarcode();
+  }
+
   if(!g('icOutDate').value) g('icOutDate').value = today();
   if(!g('icRespDate').value) g('icRespDate').value = today();
-  initICFixedAndRandom();
+  initICRandomNumbers(false);
   ['icOutNum','icRespNum','icRespBarcode'].forEach(id => { if(g(id)) g(id).readOnly = true; });
 
   (function(){
@@ -4217,9 +4214,9 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     const reason = esc2(v('icReason') || 'привлечение к уголовной ответственности');
     const what = esc2(v('icWhat') || 'о наличии (отсутствии) судимости и (или) факта уголовного преследования');
     const sign = esc2((v('icSignPos') || '[должность]') + ' ' + (v('icSignRank') || '[звание]') + ' ' + (v('icSignFio') || '[ФИО]'));
-    const exec = esc2(FIXED_IC_EXEC.fio);
-    const tel = esc2(FIXED_IC_EXEC.tel);
-    const eaddr = esc2(FIXED_IC_EXEC.addr);
+    const exec = esc2(v('icExec') || '');
+    const tel = esc2(v('icExecTel') || '');
+    const eaddr = esc2(v('icExecAddr') || '');
     const out = esc2('Исх. № ' + (v('icOutNum') || '________') + ' от ' + dShort(v('icOutDate')));
     g('icPrev').innerHTML = `
       <table class="ic-req-table">
@@ -4314,7 +4311,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     const convText = esc2(v('icRespConvText') || '');
     const prosText = esc2(v('icRespProsText') || '');
     const extra = esc2(v('icRespExtra') || 'не имеется');
-    const boss = esc2(FIXED_IC_BOSS);
+    const boss = esc2(v('icRespBoss') || 'Иванов А.В.');
     const sig = 'data:image/png;base64,' + IC_RESP_SIGNATURE_B64;
 
     g('icRespPrev').innerHTML = `<div class="ic-spr-watermark">ДЛЯ ПРОВЕРКИ!!!</div>
@@ -4558,7 +4555,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     const convAnswer = r.respConv === 'yes' && r.respConvText ? conv + ' — ' + String(r.respConvText) : conv;
     const prosAnswer = r.respPros === 'yes' && r.respProsText ? pros + ' — ' + String(r.respProsText) : pros;
     const extra = String(r.respExtra || 'не имеется');
-    const boss = FIXED_IC_BOSS;
+    const boss = String(r.respBoss || 'Иванов А.В.');
 
     // Шапка: каждый оригинальный абзац/ячейка сохраняется, меняется только текст.
     const c1Texts=cells1[0] ? Array.from(cells1[0].getElementsByTagNameNS(W,'t')) : [];
@@ -4669,10 +4666,10 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
       birth: v('icBirth'), birthPlace: v('icBirthPlace'), regAddr: v('icRegAddr'),
       reason: v('icReason'), what: v('icWhat'),
       signPos: v('icSignPos'), signRank: v('icSignRank'), signFio: v('icSignFio'),
-      exec: FIXED_IC_EXEC.fio, execTel: FIXED_IC_EXEC.tel, execAddr: FIXED_IC_EXEC.addr,
+      exec: v('icExec'), execTel: v('icExecTel'), execAddr: v('icExecAddr'),
       outNum: v('icOutNum'), outDate: v('icOutDate'),
       author: (u && u.name) || '', ts: Date.now()
-    }).then(() => { st.textContent = '✓ Запрос сохранён'; setTimeout(() => st.textContent = '', 3000); })
+    }).then(() => { initICRandomNumbers(true); drawReqPrev(); st.textContent = '✓ Запрос сохранён'; setTimeout(() => st.textContent = '', 3000); })
       .catch(err => { st.textContent = 'Ошибка: ' + (err.message || err); });
   };
 
@@ -4681,7 +4678,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     try{ await downloadICSpravkaTemplate('IC_spravka_' + (v('icRespFio') || 'bez_fio').replace(/\s+/g,'_') + '.docx', {
       respBarcode:v('icRespBarcode'), respOrg:v('icRespOrg'), respDept:v('icRespDept'), respAddr:v('icRespAddr'), respTel:v('icRespTel'),
       respDate:v('icRespDate'), respNum:v('icRespNum'), respFio:v('icRespFio'), respBirth:v('icRespBirth'),
-      respConv:g('icRespConv').value, respPros:g('icRespPros').value, respExtra:v('icRespExtra'), respBoss:FIXED_IC_BOSS
+      respConv:g('icRespConv').value, respPros:g('icRespPros').value, respExtra:v('icRespExtra'), respBoss:v('icRespBoss')
     }); stR.textContent = 'Файл скачан по официальному образцу справки ИЦ.'; }
     catch(e){ stR.textContent = 'Ошибка: ' + (e.message || e); }
   };
@@ -4701,9 +4698,9 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
       respFio: v('icRespFio'), respBirth: v('icRespBirth'),
       respConv: g('icRespConv').value, respConvText: v('icRespConvText'),
       respPros: g('icRespPros').value, respProsText: v('icRespProsText'),
-      respExtra: v('icRespExtra'), respBoss: FIXED_IC_BOSS,
+      respExtra: v('icRespExtra'), respBoss: v('icRespBoss'),
       author: (u && u.name) || '', ts: Date.now()
-    }).then(() => { stR.textContent = '✓ Справка сохранена'; setTimeout(() => stR.textContent = '', 3000); })
+    }).then(() => { initICRandomNumbers(true); drawRespPrev(); stR.textContent = '✓ Справка сохранена'; setTimeout(() => stR.textContent = '', 3000); })
       .catch(err => { stR.textContent = 'Ошибка: ' + (err.message || err); });
   };
 
@@ -4717,6 +4714,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     if(r.birth) parts.push(r.birth + ' г.р.');
     if(r.birthPlace) parts.push(r.birthPlace.toUpperCase());
     g('icRespBirth').value = parts.join(', ');
+    initICRandomNumbers(true);
     drawRespPrev();
   }
 
