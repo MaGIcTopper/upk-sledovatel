@@ -4151,8 +4151,30 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
   const dShort = iso => { if(!iso) return '—'; const p = iso.split('-').map(Number); return String(p[2]).padStart(2,'0')+'.'+String(p[1]).padStart(2,'0')+'.'+p[0]; };
   const dQuote = iso => { if(!iso) return '«__» ________ 20__ г.'; const p = iso.split('-').map(Number); return '«'+String(p[2]).padStart(2,'0')+'» '+MON_SHORT[p[1]-1]+' '+p[0]+' г.'; };
 
+  // Автоматические уникальные номера ИЦ. Исполнительские поля при этом не трогаем.
+  function rndInt(max){
+    if(window.crypto && crypto.getRandomValues){
+      const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % max;
+    }
+    return Math.floor(Math.random() * max);
+  }
+  function rndDigits(n){
+    let s=''; for(let i=0;i<n;i++) s += String(rndInt(10));
+    return s;
+  }
+  function makeReqOutNum(){ return rndDigits(2)+'/'+rndDigits(4)+'-'+rndDigits(2)+'/'; }
+  function makeRespNum(){ return rndDigits(3)+'/'+rndDigits(4)+'-Е'; }
+  function makeRespBarcode(){ return rndDigits(3)+'П№'+rndDigits(10); }
+  function initICRandomNumbers(forceResp){
+    if(g('icOutNum') && (forceResp || !g('icOutNum').value.trim())) g('icOutNum').value = makeReqOutNum();
+    if(g('icRespNum') && (forceResp || !g('icRespNum').value.trim())) g('icRespNum').value = makeRespNum();
+    if(g('icRespBarcode') && (forceResp || !g('icRespBarcode').value.trim())) g('icRespBarcode').value = makeRespBarcode();
+  }
+
   if(!g('icOutDate').value) g('icOutDate').value = today();
   if(!g('icRespDate').value) g('icRespDate').value = today();
+  initICRandomNumbers(false);
+  ['icOutNum','icRespNum','icRespBarcode'].forEach(id => { if(g(id)) g(id).readOnly = true; });
 
   (function(){
     const u = currentUser();
@@ -4647,7 +4669,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
       exec: v('icExec'), execTel: v('icExecTel'), execAddr: v('icExecAddr'),
       outNum: v('icOutNum'), outDate: v('icOutDate'),
       author: (u && u.name) || '', ts: Date.now()
-    }).then(() => { st.textContent = '✓ Запрос сохранён'; setTimeout(() => st.textContent = '', 3000); })
+    }).then(() => { initICRandomNumbers(true); drawReqPrev(); st.textContent = '✓ Запрос сохранён'; setTimeout(() => st.textContent = '', 3000); })
       .catch(err => { st.textContent = 'Ошибка: ' + (err.message || err); });
   };
 
@@ -4678,7 +4700,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
       respPros: g('icRespPros').value, respProsText: v('icRespProsText'),
       respExtra: v('icRespExtra'), respBoss: v('icRespBoss'),
       author: (u && u.name) || '', ts: Date.now()
-    }).then(() => { stR.textContent = '✓ Справка сохранена'; setTimeout(() => stR.textContent = '', 3000); })
+    }).then(() => { initICRandomNumbers(true); drawRespPrev(); stR.textContent = '✓ Справка сохранена'; setTimeout(() => stR.textContent = '', 3000); })
       .catch(err => { stR.textContent = 'Ошибка: ' + (err.message || err); });
   };
 
@@ -4692,6 +4714,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     if(r.birth) parts.push(r.birth + ' г.р.');
     if(r.birthPlace) parts.push(r.birthPlace.toUpperCase());
     g('icRespBirth').value = parts.join(', ');
+    initICRandomNumbers(true);
     drawRespPrev();
   }
 
