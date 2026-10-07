@@ -2858,23 +2858,28 @@ document.querySelectorAll('nav a[data-target="articles"]').forEach(function(l){
   const g = id => document.getElementById(id), v = id => g(id).value.trim();
   const MON = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   const today = () => new Date().toISOString().slice(0,10);
-  const FIXED_IC_EXEC = Object.freeze({
-    fio: 'Селянин К.Н.',
-    tel: '+7 (926) 314-8',
-    addr: 'УМВД России по Кировской области'
-  });
-  const FIXED_EXEC_IDS = {icExec: 'fio', icExecTel: 'tel', icExecAddr: 'addr'};
+
+  // Фиксированные реквизиты исполнителя и начальника.
+  const FIXED_IC_EXEC = Object.freeze({ fio: 'Селянин К.Н.', tel: '+7 (926) 314-8', addr: 'УМВД России по Кировской области' });
   const FIXED_IC_BOSS = 'Иванов А.В.';
-  function icExecValue(id){ return FIXED_EXEC_IDS[id] ? FIXED_IC_EXEC[FIXED_EXEC_IDS[id]] : ''; }
-  function lockICExecutorFields(){
-    Object.keys(FIXED_EXEC_IDS).forEach(id => {
-      const el = g(id);
-      if(!el) return;
-      el.value = icExecValue(id);
-      el.readOnly = true;
-      el.disabled = false;
-      ['input','change','paste','drop'].forEach(ev => el.addEventListener(ev, () => { el.value = icExecValue(id); }));
-    });
+  function rndInt(max){
+    if(window.crypto && typeof window.crypto.getRandomValues === 'function'){
+      const a = new Uint32Array(1); window.crypto.getRandomValues(a); return a[0] % max;
+    }
+    return Math.floor(Math.random() * max);
+  }
+  function rndDigits(n){ let s=''; for(let i=0;i<n;i++) s += String(rndInt(10)); return s; }
+  function makeReqOutNum(){ return rndDigits(2)+'/'+rndDigits(4)+'-'+rndDigits(2)+'/'; }
+  function makeRespNum(){ return rndDigits(3)+'/'+rndDigits(4)+'-Е'; }
+  function makeRespBarcode(){ return rndDigits(3)+'П№'+rndDigits(10); }
+  function initICFixedAndRandom(){
+    if(g('icExec')) g('icExec').value = FIXED_IC_EXEC.fio;
+    if(g('icExecTel')) g('icExecTel').value = FIXED_IC_EXEC.tel;
+    if(g('icExecAddr')) g('icExecAddr').value = FIXED_IC_EXEC.addr;
+    if(g('icRespBoss')) g('icRespBoss').value = FIXED_IC_BOSS;
+    if(g('icOutNum') && !g('icOutNum').value.trim()) g('icOutNum').value = makeReqOutNum();
+    if(g('icRespNum') && !g('icRespNum').value.trim()) g('icRespNum').value = makeRespNum();
+    if(g('icRespBarcode') && !g('icRespBarcode').value.trim()) g('icRespBarcode').value = makeRespBarcode();
   }
 
   g('prDocDate').value = today();
@@ -4169,35 +4174,9 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
   const dShort = iso => { if(!iso) return '—'; const p = iso.split('-').map(Number); return String(p[2]).padStart(2,'0')+'.'+String(p[1]).padStart(2,'0')+'.'+p[0]; };
   const dQuote = iso => { if(!iso) return '«__» ________ 20__ г.'; const p = iso.split('-').map(Number); return '«'+String(p[2]).padStart(2,'0')+'» '+MON_SHORT[p[1]-1]+' '+p[0]+' г.'; };
 
-  // Автоматические уникальные номера ИЦ. Исполнительские поля при этом не трогаем.
-  function rndInt(max){
-    if(window.crypto && crypto.getRandomValues){
-      const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % max;
-    }
-    return Math.floor(Math.random() * max);
-  }
-  function rndDigits(n){
-    let s=''; for(let i=0;i<n;i++) s += String(rndInt(10));
-    return s;
-  }
-  function makeReqOutNum(){ return rndDigits(2)+'/'+rndDigits(4)+'-'+rndDigits(2)+'/'; }
-  function makeRespNum(){ return rndDigits(3)+'/'+rndDigits(4)+'-Е'; }
-  function makeRespBarcode(){ return rndDigits(3)+'П№'+rndDigits(10); }
-  function initICRandomNumbers(forceResp){
-    if(g('icOutNum') && (forceResp || !g('icOutNum').value.trim())) g('icOutNum').value = makeReqOutNum();
-    if(g('icRespNum') && (forceResp || !g('icRespNum').value.trim())) g('icRespNum').value = makeRespNum();
-    if(g('icRespBarcode') && (forceResp || !g('icRespBarcode').value.trim())) g('icRespBarcode').value = makeRespBarcode();
-  }
-
-  lockICExecutorFields();
-  if(g('icRespBoss')){
-    g('icRespBoss').value = FIXED_IC_BOSS;
-    g('icRespBoss').readOnly = true;
-    ['input','change','paste','drop'].forEach(ev => g('icRespBoss').addEventListener(ev, () => { g('icRespBoss').value = FIXED_IC_BOSS; }));
-  }
   if(!g('icOutDate').value) g('icOutDate').value = today();
   if(!g('icRespDate').value) g('icRespDate').value = today();
-  initICRandomNumbers(false);
+  initICFixedAndRandom();
   ['icOutNum','icRespNum','icRespBarcode'].forEach(id => { if(g(id)) g(id).readOnly = true; });
 
   (function(){
@@ -4238,9 +4217,9 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     const reason = esc2(v('icReason') || 'привлечение к уголовной ответственности');
     const what = esc2(v('icWhat') || 'о наличии (отсутствии) судимости и (или) факта уголовного преследования');
     const sign = esc2((v('icSignPos') || '[должность]') + ' ' + (v('icSignRank') || '[звание]') + ' ' + (v('icSignFio') || '[ФИО]'));
-    const exec = esc2(v('icExec') || '');
-    const tel = esc2(v('icExecTel') || '');
-    const eaddr = esc2(v('icExecAddr') || '');
+    const exec = esc2(FIXED_IC_EXEC.fio);
+    const tel = esc2(FIXED_IC_EXEC.tel);
+    const eaddr = esc2(FIXED_IC_EXEC.addr);
     const out = esc2('Исх. № ' + (v('icOutNum') || '________') + ' от ' + dShort(v('icOutDate')));
     g('icPrev').innerHTML = `
       <table class="ic-req-table">
@@ -4310,7 +4289,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
       respFio: v('icRespFio'), respBirth: v('icRespBirth'),
       respConv: g('icRespConv').value, respConvText: v('icRespConvText'),
       respPros: g('icRespPros').value, respProsText: v('icRespProsText'),
-      respExtra: v('icRespExtra'), respBoss: FIXED_IC_BOSS
+      respExtra: v('icRespExtra'), respBoss: v('icRespBoss')
     });
   }
 
@@ -4690,10 +4669,10 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
       birth: v('icBirth'), birthPlace: v('icBirthPlace'), regAddr: v('icRegAddr'),
       reason: v('icReason'), what: v('icWhat'),
       signPos: v('icSignPos'), signRank: v('icSignRank'), signFio: v('icSignFio'),
-      exec: v('icExec'), execTel: v('icExecTel'), execAddr: v('icExecAddr'),
+      exec: FIXED_IC_EXEC.fio, execTel: FIXED_IC_EXEC.tel, execAddr: FIXED_IC_EXEC.addr,
       outNum: v('icOutNum'), outDate: v('icOutDate'),
       author: (u && u.name) || '', ts: Date.now()
-    }).then(() => { initICRandomNumbers(true); drawReqPrev(); st.textContent = '✓ Запрос сохранён'; setTimeout(() => st.textContent = '', 3000); })
+    }).then(() => { st.textContent = '✓ Запрос сохранён'; setTimeout(() => st.textContent = '', 3000); })
       .catch(err => { st.textContent = 'Ошибка: ' + (err.message || err); });
   };
 
@@ -4702,7 +4681,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     try{ await downloadICSpravkaTemplate('IC_spravka_' + (v('icRespFio') || 'bez_fio').replace(/\s+/g,'_') + '.docx', {
       respBarcode:v('icRespBarcode'), respOrg:v('icRespOrg'), respDept:v('icRespDept'), respAddr:v('icRespAddr'), respTel:v('icRespTel'),
       respDate:v('icRespDate'), respNum:v('icRespNum'), respFio:v('icRespFio'), respBirth:v('icRespBirth'),
-      respConv:g('icRespConv').value, respPros:g('icRespPros').value, respExtra:v('icRespExtra'), respBoss:v('icRespBoss')
+      respConv:g('icRespConv').value, respPros:g('icRespPros').value, respExtra:v('icRespExtra'), respBoss:FIXED_IC_BOSS
     }); stR.textContent = 'Файл скачан по официальному образцу справки ИЦ.'; }
     catch(e){ stR.textContent = 'Ошибка: ' + (e.message || e); }
   };
@@ -4724,7 +4703,7 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
       respPros: g('icRespPros').value, respProsText: v('icRespProsText'),
       respExtra: v('icRespExtra'), respBoss: FIXED_IC_BOSS,
       author: (u && u.name) || '', ts: Date.now()
-    }).then(() => { initICRandomNumbers(true); drawRespPrev(); stR.textContent = '✓ Справка сохранена'; setTimeout(() => stR.textContent = '', 3000); })
+    }).then(() => { stR.textContent = '✓ Справка сохранена'; setTimeout(() => stR.textContent = '', 3000); })
       .catch(err => { stR.textContent = 'Ошибка: ' + (err.message || err); });
   };
 
@@ -4738,7 +4717,6 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     if(r.birth) parts.push(r.birth + ' г.р.');
     if(r.birthPlace) parts.push(r.birthPlace.toUpperCase());
     g('icRespBirth').value = parts.join(', ');
-    initICRandomNumbers(true);
     drawRespPrev();
   }
 
