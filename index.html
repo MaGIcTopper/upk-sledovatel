@@ -435,6 +435,46 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
 .ic-spr-signrow .fio{width:150px;text-align:right;}
 @media(max-width:700px){.ic-response-paper{padding:24px 22px;min-height:1000px}.ic-spr-emblem{margin-left:30px}.ic-spr-mvd{margin-left:30px}.ic-spr-number{position:static;text-align:right;margin-top:-88px;margin-bottom:20px}.ic-spr-org{margin-left:0;width:320px}.ic-spr-signrow{gap:8px}.ic-spr-watermark{font-size:48px}}
 
+/* ===== Мед. учреждение ===== */
+.med-req-paper{position:relative;background:#fff;color:#111;font-family:"Times New Roman",serif;width:100%;max-width:760px;margin:14px auto;padding:30px 44px 40px;box-shadow:0 4px 18px rgba(0,0,0,.15);line-height:1.35;font-size:15px;}
+.med-req-head{text-align:center}
+.med-req-emblem{display:block;margin:0 auto 6px;height:64px;width:auto;object-fit:contain}
+.med-req-head .h1{font-size:16px;font-weight:700}
+.med-req-head .h2{font-size:15px;font-weight:700;line-height:1.15}
+.med-req-head .h3{font-size:13px;margin-top:1px}
+.med-req-head .h4{font-size:15px;font-weight:700;margin-top:12px}
+.med-req-line{display:flex;justify-content:space-between;font-size:13px;margin:10px 0 0}
+.med-req-line .left{text-align:left}
+.med-req-line .right{text-align:right}
+.med-req-recip{text-align:right;margin:20px 0 0;font-size:15px;line-height:1.3}
+.med-req-title{text-align:center;margin:22px 0 2px;font-size:17px;font-weight:700;letter-spacing:6px;text-decoration:underline;text-underline-offset:4px}
+.med-req-subtitle{text-align:center;margin-bottom:18px;font-size:14px}
+.med-req-body p{text-indent:2.2em;text-align:justify;margin:8px 0}
+.med-req-body ul{margin:8px 0 8px 44px}
+.med-req-body li{margin:4px 0;text-align:justify}
+.med-req-sign{margin-top:36px;font-size:15px}
+.med-req-sign .row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2px}
+.med-req-sign .pos{width:220px}
+.med-req-sign .sig{flex:1;text-align:center}
+.med-req-sign .fio{width:170px;text-align:right}
+.med-resp-paper{position:relative;background:#fff;color:#111;font-family:"Times New Roman",serif;width:100%;max-width:760px;min-height:900px;margin:14px auto;padding:32px 48px 44px;box-shadow:0 4px 18px rgba(0,0,0,.15);line-height:1.35;font-size:15px;}
+.med-resp-head{text-align:center}
+.med-resp-head .h1{font-size:15px;font-weight:700;line-height:1.15}
+.med-resp-head .h2{font-size:13.5px;margin-top:2px}
+.med-resp-head .h3{font-size:13px;margin-top:2px}
+.med-resp-line{display:flex;justify-content:space-between;font-size:13.5px;margin:10px 0 0}
+.med-resp-title{text-align:center;font-size:17px;font-weight:700;letter-spacing:5px;margin:34px 0 6px}
+.med-resp-body p{text-indent:2.2em;text-align:justify;margin:10px 0}
+.med-resp-body ul{margin:8px 0 8px 44px}
+.med-resp-body li{margin:6px 0;text-align:justify}
+.med-resp-sign{margin-top:48px;font-size:15px}
+.med-resp-sign .row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2px}
+.med-resp-sign .pos{width:220px}
+.med-resp-sign .sig{flex:1;text-align:center}
+.med-resp-sign .fio{width:170px;text-align:right}
+body.role-doctor nav a[data-target]:not([data-target="med"]){display:none}
+body.role-doctor nav .navgroup{display:none}
+  
 </style>
 </head>
 <body>
@@ -494,6 +534,7 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <li><a href="#" data-target="allropp">🗂 Все РОПП</a></li>
         <li><a href="#" data-target="prolongations">📋 Продления</a></li>
         <li><a href="#" data-target="ic">📨 Запрос в ИЦ</a></li>
+        <li><a href="#" data-target="med">🏥 Запрос в мед. учреждение</a></li>
         <li><a href="#" data-target="important">📌 Важное</a></li>
         <li><a href="#" data-target="staff">👥 Личный состав</a></li>
         <li><a href="#" data-target="addrecord">➕ Добавить запись</a></li>
@@ -933,6 +974,129 @@ footer{text-align:center;padding:26px 20px;color:var(--muted);font-size:12.5px;
         <h2>Реестр запросов в ИЦ <span class="badge" id="icCount">0</span></h2>
         <p class="sub">Все запросы и полученные справки. Из запроса можно в один клик создать справку.</p>
         <div id="icList"></div>
+      </div>
+    </section>
+
+        <section id="med">
+      <div class="card rform" id="medReqCard">
+        <h2>Запрос в мед. учреждение <span class="badge">запрос СК</span></h2>
+        <p class="sub">1) Заполните форму · 2) Скачайте Word · 3) Сохраните в реестр.</p>
+
+        <h3>Уголовное дело</h3>
+        <div class="rgrid">
+          <div class="field"><label>№ уголовного дела</label><input id="medUD" placeholder="1260220001000007"></div>
+          <div class="field"><label>Часть, статья УК РФ</label><input id="medArt" placeholder="ч. 1 ст. 105"></div>
+          <div class="field w"><label>В отношении кого</label><input id="medSuspect" placeholder="Закаева Олега Мухамедовича"></div>
+        </div>
+
+        <h3>Проверяемое лицо</h3>
+        <div class="rgrid">
+          <div class="field w"><label>ФИО (родительный падеж)</label><input id="medPersonFio" placeholder="Закаева Олега Мухамедовича"></div>
+          <div class="field"><label>Дата рождения</label><input id="medPersonBirth" placeholder="12.08.1991"></div>
+          <div class="field w"><label>Адрес проживания</label><input id="medPersonAddr" placeholder="г. Левобережный, ул. Энтузиастов, д. 13, кв. 81"></div>
+        </div>
+
+        <h3>Что запрашивается</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Сведения</label><textarea id="medWhat" rows="3">о состоянии на учете (в том числе снятия с учета) в наркологическом и психоневрологическом диспансерах</textarea></div>
+          <div class="field"><label>Срок исполнения</label><input id="medDeadline" value="в течение 24 часов"></div>
+          <div class="field"><label>E-mail для ответа</label><input id="medEmail" value="1843298sb@mail.ru"></div>
+          <div class="field"><label>Телефон</label><input id="medPhone" value="+7 (967) 184-32-92"></div>
+        </div>
+
+        <h3>Адресат</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Наименование</label><input id="medAddrInst" value="БУ КО «Левобережная областная клиническая больница»"></div>
+          <div class="field"><label>ФИО (дательный)</label><input id="medAddrFio" value="Коневу Р.В."></div>
+          <div class="field"><label>Обращение</label><input id="medAddrIo" value="Ростислав Владимирович"></div>
+          <div class="field w"><label>Адрес</label><input id="medAddrAddr" value="613049, Кировская обл., г. Левобережный, ул. Российская, стр. 3"></div>
+        </div>
+
+        <h3>Отправитель</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Наименование подразделения</label><input id="medFromOrg" value="Следственный отдел по г. Левобережный"></div>
+          <div class="field w"><label>Реквизиты</label><input id="medFromAddr" value="ул. Энтузиастов, 38, Левобережный, 607220"></div>
+          <div class="field"><label>Исх. №</label><input id="medOutNum" readonly></div>
+          <div class="field"><label>Дата</label><input type="date" id="medOutDate"></div>
+        </div>
+
+        <h3>Подпись</h3>
+        <div class="rgrid">
+          <div class="field"><label>Должность</label><input id="medSignPos" value="Следователь"></div>
+          <div class="field"><label>Звание</label><input id="medSignRank" placeholder="лейтенант юстиции"></div>
+          <div class="field"><label>ФИО</label><input id="medSignFio" placeholder="Н.С. Борисов"></div>
+        </div>
+
+        <h3>Предпросмотр</h3>
+        <div class="paper med-req-paper" id="medReqPrev"></div>
+        <div class="steps">
+          <button class="pill" id="medReqDoc">⬇ Скачать Word (.docx)</button>
+          <button class="pill" id="medReqSave">💾 Сохранить в реестр</button>
+          <button class="pill" id="medReqCopy">Скопировать текст</button>
+        </div>
+        <p class="sub" id="medReqSt"></p>
+      </div>
+
+      <div class="card rform" id="medRespCard">
+        <h2>Ответ мед. учреждения <span class="badge">ответ главного врача</span></h2>
+        <p class="sub">Заполняется главным врачом или администратором.</p>
+
+        <div class="rgrid">
+          <div class="field w"><label>На какой запрос</label><select id="medRespReqSel"><option value="">— выбрать запрос —</option></select></div>
+        </div>
+
+        <h3>Реквизиты ответа</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Учреждение</label><input id="medRespInst" value="БУ КО «Левобережная областная клиническая больница»"></div>
+          <div class="field w"><label>Адрес</label><input id="medRespAddr" value="613049, Кировская обл., г. Левобережный, ул. Российская, стр. 3"></div>
+          <div class="field"><label>Телефон</label><input id="medRespPhone" value="+7 (8332) 00-00-00"></div>
+          <div class="field"><label>Дата</label><input type="date" id="medRespDate"></div>
+          <div class="field"><label>Исх. №</label><input id="medRespNum" readonly></div>
+          <div class="field"><label>№ уголовного дела</label><input id="medRespUD"></div>
+        </div>
+
+        <h3>Пациент</h3>
+        <div class="rgrid">
+          <div class="field w"><label>ФИО</label><input id="medRespFio" placeholder="Закаев Олег Мухамедович"></div>
+          <div class="field"><label>Дата рождения</label><input id="medRespBirth" placeholder="12.08.1991"></div>
+          <div class="field w"><label>Адрес</label><input id="medRespRegAddr" placeholder="г. Левобережный, ул. Энтузиастов, д. 13, кв. 81"></div>
+        </div>
+
+        <h3>Наркологический диспансер</h3>
+        <div class="rgrid">
+          <div class="field"><label>Состоит</label><select id="medRespNarco"><option value="no">не состоит</option><option value="yes">состоит</option></select></div>
+          <div class="field"><label>С даты</label><input id="medRespNarcoFrom" placeholder="дд.мм.гггг"></div>
+          <div class="field"><label>Снят</label><input id="medRespNarcoTo" placeholder="дд.мм.гггг"></div>
+        </div>
+
+        <h3>Психоневрологический диспансер</h3>
+        <div class="rgrid">
+          <div class="field"><label>Состоит</label><select id="medRespPsycho"><option value="no">не состоит</option><option value="yes">состоит</option></select></div>
+          <div class="field"><label>С даты</label><input id="medRespPsychoFrom" placeholder="дд.мм.гггг"></div>
+          <div class="field"><label>Снят</label><input id="medRespPsychoTo" placeholder="дд.мм.гггг"></div>
+        </div>
+
+        <h3>Подпись</h3>
+        <div class="rgrid">
+          <div class="field w"><label>Дополнительно</label><textarea id="medRespExtra" rows="2"></textarea></div>
+          <div class="field w"><label>Должность</label><input id="medRespBossPos" value="Главный врач"></div>
+          <div class="field w"><label>ФИО</label><input id="medRespBoss" value="Р.В. Конев"></div>
+        </div>
+
+        <h3>Предпросмотр</h3>
+        <div class="paper med-resp-paper" id="medRespPrev"></div>
+        <div class="steps">
+          <button class="pill" id="medRespDoc">⬇ Скачать Word (.docx)</button>
+          <button class="pill" id="medRespSave">💾 Сохранить в реестр</button>
+          <button class="pill" id="medRespCopy">Скопировать текст</button>
+        </div>
+        <p class="sub" id="medRespSt"></p>
+      </div>
+
+      <div class="card">
+        <h2>Реестр запросов в мед. учреждение <span class="badge" id="medCount">0</span></h2>
+        <p class="sub">Запросы СК и ответы мед. учреждения.</p>
+        <div id="medList"></div>
       </div>
     </section>
 
@@ -1539,7 +1703,8 @@ const AUTH_USERS = [
   {surname:"Маяковский",  full:"Маяковский Маркус Александрович", pos:"Следователь",                  zvan:"Лейтенант юстиции",         unit:"СО по г. Левобережный", passHex:"31345a5a3838"},
   {surname:"Смирнов",     full:"Смирнов Виктор Алексеевич",       pos:"Следователь",                  zvan:"Лейтенант юстиции",         unit:"СО по г. Левобережный", passHex:"4c544d5f3031414253376f6f32313738"},
   {surname:"Мамалашвили", full:"Мамалашвили Тамаз Отарович",      pos:"Помощник следователя",         zvan:"Младший лейтенант юстиции", unit:"СО по г. Левобережный", passHex:"6d616d616c61736876696c6932303235"},
-  {surname:"Сиваш",       full:"Сиваш Валерий Игоревич",          pos:"Помощник следователя",         zvan:"Младший лейтенант юстиции", unit:"СО по г. Левобережный", passHex:"7369766173685f534b5f31393939"}
+  {surname:"Сиваш",       full:"Сиваш Валерий Игоревич",          pos:"Помощник следователя",         zvan:"Младший лейтенант юстиции", unit:"СО по г. Левобережный", passHex:"7369766173685f534b5f31393939"},
+  {surname:"Конев",       full:"Конев Ростислав Владимирович",    pos:"Главный врач",                 zvan:"",                          unit:"БУ КО «Левобережная областная клиническая больница»", role:"external", passHex:"676c6176767261636832303235"}
 ];
 
 const MASTER_LOGIN = "admin";
@@ -2060,7 +2225,7 @@ function renderStaff(){
   if(cnt) cnt.textContent = AUTH_USERS.length + ' чел.';
 
   const units = {};
-  AUTH_USERS.forEach(function(u){ (units[u.unit] = units[u.unit] || []).push(u); });
+  AUTH_USERS.forEach(function(u){ if(u.role === 'external') return; (units[u.unit] = units[u.unit] || []).push(u); });
 
   const manage = canManageStaff();
 
