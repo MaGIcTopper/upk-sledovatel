@@ -5014,6 +5014,532 @@ const IC_REQ_TEMPLATE_B64 = "UEsDBBQABgAIAAAAIQDHrzwPoQEAAFoJAAATAAgCW0NvbnRlbnR
     }, err => { console.warn('ic read error', err); });
   }
 })();
+/* ============================================================
+   МЕД. УЧРЕЖДЕНИЕ — ЗАПРОС + ОТВЕТ + РЕЕСТР
+   ============================================================ */
+(function(){
+  const g = id => document.getElementById(id);
+  const v = id => g(id) ? g(id).value.trim() : '';
+  if(!g('medReqSave')) return;
+  const today = () => new Date().toISOString().slice(0,10);
+  const MON_SHORT = ['янв.','февр.','марта','апр.','мая','июня','июля','авг.','сент.','окт.','нояб.','дек.'];
+  const dShort = iso => { if(!iso) return '—'; const p = iso.split('-').map(Number); return String(p[2]).padStart(2,'0')+'.'+String(p[1]).padStart(2,'0')+'.'+p[0]; };
+  const dQuote = iso => { if(!iso) return '«__» ________ 20__ г.'; const p = iso.split('-').map(Number); return '«'+String(p[2]).padStart(2,'0')+'» '+MON_SHORT[p[1]-1]+' '+p[0]+' г.'; };
+
+  function rndInt(max){
+    if(window.crypto && crypto.getRandomValues){ const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % max; }
+    return Math.floor(Math.random() * max);
+  }
+  function rndDigits(n){ let s=''; for(let i=0;i<n;i++) s += String(rndInt(10)); return s; }
+  function makeMedOutNum(){ return '1260222000' + rndDigits(6); }
+  function makeMedRespNum(){ return rndDigits(2)+'-'+rndDigits(1)+'/'+rndDigits(4); }
+  function initMedRandomNumbers(force){
+    if(g('medOutNum') && (force || !g('medOutNum').value.trim())) g('medOutNum').value = makeMedOutNum();
+    if(g('medRespNum') && (force || !g('medRespNum').value.trim())) g('medRespNum').value = makeMedRespNum();
+  }
+
+  if(!g('medOutDate').value) g('medOutDate').value = today();
+  if(!g('medRespDate').value) g('medRespDate').value = today();
+  initMedRandomNumbers(false);
+
+  (function(){
+    const u = currentUser();
+    if(!u) return;
+    if(g('medSignRank') && !g('medSignRank').value.trim() && u.zvan) g('medSignRank').value = u.zvan;
+    if(g('medSignFio') && !g('medSignFio').value.trim()) g('medSignFio').value = u.full ? fioIOF(u.full) : (u.name || '');
+  })();
+
+  function esc2(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function drawMedReqPrev(){
+    const d = v('medOutDate');
+    const num = v('medOutNum') || '—';
+    const inst = v('medAddrInst');
+    const fio = v('medAddrFio');
+    const io = v('medAddrIo');
+    const addr = v('medAddrAddr');
+    const fromOrg = v('medFromOrg');
+    const fromAddr = v('medFromAddr');
+    const ud = v('medUD') || '________';
+    const art = v('medArt') || '________';
+    const susp = v('medSuspect') || '________';
+    const personFio = v('medPersonFio') || '________';
+    const personBirth = v('medPersonBirth') || '________';
+    const personAddr = v('medPersonAddr') || '________';
+    const what = v('medWhat') || '________';
+    const deadline = v('medDeadline') || 'в течение 24 часов';
+    const email = v('medEmail') || '—';
+    const phone = v('medPhone') || '—';
+    const sigPos = v('medSignPos') || 'Следователь';
+    const sigRank = v('medSignRank') || '—';
+    const sigFio = v('medSignFio') || '—';
+
+    g('medReqPrev').innerHTML = `
+      <div class="med-req-head">
+        <div class="h1">СК РОССИИ</div>
+        <div class="h2">Следственное управление<br>по Кировской области<br><span class="h3">(СУ СК России по Кировской области)</span></div>
+        <div class="h4">${esc2(fromOrg)}</div>
+        <div class="h3">${esc2(fromAddr)}</div>
+        <div class="med-req-line"><div class="left">${esc2(dShort(d))}</div><div class="right">№ ${esc2(num)}</div></div>
+        <div class="med-req-line"><div class="left">на № ________ от ____________</div><div class="right"></div></div>
+      </div>
+      <div class="med-req-recip">
+        <div class="to">Главному врачу ${esc2(inst)}</div>
+        <div>${esc2(fio)}</div>
+        <div style="height:14px"></div>
+        <div>${esc2(addr)}</div>
+      </div>
+      <div class="med-req-title">ЗАПРОС</div>
+      <div class="med-req-subtitle">о предоставлении информации</div>
+      <div class="med-req-body">
+        <p style="text-indent:0">Уважаемый ${esc2(io)}!</p>
+        <p>В производстве ${esc2(fromOrg)} следственного управления Следственного комитета Российской Федерации по Кировской области находятся материалы уголовного дела №${esc2(ud)}, возбужденного по признакам преступления, предусмотренного ${esc2(art)} УК РФ в отношении ${esc2(susp)}.</p>
+        <p>В связи с вышеизложенным, руководствуясь ст. ст. 21, 38, 144 УПК РФ, ст. 7 Федерального закона от 28.12.2010 №403-ФЗ «О Следственном комитете Российской Федерации», прошу вверенным Вам сотрудникам предоставить:</p>
+        <ul><li>${esc2(what)} ${esc2(personFio)}, ${esc2(personBirth)} г.р., проживающего и зарегистрированного по адресу: ${esc2(personAddr)}.</li></ul>
+        <p>В связи с ограниченным сроком предварительного следствия ответ на запрос прошу предоставить <b>${esc2(deadline)}</b> с момента получения настоящего запроса по электронной почте ${esc2(email)} с последующей досылкой почтой в адрес ${esc2(fromOrg)} следственного управления Следственного комитета России по Кировской области, расположенного по адресу: ${esc2(fromAddr)}.</p>
+        <p>По всем вопросам, возникающим в ходе исполнения запроса, прошу связываться по телефону: ${esc2(phone)}.</p>
+      </div>
+      <div class="med-req-sign">
+        <div class="row"><span class="pos">${esc2(sigPos)}</span><span class="sig"></span><span class="fio">${esc2(sigFio)}</span></div>
+        <div>${esc2(sigRank)}</div>
+      </div>`;
+  }
+
+  function drawMedRespPrev(){
+    const inst = v('medRespInst');
+    const addr = v('medRespAddr');
+    const phone = v('medRespPhone');
+    const dt = v('medRespDate');
+    const num = v('medRespNum') || '—';
+    const ud = v('medRespUD') || '—';
+    const fio = v('medRespFio') || '—';
+    const birth = v('medRespBirth') || '—';
+    const regAddr = v('medRespRegAddr') || '—';
+    const narcoY = g('medRespNarco').value === 'yes';
+    const psychoY = g('medRespPsycho').value === 'yes';
+    const nFrom = v('medRespNarcoFrom'), nTo = v('medRespNarcoTo');
+    const pFrom = v('medRespPsychoFrom'), pTo = v('medRespPsychoTo');
+    const extra = v('medRespExtra');
+    const bossPos = v('medRespBossPos');
+    const bossFio = v('medRespBoss');
+
+    const nTxt = narcoY ? ('состоит на учете' + (nFrom ? ' с ' + esc2(nFrom) : '') + (nTo ? ', снят с учета ' + esc2(nTo) : '')) : 'не состоит';
+    const pTxt = psychoY ? ('состоит на учете' + (pFrom ? ' с ' + esc2(pFrom) : '') + (pTo ? ', снят с учета ' + esc2(pTo) : '')) : 'не состоит';
+
+    g('medRespPrev').innerHTML = `
+      <div class="med-resp-head">
+        <div class="h1">${esc2(inst)}</div>
+        <div class="h2">${esc2(addr)}</div>
+        <div class="h3">тел.: ${esc2(phone)}</div>
+        <div class="med-resp-line"><div>${esc2(dShort(dt))}</div><div>№ ${esc2(num)}</div></div>
+        <div class="med-resp-line"><div>на № ________ от ____________</div><div></div></div>
+      </div>
+      <div class="med-resp-title">ОТВЕТ</div>
+      <div class="med-resp-body">
+        <p>На Ваш запрос по уголовному делу №${esc2(ud)} сообщаю:</p>
+        <p>Гр. ${esc2(fio)}, ${esc2(birth)} г.р., зарегистрированный по адресу: ${esc2(regAddr)}:</p>
+        <ul>
+          <li>в наркологическом диспансере: <b>${nTxt}</b>;</li>
+          <li>в психоневрологическом диспансере: <b>${pTxt}</b>.</li>
+        </ul>
+        ${extra ? `<p>Дополнительно: ${esc2(extra)}</p>` : ''}
+      </div>
+      <div class="med-resp-sign">
+        <div class="row"><span class="pos">${esc2(bossPos)}</span><span class="sig">_______________</span><span class="fio">${esc2(bossFio)}</span></div>
+      </div>`;
+  }
+
+  document.querySelectorAll('#med input, #med textarea, #med select').forEach(el => {
+    el.addEventListener('input', () => { drawMedReqPrev(); drawMedRespPrev(); });
+    el.addEventListener('change', () => { drawMedReqPrev(); drawMedRespPrev(); });
+  });
+  drawMedReqPrev();
+  drawMedRespPrev();
+
+  function buildMedDocx(blocks, fname){
+    const X = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const rpr = (b,u) => '<w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>'+(b?'<w:b/><w:bCs/>':'')+(u?'<w:u w:val="single"/>':'')+'<w:sz w:val="28"/><w:szCs w:val="28"/></w:rPr>';
+    const run = (t,b,u) => '<w:r>'+rpr(b,u)+'<w:t xml:space="preserve">'+X(t)+'</w:t></w:r>';
+    const TAB = '<w:r>'+rpr()+'<w:tab/></w:r>';
+    const P = (r,o) => { o = o||{}; return '<w:p><w:pPr>'+(o.tabs?'<w:tabs><w:tab w:val="right" w:pos="10466"/></w:tabs>':'')
+      +'<w:spacing w:after="0" w:line="240" w:lineRule="auto"/>'+(o.ind?'<w:ind '+o.ind+'/>':'')+(o.jc?'<w:jc w:val="'+o.jc+'"/>':'')+'</w:pPr>'+(r||'')+'</w:p>'; };
+    const body = blocks.map(b => {
+      if(b.k === 'b') return P('');
+      if(b.k === 't') return P(run(b.t, true, b.u), {jc: 'center'});
+      if(b.k === 'c') return P(run(b.t), {jc: 'center'});
+      if(b.k === 'h') return P(run(b.t, true), {jc: 'right'});
+      if(b.k === 'r') return P(run(b.t), {jc: 'right'});
+      if(b.k === 'small') return P(run(b.t));
+      if(b.k === 'cd') return P(run(b.l)+TAB+run(b.r), {tabs: 1});
+      if(b.k === 'li') return P(run('— '+b.t), {ind: 'w:left="709" w:firstLine="0"'});
+      return P(run(b.t), {ind: 'w:firstLine="709"', jc: 'both'});
+    }).join('');
+    const xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
+      + body
+      + '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>';
+    if(!window.JSZip){ alert('JSZip не загрузился'); return; }
+    const z = new JSZip(), H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    z.file('[Content_Types].xml', H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+    z.file('_rels/.rels', H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+    z.file('word/document.xml', xml);
+    z.generateAsync({type:'blob', mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}).then(blob => {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fname;
+      document.body.appendChild(a); a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    });
+  }
+
+  function medReqBlocks(){
+    const d = v('medOutDate');
+    const num = v('medOutNum') || '—';
+    const fromOrg = v('medFromOrg');
+    const fromAddr = v('medFromAddr');
+    const ud = v('medUD') || '________';
+    const art = v('medArt') || '________';
+    const susp = v('medSuspect') || '________';
+    const personFio = v('medPersonFio') || '________';
+    const personBirth = v('medPersonBirth') || '________';
+    const personAddr = v('medPersonAddr') || '________';
+    const what = v('medWhat') || '________';
+    const deadline = v('medDeadline') || 'в течение 24 часов';
+    const email = v('medEmail') || '—';
+    const phone = v('medPhone') || '—';
+    const inst = v('medAddrInst'), fio = v('medAddrFio'), io = v('medAddrIo'), addr = v('medAddrAddr');
+    const sigPos = v('medSignPos') || 'Следователь';
+    const sigRank = v('medSignRank') || '—';
+    const sigFio = v('medSignFio') || '—';
+
+    return [
+      {k:'t', t:'СК РОССИИ'},
+      {k:'t', t:'Следственное управление'},
+      {k:'t', t:'по Кировской области'},
+      {k:'c', t:'(СУ СК России по Кировской области)'},
+      {k:'b'},
+      {k:'t', t: fromOrg},
+      {k:'c', t: fromAddr},
+      {k:'cd', l: dShort(d), r: '№ ' + num},
+      {k:'cd', l: 'на № ________ от ____________', r: ''},
+      {k:'b'},
+      {k:'h', t: 'Главному врачу ' + inst},
+      {k:'h', t: fio},
+      {k:'b'},
+      {k:'h', t: addr},
+      {k:'b'},{k:'b'},
+      {k:'t', t: 'З А П Р О С', u: 1},
+      {k:'t', t: 'о предоставлении информации'},
+      {k:'b'},{k:'b'},
+      {k:'p', t: 'Уважаемый ' + io + '!'},
+      {k:'p', t: 'В производстве ' + fromOrg + ' следственного управления Следственного комитета Российской Федерации по Кировской области находятся материалы уголовного дела №' + ud + ', возбужденного по признакам преступления, предусмотренного ' + art + ' УК РФ в отношении ' + susp + '.'},
+      {k:'p', t: 'В связи с вышеизложенным, руководствуясь ст. ст. 21, 38, 144 УПК РФ, ст. 7 Федерального закона от 28.12.2010 №403-ФЗ «О Следственном комитете Российской Федерации», прошу вверенным Вам сотрудникам предоставить:'},
+      {k:'li', t: what + ' ' + personFio + ', ' + personBirth + ' г.р., проживающего и зарегистрированного по адресу: ' + personAddr + '.'},
+      {k:'p', t: 'В связи с ограниченным сроком предварительного следствия ответ на запрос прошу предоставить ' + deadline + ' с момента получения настоящего запроса по электронной почте ' + email + ' с последующей досылкой почтой в адрес ' + fromOrg + ' следственного управления Следственного комитета России по Кировской области, расположенного по адресу: ' + fromAddr + '.'},
+      {k:'p', t: 'По всем вопросам, возникающим в ходе исполнения запроса, прошу связываться по телефону: ' + phone + '.'},
+      {k:'b'},{k:'b'},
+      {k:'cd', l: sigPos, r: sigFio},
+      {k:'c', t: sigRank}
+    ];
+  }
+
+  function medRespBlocks(){
+    const inst = v('medRespInst');
+    const addr = v('medRespAddr');
+    const phone = v('medRespPhone');
+    const dt = v('medRespDate');
+    const num = v('medRespNum') || '—';
+    const ud = v('medRespUD') || '—';
+    const fio = v('medRespFio') || '—';
+    const birth = v('medRespBirth') || '—';
+    const regAddr = v('medRespRegAddr') || '—';
+    const narcoY = g('medRespNarco').value === 'yes';
+    const psychoY = g('medRespPsycho').value === 'yes';
+    const nFrom = v('medRespNarcoFrom'), nTo = v('medRespNarcoTo');
+    const pFrom = v('medRespPsychoFrom'), pTo = v('medRespPsychoTo');
+    const extra = v('medRespExtra');
+    const bossPos = v('medRespBossPos');
+    const bossFio = v('medRespBoss');
+
+    const nTxt = narcoY ? ('состоит на учете' + (nFrom ? ' с ' + nFrom : '') + (nTo ? ', снят с учета ' + nTo : '')) : 'не состоит';
+    const pTxt = psychoY ? ('состоит на учете' + (pFrom ? ' с ' + pFrom : '') + (pTo ? ', снят с учета ' + pTo : '')) : 'не состоит';
+
+    const B = [
+      {k:'t', t: inst},
+      {k:'c', t: addr},
+      {k:'c', t: 'тел.: ' + phone},
+      {k:'cd', l: dShort(dt), r: '№ ' + num},
+      {k:'cd', l: 'на № ________ от ____________', r: ''},
+      {k:'b'},{k:'b'},
+      {k:'t', t: 'О Т В Е Т'},
+      {k:'b'},
+      {k:'p', t: 'На Ваш запрос по уголовному делу №' + ud + ' сообщаю:'},
+      {k:'p', t: 'Гр. ' + fio + ', ' + birth + ' г.р., зарегистрированный по адресу: ' + regAddr + ':'},
+      {k:'li', t: 'в наркологическом диспансере: ' + nTxt + ';'},
+      {k:'li', t: 'в психоневрологическом диспансере: ' + pTxt + '.'}
+    ];
+    if(extra) B.push({k:'p', t:'Дополнительно: ' + extra});
+    B.push({k:'b'}); B.push({k:'b'});
+    B.push({k:'cd', l: bossPos, r: bossFio});
+    return B;
+  }
+
+  const stReq = g('medReqSt');
+  g('medReqDoc').onclick = () => { buildMedDocx(medReqBlocks(), 'Med_zapros_' + (v('medUD') || 'bez_nomera') + '.docx'); stReq.textContent = 'Файл скачан.'; };
+  g('medReqCopy').onclick = () => {
+    const txt = medReqBlocks().map(b => b.k === 'cd' ? (b.l + '\t' + b.r) : (b.t || '')).join('\n');
+    navigator.clipboard.writeText(txt).then(() => { stReq.textContent = 'Текст скопирован ✓'; });
+  };
+  g('medReqSave').onclick = () => {
+    if(!v('medUD')){ stReq.textContent = 'Укажите № уголовного дела.'; return; }
+    if(!v('medPersonFio')){ stReq.textContent = 'Укажите ФИО проверяемого лица.'; return; }
+    if(!window.__db){ stReq.textContent = 'Нет соединения с базой.'; return; }
+    const u = currentUser();
+    stReq.textContent = 'Сохранение…';
+    window.__db.ref('med').push({
+      type: 'req',
+      outNum: v('medOutNum'), outDate: v('medOutDate'),
+      ud: v('medUD'), art: v('medArt'), suspect: v('medSuspect'),
+      personFio: v('medPersonFio'), personBirth: v('medPersonBirth'), personAddr: v('medPersonAddr'),
+      what: v('medWhat'), deadline: v('medDeadline'), email: v('medEmail'), phone: v('medPhone'),
+      addrInst: v('medAddrInst'), addrFio: v('medAddrFio'), addrIo: v('medAddrIo'), addrAddr: v('medAddrAddr'),
+      fromOrg: v('medFromOrg'), fromAddr: v('medFromAddr'),
+      signPos: v('medSignPos'), signRank: v('medSignRank'), signFio: v('medSignFio'),
+      author: (u && u.name) || '', ts: Date.now()
+    }).then(() => { initMedRandomNumbers(true); drawMedReqPrev(); stReq.textContent = '✓ Запрос сохранён'; setTimeout(() => stReq.textContent = '', 3000); })
+      .catch(err => { stReq.textContent = 'Ошибка: ' + (err.message || err); });
+  };
+
+  const stResp = g('medRespSt');
+  g('medRespDoc').onclick = () => { buildMedDocx(medRespBlocks(), 'Med_otvet_' + (v('medRespUD') || 'bez_nomera') + '.docx'); stResp.textContent = 'Файл скачан.'; };
+  g('medRespCopy').onclick = () => {
+    const txt = medRespBlocks().map(b => b.k === 'cd' ? (b.l + '\t' + b.r) : (b.t || '')).join('\n');
+    navigator.clipboard.writeText(txt).then(() => { stResp.textContent = 'Текст скопирован ✓'; });
+  };
+  g('medRespSave').onclick = () => {
+    if(!v('medRespFio')){ stResp.textContent = 'Укажите ФИО пациента.'; return; }
+    if(!window.__db){ stResp.textContent = 'Нет соединения с базой.'; return; }
+    if(!canRespondMed()){ stResp.textContent = 'Нет прав на ответ.'; return; }
+    const u = currentUser();
+    stResp.textContent = 'Сохранение…';
+    window.__db.ref('med').push({
+      type: 'resp', linkedReqId: v('medRespReqSel') || '',
+      inst: v('medRespInst'), addr: v('medRespAddr'), phone: v('medRespPhone'),
+      date: v('medRespDate'), num: v('medRespNum'), ud: v('medRespUD'),
+      fio: v('medRespFio'), birth: v('medRespBirth'), regAddr: v('medRespRegAddr'),
+      narco: g('medRespNarco').value, narcoFrom: v('medRespNarcoFrom'), narcoTo: v('medRespNarcoTo'),
+      psycho: g('medRespPsycho').value, psychoFrom: v('medRespPsychoFrom'), psychoTo: v('medRespPsychoTo'),
+      extra: v('medRespExtra'),
+      bossPos: v('medRespBossPos'), boss: v('medRespBoss'),
+      author: (u && u.name) || '', ts: Date.now()
+    }).then(() => { initMedRandomNumbers(true); drawMedRespPrev(); stResp.textContent = '✓ Ответ сохранён'; setTimeout(() => stResp.textContent = '', 3000); })
+      .catch(err => { stResp.textContent = 'Ошибка: ' + (err.message || err); });
+  };
+
+  const medList = g('medList');
+  const medCount = g('medCount');
+  let medCache = [];
+
+  function fillRespFromReq(r){
+    g('medRespUD').value = r.ud || '';
+    g('medRespFio').value = r.personFio || '';
+    g('medRespBirth').value = r.personBirth || '';
+    g('medRespRegAddr').value = r.personAddr || '';
+    initMedRandomNumbers(true);
+    drawMedRespPrev();
+  }
+
+  if(g('medRespReqSel')) g('medRespReqSel').addEventListener('change', () => {
+    const r = medCache.find(x => x.id === g('medRespReqSel').value);
+    if(r) fillRespFromReq(r);
+  });
+
+  function renderMed(){
+    if(!medList) return;
+    const reqs = medCache.filter(r => r.type === 'req');
+    if(medCount) medCount.textContent = medCache.length;
+    const qsel = g('medRespReqSel');
+    if(qsel){
+      const cur = qsel.value;
+      qsel.innerHTML = '<option value="">— выбрать запрос —</option>' + reqs.map(r =>
+        '<option value="' + r.id + '">№ ' + esc(r.ud || '—') + ' · ' + esc(dShort(r.outDate)) + ' · ' + esc(r.personFio || '') + '</option>'
+      ).join('');
+      qsel.value = cur;
+    }
+    const allowDel = canManage();
+    const canResp = canRespondMed();
+    const rows = medCache.slice().sort((a,b) => (b.ts||0) - (a.ts||0)).map(r => {
+      const isReq = r.type === 'req';
+      const label = isReq ? '<span class="tag blue">Запрос</span>' : '<span class="tag green">Ответ</span>';
+      const fio = isReq ? (r.personFio || '—') : (r.fio || '—');
+      const date = isReq ? dShort(r.outDate) : dShort(r.date);
+      const num = isReq ? (r.outNum || '—') : (r.num || '—');
+      const ud = r.ud || '—';
+      return '<tr>' +
+        '<td>' + label + '</td>' +
+        '<td class="term">' + esc(num) + '</td>' +
+        '<td>' + esc(ud) + '</td>' +
+        '<td>' + esc(fio) + '</td>' +
+        '<td>' + esc(date) + '</td>' +
+        '<td>' + esc(r.author || '—') + '</td>' +
+        '<td><div class="row-actions">' +
+          '<button class="btn" data-medview="' + r.id + '">👁</button>' +
+          '<button class="btn" data-meddoc="' + r.id + '">📥</button>' +
+          (isReq && canResp ? '<button class="btn primary" data-medresp="' + r.id + '">→ Ответить</button>' : '') +
+          (allowDel ? '<button class="btn" data-meddel="' + r.id + '">✕</button>' : '') +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+    medList.innerHTML = medCache.length
+      ? '<table><thead><tr><th>Тип</th><th>№</th><th>Уг. дело</th><th>ФИО</th><th>Дата</th><th>Автор</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>'
+      : '<p class="sub">Пока нет записей.</p>';
+
+    medList.querySelectorAll('[data-medview]').forEach(b => b.addEventListener('click', () => {
+      const r = medCache.find(x => x.id === b.dataset.medview);
+      if(!r) return;
+      if(r.type === 'req'){
+        alert(['ЗАПРОС В МЕД. УЧРЕЖДЕНИЕ',
+          'Исх. №: ' + (r.outNum || '—') + ' от ' + dShort(r.outDate),
+          'Уг. дело №: ' + (r.ud || '—'),
+          'Статья: ' + (r.art || '—'),
+          'В отношении: ' + (r.suspect || '—'),
+          '',
+          'Проверяемое лицо: ' + (r.personFio || '—'),
+          'Дата рождения: ' + (r.personBirth || '—'),
+          'Адрес: ' + (r.personAddr || '—'),
+          '',
+          'Запрашивается: ' + (r.what || '—'),
+          'Срок: ' + (r.deadline || '—'),
+          'Email: ' + (r.email || '—'),
+          'Тел.: ' + (r.phone || '—'),
+          '',
+          'Адресат: ' + [r.addrInst, r.addrFio].filter(Boolean).join(', '),
+          'Адрес: ' + (r.addrAddr || '—'),
+          'Автор: ' + (r.author || '—')
+        ].join('\n'));
+      } else {
+        alert(['ОТВЕТ МЕД. УЧРЕЖДЕНИЯ',
+          'Исх. №: ' + (r.num || '—') + ' от ' + dShort(r.date),
+          'Уг. дело №: ' + (r.ud || '—'),
+          'Пациент: ' + (r.fio || '—') + ', ' + (r.birth || '—') + ' г.р.',
+          'Адрес: ' + (r.regAddr || '—'),
+          '',
+          'Наркологический: ' + (r.narco === 'yes' ? ('состоит с ' + (r.narcoFrom || '—') + (r.narcoTo ? ', снят ' + r.narcoTo : '')) : 'не состоит'),
+          'Психоневрологический: ' + (r.psycho === 'yes' ? ('состоит с ' + (r.psychoFrom || '—') + (r.psychoTo ? ', снят ' + r.psychoTo : '')) : 'не состоит'),
+          r.extra ? ('\nДоп.: ' + r.extra) : '',
+          '',
+          'Подписант: ' + [r.bossPos, r.boss].filter(Boolean).join(' '),
+          'Автор: ' + (r.author || '—')
+        ].filter(Boolean).join('\n'));
+      }
+    }));
+
+    medList.querySelectorAll('[data-meddoc]').forEach(b => b.addEventListener('click', () => {
+      const r = medCache.find(x => x.id === b.dataset.meddoc);
+      if(!r) return;
+      if(r.type === 'req'){
+        const d = r.outDate, num = r.outNum || '—';
+        buildMedDocx([
+          {k:'t', t:'СК РОССИИ'},
+          {k:'t', t:'Следственное управление'},
+          {k:'t', t:'по Кировской области'},
+          {k:'c', t:'(СУ СК России по Кировской области)'},
+          {k:'b'},
+          {k:'t', t: r.fromOrg || ''},
+          {k:'c', t: r.fromAddr || ''},
+          {k:'cd', l: dShort(d), r: '№ ' + num},
+          {k:'cd', l: 'на № ________ от ____________', r: ''},
+          {k:'b'},
+          {k:'h', t: 'Главному врачу ' + (r.addrInst || '')},
+          {k:'h', t: r.addrFio || ''},
+          {k:'b'},
+          {k:'h', t: r.addrAddr || ''},
+          {k:'b'},{k:'b'},
+          {k:'t', t: 'З А П Р О С', u: 1},
+          {k:'t', t: 'о предоставлении информации'},
+          {k:'b'},{k:'b'},
+          {k:'p', t: 'Уважаемый ' + (r.addrIo || '') + '!'},
+          {k:'p', t: 'В производстве ' + (r.fromOrg || '') + ' следственного управления Следственного комитета Российской Федерации по Кировской области находятся материалы уголовного дела №' + (r.ud || '') + ', возбужденного по признакам преступления, предусмотренного ' + (r.art || '') + ' УК РФ в отношении ' + (r.suspect || '') + '.'},
+          {k:'p', t: 'В связи с вышеизложенным, руководствуясь ст. ст. 21, 38, 144 УПК РФ, ст. 7 Федерального закона от 28.12.2010 №403-ФЗ «О Следственном комитете Российской Федерации», прошу вверенным Вам сотрудникам предоставить:'},
+          {k:'li', t: (r.what || '') + ' ' + (r.personFio || '') + ', ' + (r.personBirth || '') + ' г.р., проживающего и зарегистрированного по адресу: ' + (r.personAddr || '') + '.'},
+          {k:'p', t: 'В связи с ограниченным сроком предварительного следствия ответ на запрос прошу предоставить ' + (r.deadline || '') + ' с момента получения настоящего запроса по электронной почте ' + (r.email || '') + ' с последующей досылкой почтой в адрес ' + (r.fromOrg || '') + ' следственного управления Следственного комитета России по Кировской области, расположенного по адресу: ' + (r.fromAddr || '') + '.'},
+          {k:'p', t: 'По всем вопросам, возникающим в ходе исполнения запроса, прошу связываться по телефону: ' + (r.phone || '') + '.'},
+          {k:'b'},{k:'b'},
+          {k:'cd', l: r.signPos || '', r: r.signFio || ''},
+          {k:'c', t: r.signRank || ''}
+        ], 'Med_zapros_' + (r.ud || 'bez') + '.docx');
+      } else {
+        const nTxt = r.narco === 'yes' ? ('состоит на учете' + (r.narcoFrom ? ' с ' + r.narcoFrom : '') + (r.narcoTo ? ', снят с учета ' + r.narcoTo : '')) : 'не состоит';
+        const pTxt = r.psycho === 'yes' ? ('состоит на учете' + (r.psychoFrom ? ' с ' + r.psychoFrom : '') + (r.psychoTo ? ', снят с учета ' + r.psychoTo : '')) : 'не состоит';
+        const B = [
+          {k:'t', t: r.inst || ''},
+          {k:'c', t: r.addr || ''},
+          {k:'c', t: 'тел.: ' + (r.phone || '')},
+          {k:'cd', l: dShort(r.date), r: '№ ' + (r.num || '')},
+          {k:'cd', l: 'на № ________ от ____________', r: ''},
+          {k:'b'},{k:'b'},
+          {k:'t', t: 'О Т В Е Т'},
+          {k:'b'},
+          {k:'p', t: 'На Ваш запрос по уголовному делу №' + (r.ud || '') + ' сообщаю:'},
+          {k:'p', t: 'Гр. ' + (r.fio || '') + ', ' + (r.birth || '') + ' г.р., зарегистрированный по адресу: ' + (r.regAddr || '') + ':'},
+          {k:'li', t: 'в наркологическом диспансере: ' + nTxt + ';'},
+          {k:'li', t: 'в психоневрологическом диспансере: ' + pTxt + '.'}
+        ];
+        if(r.extra) B.push({k:'p', t:'Дополнительно: ' + r.extra});
+        B.push({k:'b'}); B.push({k:'b'});
+        B.push({k:'cd', l: r.bossPos || '', r: r.boss || ''});
+        buildMedDocx(B, 'Med_otvet_' + (r.ud || 'bez') + '.docx');
+      }
+    }));
+
+    medList.querySelectorAll('[data-medresp]').forEach(b => b.addEventListener('click', () => {
+      const r = medCache.find(x => x.id === b.dataset.medresp);
+      if(!r) return;
+      g('medRespReqSel').value = r.id;
+      fillRespFromReq(r);
+      g('medRespFio').scrollIntoView({behavior:'smooth', block:'center'});
+    }));
+
+    if(allowDel) medList.querySelectorAll('[data-meddel]').forEach(b => b.addEventListener('click', () => {
+      if(!confirm('Удалить запись?')) return;
+      window.__db.ref('med/' + b.dataset.meddel).remove();
+    }));
+  }
+
+  if(window.__db){
+    window.__db.ref('med').on('value', snap => {
+      const val = snap.val() || {};
+      medCache = Object.keys(val).map(k => Object.assign({id: k}, val[k]));
+      renderMed();
+    }, err => { console.warn('med read error', err); });
+  }
+})();
+
+/* ============================================================
+   РОЛЬ «ГЛАВНЫЙ ВРАЧ» — ограниченный доступ
+   ============================================================ */
+function isDoctor(){
+  const u = currentUser();
+  if(!u) return false;
+  return (u.pos || '').toLowerCase().indexOf('главный врач') !== -1;
+}
+function canRespondMed(){
+  const u = currentUser();
+  if(!u) return false;
+  if(u.name === 'Администратор') return true;
+  return isDoctor();
+}
+function applyRoleUI(){
+  const doc = isDoctor();
+  document.body.classList.toggle('role-doctor', doc);
+  if(doc){
+    const reqCard = document.getElementById('medReqCard');
+    if(reqCard) reqCard.style.display = 'none';
+    if(typeof goTo === 'function') goTo('med', false);
+  } else {
+    const reqCard = document.getElementById('medReqCard');
+    if(reqCard) reqCard.style.display = '';
+  }
+}
+try{ applyRoleUI(); }catch(e){ console.warn('applyRoleUI error', e); }
 </script>
 </body>
 </html>
